@@ -5,7 +5,7 @@ index
 副標
 ---
 
-[RL78](released/released.github.io/RL78 "RL78")
+[RL78](released.github.io/RL78 "RL78")
 
 
 
