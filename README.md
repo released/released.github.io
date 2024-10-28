@@ -1,11 +1,11 @@
 
-web index
+Home index
 ===
 
 slide
 ---
 
-[RL78](released.github.io/slide_RL78 "CS+ , smart config. , RL78")
+[RL78](/slide_RL78 "CS+ , smart config. , RL78")
 
 
 
