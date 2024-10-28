@@ -1,22 +1,11 @@
 
-index
+web index
 ===
 
-副標
+slide
 ---
 
-[RL78](released.github.io/slide_RL78 "RL78")
+[RL78](released.github.io/slide_RL78 "CS+ , smart config. , RL78")
 
 
-
-
-
-# web
-quick note
-
-## line1
-aaaa
-
-### line1
-bbbb
 
