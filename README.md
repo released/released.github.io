@@ -1,22 +1,12 @@
 
-index
+Home
 ===
 
-副標
+slide
 ---
 
-[RL78](released.github.io/slide_RL78 "RL78")
+[RL78](/slide_RL78 "RL78")
 
 
 
-
-
-# web
-quick note
-
-## line1
-aaaa
-
-### line1
-bbbb
 
