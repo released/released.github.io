@@ -11,3 +11,5 @@ slide
 
 [slide_R850](https://released.github.io/boot_loader_for_RL78/ "boot_loader_for_RL78") 
 
+[slide_R850](https://released.github.io/boot_loader_app_config_for_RL78/ "boot_loader_app_config_for_RL78") 
+
