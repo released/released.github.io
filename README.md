@@ -12,3 +12,24 @@ slide
 [boot loader(RL78)](https://released.github.io/slide_boot_loader_for_RL78/ "boot_loader_for_RL78") 
 
 
+example code
+---
+
+[some example code...](https://github.com/released/ "some example code...")
+
+
+* entry github repositories
+![](img/how_to_search_1.jpg)
+
+
+* input target keyword , ex : I2C , ADC , etc
+![](img/how_to_search_2.jpg)
+
+
+* select the project 
+![](img/how_to_search_3.jpg)
+
+
+* how to download project ?
+![](img/how_to_download.jpg)
+
