@@ -30,9 +30,15 @@ Home
 ![](img/how_to_search_2.jpg)
 
 
-* input __key keyword__ , ex : I2C , ADC , etc and select the project 
+* use __keyword__ , to search project
+ex : __I2C__ , __ADC__ , etc and select the project 
 
 ![](img/how_to_search_3.jpg)
+
+* use __combo keyword__ , to search project
+ex : __M031 ADC__ , etc and select the project 
+
+![](img/how_to_search_4.jpg)
 
 
 * how to __download project__ ?
