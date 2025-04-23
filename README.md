@@ -17,25 +17,25 @@ Home
 # example code
 
 
-[some example code...](https://github.com/released/ "some example code...")
+[need some example code ?](https://github.com/released/ "need some example code ?")
 
 
-* entry ==github repositories==
+* entry __github repositories__
 
 ![](img/how_to_search_1.jpg)
 
 
-* use ==search== to find example code
+* use __search__ to find example code
 
 ![](img/how_to_search_2.jpg)
 
 
-* input ==key keyword== , ex : I2C , ADC , etc and select the project 
+* input __key keyword__ , ex : I2C , ADC , etc and select the project 
 
 ![](img/how_to_search_3.jpg)
 
 
-* how to ==download project== ?
+* how to __download project__ ?
 
 Code > Download ZIP
 
