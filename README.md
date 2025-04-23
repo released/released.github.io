@@ -2,8 +2,9 @@
 Home
 ===
 
-slide
 ---
+# slide
+
 
 [CS+/Smart Configurator/RFP(RL78)](https://released.github.io/slide_RL78/ "slide_RL78")      
 
@@ -12,24 +13,31 @@ slide
 [boot loader(RL78)](https://released.github.io/slide_boot_loader_for_RL78/ "boot_loader_for_RL78") 
 
 
-example code
 ---
+# example code
+
 
 [some example code...](https://github.com/released/ "some example code...")
 
 
-* entry github repositories
+* entry ==github repositories==
+
 ![](img/how_to_search_1.jpg)
 
 
-* input target keyword , ex : I2C , ADC , etc
+* use ==search== to find example code
+
 ![](img/how_to_search_2.jpg)
 
 
-* select the project 
+* input ==key keyword== , ex : I2C , ADC , etc and select the project 
+
 ![](img/how_to_search_3.jpg)
 
 
-* how to download project ?
+* how to ==download project== ?
+
+Code > Download ZIP
+
 ![](img/how_to_download.jpg)
 
