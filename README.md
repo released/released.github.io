@@ -16,7 +16,7 @@ Home
 ---
 # example code
 
-[need some example code ?](https://released.github.io/example_code/ "example_code") 
+[need some example code ?](https://released.github.io/example_code/ "need some example code ?") 
 
 
 ---
