@@ -20,4 +20,15 @@ Home
 
 
 ---
+# FAQ (Nuvoton)
+
+[need common notices for Nuvoton platform ?](https://released.github.io/faq_nuvoton/ "some common notices (Nuvoton)") 
+
+
+---
+# FAQ (Renesas)
+[need common notices for Renesas platform ?](https://released.github.io/faq_renesas/ "some common notices (Renesas)") 
+
+
+---
 
