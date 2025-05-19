@@ -20,6 +20,12 @@ Home
 
 
 ---
+# FAQ (IDE-KEIL)
+
+[some notices for IDE-KEIL ?](https://released.github.io/faq_keil/ "some notices (KEIL)") 
+
+
+---
 # FAQ (Nuvoton)
 
 [some notices for Nuvoton platform ?](https://released.github.io/faq_nuvoton/ "some notices (Nuvoton)") 
