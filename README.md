@@ -37,4 +37,9 @@ Home
 
 
 ---
+# notices (misc)
+[some notices record](https://released.github.io/notices_misc/ "Huh?") 
+
+
+---
 
