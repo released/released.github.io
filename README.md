@@ -12,7 +12,7 @@ Home
 
 [boot loader(RL78)](https://released.github.io/slide_boot_loader_for_RL78/ "boot_loader_for_RL78") 
 
-[RH850_UART_DMA](https://released.github.io/slide_RH850_UART_DMA/ "RH850_UART_DMA") 
+[RH850 UART DMA flow](https://released.github.io/slide_RH850_UART_DMA/ "RH850 UART DMA flow") 
 
 
 ---
