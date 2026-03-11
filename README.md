@@ -22,6 +22,8 @@ Home
 
 [Nuvoton ISP code place in APROM](https://released.github.io/slide_Nuvoton-ISP-code_in_APROM/ "Nuvoton ISP code place in APROM") 
 
+[Nuvoton AEC NR operation](https://released.github.io/slide_Nuvoton_AEC_NR_operation/ "Nuvoton AEC NR operation") 
+
 ---
 # example code
 
