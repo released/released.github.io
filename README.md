@@ -53,8 +53,16 @@ Home
 [some notices record](https://released.github.io/notices_misc/ "Huh?") 
 
 ---
-# notices (CAN/CAN FD)
-[some notices record](https://released.github.io/notices_can/ "Huh?") 
+# CAN / CAN FD — Beginner
+[Understand CAN and CAN FD](https://released.github.io/notices_can/ "CAN / CAN FD Beginner Knowledge Base")
+
+---
+# UDS / ISO-TP / Bootloader — Intermediate / Advanced
+[Understand UDS and diagnostic services](https://released.github.io/notices_can_uds/ "UDS Knowledge Base")
+
+[Read the ISO 14229 / ISO 15765-2 guide](https://released.github.io/notices_can_uds/iso/ "UDS ISO Guide")
+
+[Read the ECU Bootloader upgrade guide](https://released.github.io/notices_can_uds/bootloader/ "UDS Bootloader Guide")
 
 
 ---
