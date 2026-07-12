@@ -48,6 +48,15 @@ li + li { margin-top: .25em; }
 a { color: var(--link); text-decoration: none; }
 a:hover { color: var(--accent-dark); text-decoration: underline; }
 strong { color: #17252b; }
+.markdown-preview img {
+  display: block;
+  width: auto;
+  max-width: min(100%, 960px);
+  height: auto;
+  margin: 1.25em auto;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+}
 hr { height: 1px; margin: 42px 0; border: 0; background: var(--line); }
 blockquote { margin-inline: 0; padding: 10px 16px; color: #46555c; background: var(--accent-soft); border-left: 4px solid var(--accent); }
 blockquote > :last-child { margin-bottom: 0; }
