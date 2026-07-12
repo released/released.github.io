@@ -5,6 +5,7 @@
   var toc = document.getElementById("toc");
   var sidebarButton = document.getElementById("sidebar-toc-btn");
   var backToTop = document.getElementById("back-to-top");
+  var markdownSource = document.body.getAttribute("data-markdown") || "index.md";
 
   function slugify(text, index) {
     var slug = text.trim().toLowerCase()
@@ -153,11 +154,11 @@
   }, { passive: true });
 
   if (!window.marked) {
-    content.innerHTML = '<p class="render-error">Markdown renderer 載入失敗。請直接閱讀 <a href="README.md">README.md</a>。</p>';
+    content.innerHTML = '<p class="render-error">Markdown renderer 載入失敗。請直接閱讀 <a href="' + markdownSource + '">' + markdownSource + '</a>。</p>';
     return;
   }
 
-  fetch("README.md", { cache: "no-cache" })
+  fetch(markdownSource, { cache: "no-cache" })
     .then(function (response) {
       if (!response.ok) { throw new Error("HTTP " + response.status); }
       return response.text();
@@ -173,6 +174,6 @@
       scrollToInitialHash();
     })
     .catch(function (error) {
-      content.innerHTML = '<p class="render-error">無法載入知識庫（' + error.message + '）。請直接閱讀 <a href="README.md">README.md</a>。</p>';
+      content.innerHTML = '<p class="render-error">無法載入知識庫（' + error.message + '）。請直接閱讀 <a href="' + markdownSource + '">' + markdownSource + '</a>。</p>';
     });
 }());
