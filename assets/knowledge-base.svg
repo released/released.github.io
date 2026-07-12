@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">Embedded Knowledge Base</title>
+  <desc id="desc">An open book connected to an embedded processor</desc>
+  <defs>
+    <linearGradient id="cover" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2386a8"/>
+      <stop offset="1" stop-color="#114f69"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="url(#cover)"/>
+  <path d="M12 17.5c7-2.4 13.5-1.2 20 3.8v28c-6.5-5-13-6.2-20-3.8z" fill="#fff" opacity=".94"/>
+  <path d="M52 17.5c-7-2.4-13.5-1.2-20 3.8v28c6.5-5 13-6.2 20-3.8z" fill="#e7f7fb"/>
+  <path d="M32 21.3v28" stroke="#0d4258" stroke-width="2"/>
+  <g fill="none" stroke="#176b87" stroke-linecap="round" stroke-width="2">
+    <path d="M17 25c4-.7 7.5.2 10.5 2.2M17 31c4-.7 7.5.2 10.5 2.2M17 37c4-.7 7.5.2 10.5 2.2"/>
+    <rect x="38" y="26" width="8" height="8" rx="1"/>
+    <path d="M40 23v3m4-3v3m-4 8v3m4-3v3m-9-7h3m8 0h3"/>
+  </g>
+</svg>
