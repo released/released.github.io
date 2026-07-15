@@ -2,7 +2,7 @@
 
 # 嵌入式系統知識庫
 
-> 彙整 MCU 開發工具、通訊協定、韌體更新、FAQ、除錯案例與範例程式。最後更新：2026-07-12。
+> 彙整 MCU 開發工具、通訊協定、韌體更新、FAQ、除錯案例與範例程式。最後更新：2026-07-15。
 
 本站包含 Renesas、Nuvoton、Keil、SGPIO、I²C / SMBus / PMBus、CAN / CAN FD、UDS 與 ECU Bootloader 等主題。各項目可獨立查閱，主題之間的技術關聯整理於下方關聯圖。
 
@@ -57,6 +57,8 @@ Renesas 內容涵蓋 CS+、Smart Configurator、Renesas Flash Programmer，以�
 |---|---|
 | [CS+ / Smart Configurator / RFP（RL78）](https://released.github.io/slide_RL78/ "slide_RL78") | RL78 專案建立、程式碼產生與燒錄工具操作 |
 | [CS+ / Smart Configurator / RFP（RH850）](https://released.github.io/slide_RH850/ "slide_RH850") | RH850 開發流程與工具鏈整合 |
+| [RL78 Option Byte Calculator](https://released.github.io/option_byte_calculator/rl78/ "RL78 Option Byte Calculator") | 依型號雙向轉換 C0～C4 HEX、bit、欄位行為與合法性警告 |
+| [RH850 Option Byte Calculator](https://released.github.io/option_byte_calculator/rh850/ "RH850 Option Byte Calculator") | 依型號雙向轉換 OPBT0／OPBT1、bit、欄位行為與保留位警告 |
 | [RL78 Bootloader](https://released.github.io/slide_boot_loader_for_RL78/ "boot_loader_for_RL78") | RL78 啟動載入與更新流程 |
 | [RH850 UART DMA 流程](https://released.github.io/slide_RH850_UART_DMA/ "RH850 UART DMA flow") | UART、DMA 與中斷之間的資料搬移關係 |
 | [RH850 F1KM Memory Map](https://released.github.io/slide_RH850_F1KM_Memory_map/ "RH850 F1KM Memory map") | 記憶體區域、位址配置與 linker 設定 |
