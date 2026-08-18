@@ -71,12 +71,13 @@ Renesas 內容涵蓋 CS+、Smart Configurator、Renesas Flash Programmer，以�
 
 ## Nuvoton 平台專題
 
-Nuvoton 內容涵蓋 ISP 程式放置策略與音訊處理操作，包括 LDROM、APROM、啟動來源、更新復原與 AEC / NR 驗證。
+Nuvoton 內容涵蓋 ISP 程式放置策略、周邊 register 觀察與音訊處理操作，包括 LDROM、APROM、啟動來源、更新復原、PWM debug 與 AEC / NR 驗證。
 
 | 項目 | 內容說明 |
 |---|---|
 | [ISP 程式分別放置於 LDROM 與 APROM](https://released.github.io/slide_Nuvoton-ISP-code_in_LDROM_APROM/ "Nuvoton ISP code place in LDROM and APROM") | 比較兩個記憶體區域的職責、切換與更新流程 |
 | [ISP 程式放置於 APROM](https://released.github.io/slide_Nuvoton-ISP-code_in_APROM/ "Nuvoton ISP code place in APROM") | 單一 APROM 配置下的 ISP 設計與限制 |
+| [M031 PWM Register 與 Peripheral View](https://released.github.io/slide_Nuvoton_peripheral_view_under_debug_mode/ "Nuvoton M031 peripheral view under debug mode") | PWM clock path、driver calculation、Keil／NuEclipse Peripheral View 與 register 反推 |
 | [AEC / NR 操作](https://released.github.io/slide_Nuvoton_AEC_NR_operation/ "Nuvoton AEC NR operation") | Acoustic Echo Cancellation 與 Noise Reduction 的操作流程 |
 
 ---
