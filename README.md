@@ -59,8 +59,8 @@ Renesas 內容涵蓋 CS+、Smart Configurator、Renesas Flash Programmer，以�
 | [CS+ / Smart Configurator / RFP（RH850）](https://released.github.io/slide_RH850/ "slide_RH850") | RH850 開發流程與工具鏈整合 |
 | [RL78 Option Byte Calculator](https://released.github.io/option_byte_calculator/rl78/ "RL78 Option Byte Calculator") | 依型號雙向轉換 C0～C4 HEX、bit、欄位行為與合法性警告 |
 | [RH850 Option Byte Calculator](https://released.github.io/option_byte_calculator/rh850/ "RH850 Option Byte Calculator") | 依型號雙向轉換 OPBT0／OPBT1、bit、欄位行為與保留位警告 |
-| [RL78 Bootloader](https://released.github.io/slide_boot_loader_for_RL78/ "boot_loader_for_RL78") | RL78 啟動載入與更新流程；本機稿新增 [Boot/App 移植入口](../slide_boot_loader_for_RL78/#boot-app-porting)（尚未發布）：向量、startup/linker/RAM、F13/F24 工程與驗證清單 |
-| RL78 ISP Tool（CAN工程第一版） | FirmwareUpgradeTool0082／F24 App與F13配對1.5.0：CAN v5實板19244B、301區塊、10963ms，END CRC通過；故障／高速／新版App啟動仍待驗證。F24 Boot不變、F13仍8KiB；保留共用image/log、Host Link128／metadata256與固定向量。稿位於 sibling `slide_isp_tool_for_RL78`，含移植入口與首版配套說明，尚未發布 |
+| [RL78 Bootloader](https://released.github.io/slide_boot_loader_for_RL78/ "boot_loader_for_RL78") | RL78 啟動載入與更新流程；[Boot/App 移植指南](../slide_boot_loader_for_RL78/#boot-app-porting)：向量轉送、startup／linker／RAM 設定與 F13／F24 工程驗證清單 |
+| [RL78 ISP Tool](https://released.github.io/slide_isp_tool_for_RL78/ "RL78 ISP Tool 操作指南") | FirmwareUpgradeTool 與 MCU bridge 操作：Host／Device 識別、共用映像與 Metadata 驗證、CAN device 更新、I2C 探索，以及 Misc 的 Host App UART 更新 |
 | [RH850 UART DMA 流程](https://released.github.io/slide_RH850_UART_DMA/ "RH850 UART DMA flow") | UART、DMA 與中斷之間的資料搬移關係 |
 | [RH850 F1KM Memory Map](https://released.github.io/slide_RH850_F1KM_Memory_map/ "RH850 F1KM Memory map") | 記憶體區域、位址配置與 linker 設定 |
 
