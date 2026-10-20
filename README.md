@@ -60,9 +60,21 @@ Renesas 內容涵蓋 CS+、Smart Configurator、Renesas Flash Programmer，以�
 | [RL78 Option Byte Calculator](https://released.github.io/option_byte_calculator/rl78/ "RL78 Option Byte Calculator") | 依型號雙向轉換 C0～C4 HEX、bit、欄位行為與合法性警告 |
 | [RH850 Option Byte Calculator](https://released.github.io/option_byte_calculator/rh850/ "RH850 Option Byte Calculator") | 依型號雙向轉換 OPBT0／OPBT1、bit、欄位行為與保留位警告 |
 | [RL78 Bootloader](https://released.github.io/slide_boot_loader_for_RL78/ "boot_loader_for_RL78") | MCU CAN device 的啟動載入與更新流程；[Boot/App 移植指南](https://released.github.io/slide_boot_loader_for_RL78/#boot-app-porting)：向量轉送、startup／linker／RAM 設定與 F13／F24 device 工程驗證清單 |
-| [RL78 ISP Tool](https://released.github.io/slide_isp_tool_for_RL78/ "RL78 ISP Tool 操作指南") | [Tool 與韌體下載／流程總覽](https://released.github.io/slide_isp_tool_for_RL78/#downloads)；F24 (MCU CAN host)／F13 (MCU CAN device) 識別、共用映像與 Metadata 驗證、CAN device 更新、I2C 探索，以及 Misc 的 Host App UART 更新 |
+| [RL78 ISP Tool](https://released.github.io/slide_isp_tool_for_RL78/ "RL78 ISP Tool 操作指南") | [Tool 與韌體下載／流程總覽](https://released.github.io/slide_isp_tool_for_RL78/#downloads)；MCU host／device 識別、映像與 Metadata 驗證、CAN 更新、Custom Transfer、I2C 探索及 Misc Host App 更新 |
 | [RH850 UART DMA 流程](https://released.github.io/slide_RH850_UART_DMA/ "RH850 UART DMA flow") | UART、DMA 與中斷之間的資料搬移關係 |
 | [RH850 F1KM Memory Map](https://released.github.io/slide_RH850_F1KM_Memory_map/ "RH850 F1KM Memory map") | 記憶體區域、位址配置與 linker 設定 |
+
+<!-- RL78_CAN_ENTRY_BEGIN -->
+<a id="rl78-can-examples"></a>
+
+### RL78 CAN 範例分類
+
+| 分類 | 工程／範例 | 操作入口 |
+| --- | --- | --- |
+| Classical CAN | [F13 Boot／App](https://released.github.io/slide_boot_loader_for_RL78/#f13-boot-decision)／[F24 Boot／App](https://released.github.io/slide_boot_loader_for_RL78/#f24-can-device) | [App 更新](https://released.github.io/slide_isp_tool_for_RL78/#f13-device-update) |
+| CAN FD | [F24 Boot／App 工程](https://released.github.io/slide_boot_loader_for_RL78/#can-fd-device-engineering) | [CAN FD App 更新](https://released.github.io/slide_isp_tool_for_RL78/#can-fd-update) |
+| Custom Transfer | F13／F24 Classical CAN、F24 CAN FD | [三種範例、原始碼與通訊測試](https://released.github.io/slide_isp_tool_for_RL78/#custom-transfer) |
+<!-- RL78_CAN_ENTRY_END -->
 
 > 本區同時包含工具鏈內容，以及 Bootloader、UART DMA、Memory Map 等獨立專題。
 
