@@ -67,13 +67,13 @@ Renesas 內容涵蓋 CS+、Smart Configurator、Renesas Flash Programmer，以�
 <!-- RL78_CAN_ENTRY_BEGIN -->
 <a id="rl78-can-examples"></a>
 
-### RL78 CAN 範例分類
+### MCU CAN 範例分類
 
 | 分類 | 工程／範例 | 操作入口 |
 | --- | --- | --- |
 | Classical CAN | [F13 Boot／App](https://released.github.io/slide_boot_loader_for_RL78/#f13-boot-decision)／[F24 Boot／App](https://released.github.io/slide_boot_loader_for_RL78/#f24-can-device) | [App 更新](https://released.github.io/slide_isp_tool_for_RL78/#f13-device-update) |
 | CAN FD | [F24 Boot／App 工程](https://released.github.io/slide_boot_loader_for_RL78/#can-fd-device-engineering) | [CAN FD App 更新](https://released.github.io/slide_isp_tool_for_RL78/#can-fd-update) |
-| Custom Transfer | F13／F24 Classical CAN、F24 CAN FD | [三種範例、原始碼與通訊測試](https://released.github.io/slide_isp_tool_for_RL78/#custom-transfer) |
+| Custom Transfer | F13／F24 Classical CAN；F24 CAN FD | [範例分類與通訊測試](https://released.github.io/slide_isp_tool_for_RL78/#custom-transfer) |
 <!-- RL78_CAN_ENTRY_END -->
 
 > 本區同時包含工具鏈內容，以及 Bootloader、UART DMA、Memory Map 等獨立專題。
