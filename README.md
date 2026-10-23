@@ -59,8 +59,8 @@ Renesas 內容涵蓋 CS+、Smart Configurator、Renesas Flash Programmer，以�
 | [CS+ / Smart Configurator / RFP（RH850）](https://released.github.io/slide_RH850/ "slide_RH850") | RH850 開發流程與工具鏈整合 |
 | [RL78 Option Byte Calculator](https://released.github.io/option_byte_calculator/rl78/ "RL78 Option Byte Calculator") | 依型號雙向轉換 C0～C4 HEX、bit、欄位行為與合法性警告 |
 | [RH850 Option Byte Calculator](https://released.github.io/option_byte_calculator/rh850/ "RH850 Option Byte Calculator") | 依型號雙向轉換 OPBT0／OPBT1、bit、欄位行為與保留位警告 |
-| [RL78 Bootloader](https://released.github.io/slide_boot_loader_for_RL78/ "boot_loader_for_RL78") | MCU CAN device 的啟動載入與更新流程；[Boot/App 移植指南](https://released.github.io/slide_boot_loader_for_RL78/#boot-app-porting)：向量轉送、startup／linker／RAM 設定與 F13／F24 device 工程驗證清單 |
-| [RL78 ISP Tool](https://released.github.io/slide_isp_tool_for_RL78/ "RL78 ISP Tool 操作指南") | [Tool 與韌體下載／流程總覽](https://released.github.io/slide_isp_tool_for_RL78/#downloads)；MCU host／device 識別、映像與 Metadata 驗證、CAN 更新、Custom Transfer、I2C 探索及 Misc Host App 更新 |
+| [RL78 Bootloader](https://released.github.io/slide_boot_loader_for_RL78/ "boot_loader_for_RL78") | MCU device 開發主題索引：[CAN／CAN FD 工程](https://released.github.io/slide_boot_loader_for_RL78/can-device.html)、[Metadata／IRQ 編輯](https://released.github.io/slide_boot_loader_for_RL78/app-development.html)、[移植與 Flash](https://released.github.io/slide_boot_loader_for_RL78/porting.html)；另含串列工程與格式參考 |
+| [RL78 ISP Tool](https://released.github.io/slide_isp_tool_for_RL78/ "RL78 ISP Tool 操作指南") | 操作主題索引：[Tool 與韌體下載](https://released.github.io/slide_isp_tool_for_RL78/downloads.html)、[連線與操作](https://released.github.io/slide_isp_tool_for_RL78/operation.html)、[欄位與更新報告](https://released.github.io/slide_isp_tool_for_RL78/status-and-reports.html)；另含 CAN／串列 ISP、Custom Transfer 與 Host App 更新 |
 | [RH850 UART DMA 流程](https://released.github.io/slide_RH850_UART_DMA/ "RH850 UART DMA flow") | UART、DMA 與中斷之間的資料搬移關係 |
 | [RH850 F1KM Memory Map](https://released.github.io/slide_RH850_F1KM_Memory_map/ "RH850 F1KM Memory map") | 記憶體區域、位址配置與 linker 設定 |
 
