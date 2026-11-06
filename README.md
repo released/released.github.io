@@ -17,6 +17,7 @@
 | FAQ 與除錯 | [FAQ 與除錯筆記](#faq) | Keil、Nuvoton、Renesas 與跨平台問題紀錄 |
 | CAN / CAN FD | [CAN / CAN FD 知識庫](https://released.github.io/notices_can/ "CAN / CAN FD Knowledge Base") | 實體層、frame、arbitration、bit timing、error handling 與 controller |
 | UDS / ISO-TP / Bootloader | [UDS / ISO-TP / ECU Bootloader 知識庫](https://released.github.io/notices_can_uds/ "UDS Knowledge Base") | Transport、診斷服務、session、security 與 ECU firmware update |
+| Secure Boot | [Secure Boot 原理、金鑰與安全更新](https://released.github.io/slide_secure_boot_fundamentals/) | 信任根、映像驗證、金鑰、更新回復與 Nuvoton／Renesas 案例，附官方來源 |
 
 ## 主題關聯圖
 
