@@ -86,7 +86,7 @@ Renesas 內容涵蓋 CS+、Smart Configurator、Renesas Flash Programmer，以�
 
 ## Nuvoton 平台專題
 
-Nuvoton 內容涵蓋 ISP 程式放置策略、Secure Boot 更新、周邊 register 觀察與音訊處理操作，包括 LDROM、APROM、啟動來源、更新復原、PWM debug 與 AEC / NR 驗證。
+Nuvoton 內容涵蓋 ISP 程式放置策略、Secure Boot 更新、周邊 register 觀察與音訊處理操作，包括 LDROM、APROM、啟動來源、更新復原、PWM debug、AEC / NR 與 DSpotter 雙語語音控制。
 
 | 項目 | 內容說明 |
 |---|---|
@@ -95,6 +95,7 @@ Nuvoton 內容涵蓋 ISP 程式放置策略、Secure Boot 更新、周邊 regist
 | [M480 Secure Boot ISP 更新流程](https://released.github.io/slide_Nuvoton_secure_boot_operation_M480/ "M480 Secure Boot ISP 操作指南") | 專用 LDROM／APROM-SRAM 範例、ICP 與金鑰、HSUSB 更新及 SW2／KEY1 入口 |
 | [M031 PWM Register 與 Peripheral View](https://released.github.io/slide_Nuvoton_peripheral_view_under_debug_mode/ "Nuvoton M031 peripheral view under debug mode") | PWM clock path、driver calculation、Keil／NuEclipse Peripheral View 與 register 反推 |
 | [AEC / NR 操作](https://released.github.io/slide_Nuvoton_AEC_NR_operation/ "Nuvoton AEC NR operation") | Acoustic Echo Cancellation 與 Noise Reduction 的操作流程 |
+| [I94124 DSpotter 國語／台語語音操作](slide_Nuvoton_DSpotter_operation/ "I94124 DSpotter 語音操作指南") | INI 詞條、DSMT 分組與發音、Audio Tool 回覆編碼、一鍵合併、燒錄與語音／LED／UART 測試，附介面截圖 |
 
 ---
 

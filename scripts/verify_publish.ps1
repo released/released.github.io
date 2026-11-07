@@ -14,3 +14,7 @@ if($html -notmatch 'data-markdown="README\.md"' -or $html -notmatch 'assets/app\
     throw 'Homepage entry does not load its Markdown and local renderer assets.'
 }
 Write-Host 'PASS: homepage source, renderer assets, UTF-8 and Markdown fences verified independently.'
+$guideEntry = 'slide_Nuvoton_DSpotter_operation/'
+$legacy = [IO.File]::ReadAllText((Join-Path $siteRoot 'README.html'),[Text.Encoding]::UTF8)
+if (!$markdown.Contains($guideEntry) -or !$legacy.Contains($guideEntry)) { throw 'DSpotter guide link is missing from the homepage source or HTML projection.' }
+& (Join-Path $siteRoot 'slide_Nuvoton_DSpotter_operation/scripts/verify_publish.ps1')
