@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="RL78 Option Byte HEX、bit 與欄位行為雙向計算器">
+  <meta name="theme-color" content="#087ca7">
+  <title>RL78 Option Byte Calculator</title>
+  <link rel="stylesheet" href="../assets/style.css">
+<meta name="site-repository" content="released/released.github.io">
+</head>
+<body data-family="RL78" data-profiles="../data/rl78-profiles.json">
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="../">
+        <span class="brand-mark" aria-hidden="true">RL</span>
+        <span class="brand-copy"><strong>RL78 Option Byte</strong><small>HEX · Bit · Field Decoder</small></span>
+      </a>
+      <nav class="header-nav" aria-label="Calculator 選單">
+        <a class="active" href="./">RL78</a>
+        <a href="../rh850/">RH850</a>
+        <a href="https://released.github.io/">知識庫</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <section class="hero">
+      <div>
+        <p class="eyebrow">Renesas RL78</p>
+        <h1>Option Byte Calculator</h1>
+        <p>輸入 C0C1C2、C3、C4 或直接勾選 bit，即時取得 HEX、欄位行為與手冊合法性警告。</p>
+      </div>
+      <span class="hero-badge">C0 → C1 → C2 · MSB order</span>
+    </section>
+
+    <section class="control-card" aria-label="型號與 HEX 輸入">
+      <div class="control-top">
+        <label class="select-control">
+          <span class="control-label">MCU 型號</span>
+          <select id="model-select" class="model-select"></select>
+        </label>
+        <div id="model-reference" class="model-reference"></div>
+        <div class="control-actions">
+          <button id="reset-defaults" class="button" type="button">恢復預設值</button>
+          <button id="copy-values" class="button primary" type="button">複製 HEX</button>
+        </div>
+      </div>
+      <div id="hex-inputs" class="hex-inputs"></div>
+      <p id="input-status" class="input-status" role="status" aria-live="polite"></p>
+    </section>
+
+    <section class="summary-section">
+      <div class="section-heading"><h2>目前數值</h2><p>點擊卡片可切換詳細 word/byte。</p></div>
+      <div id="word-summary" class="word-summary"></div>
+    </section>
+
+    <section class="workspace">
+      <nav id="word-tabs" class="word-tabs" aria-label="Option byte tabs"></nav>
+      <div id="word-panel"></div>
+    </section>
+
+    <section class="validation-grid">
+      <article class="validation-card"><h2>合法性檢查</h2><div id="warning-list" class="warning-list"></div></article>
+      <article class="validation-card"><h2>型號備註</h2><div id="model-notes" class="model-notes"></div></article>
+    </section>
+  </main>
+
+  <footer class="site-footer"><a href="../">Option Byte Calculator</a> · <a href="https://released.github.io/">回到嵌入式系統知識庫</a></footer>
+  <noscript><p class="noscript">此計算器需要 JavaScript 才能執行。</p></noscript>
+  <script type="module" src="../assets/option-ui.js"></script>
+</body>
+</html>

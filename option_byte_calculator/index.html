@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Renesas RL78 與 RH850 Option Byte Calculator">
+  <meta name="theme-color" content="#176b87">
+  <title>Renesas Option Byte Calculator</title>
+  <link rel="stylesheet" href="assets/style.css">
+<meta name="site-repository" content="released/released.github.io">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="https://released.github.io/">
+        <span class="brand-mark" aria-hidden="true">OB</span>
+        <span class="brand-copy"><strong>Option Byte Calculator</strong><small>Renesas MCU configuration</small></span>
+      </a>
+      <nav class="header-nav" aria-label="主選單">
+        <a href="https://released.github.io/">知識庫首頁</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="landing-shell">
+    <section class="landing-hero">
+      <p class="eyebrow">Renesas MCU tools</p>
+      <h1>Option Byte<br>Calculator</h1>
+      <p>依硬體手冊定義，在瀏覽器中雙向轉換 HEX、bit 與欄位行為。所有計算均在本機瀏覽器完成，不會上傳輸入內容。</p>
+    </section>
+
+    <section class="landing-grid" aria-label="選擇 MCU family">
+      <a class="landing-card rl78" href="rl78/">
+        <p class="eyebrow">8-bit MCU</p>
+        <h2>RL78</h2>
+        <p>支援 G15、G16、F12、F13/F14、F15、F22/F25、F23/F24。</p>
+        <ul>
+          <li>C0C1C2 MSB 順序輸入</li>
+          <li>C0～C4 bit 與合法組合</li>
+          <li>HEX 與 checkbox 雙向同步</li>
+        </ul>
+        <span class="open-label">開啟 RL78 Calculator →</span>
+      </a>
+
+      <a class="landing-card rh850" href="rh850/">
+        <p class="eyebrow">Automotive MCU</p>
+        <h2>RH850</h2>
+        <p>支援 F1KH-D8，以及 F1KM-S4、S2、S1。</p>
+        <ul>
+          <li>OPBT0／OPBT1 32-bit word</li>
+          <li>bit31 → bit0 numeric order</li>
+          <li>型號限定保留位檢查</li>
+        </ul>
+        <span class="open-label">開啟 RH850 Calculator →</span>
+      </a>
+    </section>
+  </main>
+
+  <footer class="site-footer">Profile definitions are generated from the audited desktop calculator sources.</footer>
+</body>
+</html>

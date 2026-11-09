@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "topics": [
+    "example_code", "faq_keil", "faq_nuvoton", "faq_renesas",
+    "notices_can", "notices_can_uds", "notices_misc", "option_byte_calculator",
+    "slide_boot_loader_for_RH850", "slide_boot_loader_for_RL78",
+    "slide_Nuvoton-ISP-code_in_APROM", "slide_Nuvoton-ISP-code_in_LDROM_APROM",
+    "slide_Nuvoton_AEC_NR_operation", "slide_Nuvoton_peripheral_view_under_debug_mode",
+    "slide_Nuvoton_secure_boot_operation_M480", "slide_RH850",
+    "slide_RH850_F1KM_Memory_map", "slide_RH850_UART_DMA", "slide_RL78",
+    "slide_secure_boot_fundamentals", "slide_simple_renesas_isp_tool"
+  ]
+}

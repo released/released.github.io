@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "site": "option_byte_calculator",
+  "runtime": "2.0",
+  "pages": [
+    {
+      "html": "index.html"
+    },
+    {
+      "html": "rh850/index.html"
+    },
+    {
+      "html": "rl78/index.html"
+    }
+  ],
+  "runtimeFiles": {},
+  "dependencies": []
+}

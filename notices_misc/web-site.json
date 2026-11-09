@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "site": "notices_misc",
+  "runtime": "2.0",
+  "pages": [
+    {
+      "html": "index.html",
+      "source": "index.md"
+    }
+  ],
+  "runtimeFiles": {},
+  "dependencies": [
+    {
+      "path": "notices_can/assets/app.js",
+      "sha256": "f1b857dae5fd6d1a74b7504c7900a354e7703e3e9ea29045170bfd2498fc7fe4"
+    },
+    {
+      "path": "notices_can/assets/style.css",
+      "sha256": "9d926d9e2987c47a8323a91366d304b03ce3b1e776c9002a165796b51b8a78aa"
+    }
+  ]
+}

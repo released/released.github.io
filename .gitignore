@@ -20,3 +20,20 @@
 /.verify/
 /.env*
 !/.env.example
+
+# Local records at any topic depth are not website publication inputs.
+AGENTS.md
+AGENTS_for_Codex.md
+CLAUDE.md
+WORKSPACE_RULES.md
+HANDOFF.md
+CODEX_HANDOFF.md
+SELF_CHECK*.md
+MANUAL_CLEANUP.md
+SCREENSHOT_CHECKLIST.md
+github_push.local.psd1
+push-all.local.psd1
+.public-guidelines.local.json
+output/
+node_modules/
+docs/internal/

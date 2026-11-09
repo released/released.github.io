@@ -1,0 +1,1051 @@
+{
+  "version": 1,
+  "pages": {
+    "index": {
+      "title": "RL78 Bootloader 實作指南",
+      "description": "MCU device Boot／App 開發與參考入口。"
+    },
+    "can-device": {
+      "title": "Classical CAN／CAN FD device 工程",
+      "description": "F13／F24 Classical CAN、F24 CAN FD 的 Boot／App 工程與啟動流程。"
+    },
+    "app-development": {
+      "title": "App Metadata、IRQ 與更新耗時",
+      "description": "C header 編輯、產表、App 建置、驗證、CAN 速率與更新耗時。"
+    },
+    "serial-device": {
+      "title": "串列 ISP 共用工程與協定契約",
+      "description": "平台配置、C header、建置、Metadata、SC 與共用 Frame／命令／INFO／Status。"
+    },
+    "uart-device": {
+      "title": "UART Bootloader 與協定格式",
+      "description": "資料 UART、接收中斷、framed ISP 更新、封包範例與診斷。"
+    },
+    "i2c-device": {
+      "title": "I2C Bootloader 與協定格式",
+      "description": "I2C Slave、STOP mailbox、111-byte reply window 與更新完成條件。"
+    },
+    "xmodem-device": {
+      "title": "Xmodem Bootloader 與協定格式",
+      "description": "Framed control、XMODEM-CRC128、串流寫入、重送與最終 ACK。"
+    },
+    "porting": {
+      "title": "Boot／App 移植與 Flash",
+      "description": "分區、Boot 安裝、debug monitor、Flash RAM 執行與 CRC 後端。"
+    },
+    "reference": {
+      "title": "Flash、Metadata 與 CAN 封包參考",
+      "description": "位址、全部 Metadata bytes、對應程式與 CAN payload。"
+    },
+    "tool-guides": {
+      "title": "Tool 操作與通訊驗證入口",
+      "description": "下載、更新、報告、MCU host 與 Custom Transfer 的主題連結。"
+    }
+  },
+  "aliases": {
+    "f13-boot-decision": {
+      "page": "can-device.html",
+      "anchor": "f13-boot-decision"
+    },
+    "f24-can-device": {
+      "page": "can-device.html",
+      "anchor": "f24-can-device"
+    },
+    "device-metadata-vector-workshop": {
+      "page": "app-development.html",
+      "anchor": "device-metadata-vector-workshop"
+    },
+    "device-app-json": {
+      "page": "app-development.html",
+      "anchor": "device-app-json"
+    },
+    "device-app-config": {
+      "page": "app-development.html",
+      "anchor": "device-app-config"
+    },
+    "device-metadata-parser": {
+      "page": "app-development.html",
+      "anchor": "device-metadata-parser"
+    },
+    "device-app-irq": {
+      "page": "app-development.html",
+      "anchor": "device-app-irq"
+    },
+    "device-irq-ownership": {
+      "page": "app-development.html",
+      "anchor": "device-irq-ownership"
+    },
+    "device-irq-slot": {
+      "page": "app-development.html",
+      "anchor": "device-irq-slot"
+    },
+    "device-irq-dispatch-cost": {
+      "page": "app-development.html",
+      "anchor": "device-irq-dispatch-cost"
+    },
+    "device-app-irq-source": {
+      "page": "app-development.html",
+      "anchor": "device-app-irq-source"
+    },
+    "device-app-build": {
+      "page": "app-development.html",
+      "anchor": "device-app-build"
+    },
+    "device-app-build-report": {
+      "page": "app-development.html",
+      "anchor": "device-app-build-report"
+    },
+    "device-test-images": {
+      "page": "app-development.html",
+      "anchor": "device-test-images"
+    },
+    "device-update-timing": {
+      "page": "app-development.html",
+      "anchor": "device-update-timing"
+    },
+    "device-app-runtime-log": {
+      "page": "app-development.html",
+      "anchor": "device-app-runtime-log"
+    },
+    "device-app-validation": {
+      "page": "app-development.html",
+      "anchor": "device-app-validation"
+    },
+    "device-can-bitrate": {
+      "page": "app-development.html",
+      "anchor": "device-can-bitrate"
+    },
+    "boot-app-porting": {
+      "page": "porting.html",
+      "anchor": "boot-app-porting"
+    },
+    "basic-vs-golden": {
+      "page": "porting.html",
+      "anchor": "basic-vs-golden"
+    },
+    "device-debug-monitor": {
+      "page": "porting.html",
+      "anchor": "device-debug-monitor"
+    },
+    "flash-ram-execution": {
+      "page": "porting.html",
+      "anchor": "flash-ram-execution"
+    },
+    "crc-backends": {
+      "page": "porting.html",
+      "anchor": "crc-backends"
+    },
+    "device-irq-porting": {
+      "page": "porting.html",
+      "anchor": "device-irq-porting"
+    },
+    "flash-metadata-can-reference": {
+      "page": "reference.html",
+      "anchor": "flash-metadata-can-reference"
+    },
+    "image-crc-linear-address": {
+      "page": "reference.html",
+      "anchor": "image-crc-linear-address"
+    },
+    "uart-i2c-examples": {
+      "page": "basic_uart_i2c/",
+      "anchor": "article_top"
+    },
+    "target_MCU_flash_type": {
+      "page": "basic_uart_i2c/",
+      "anchor": "target_MCU_flash_type"
+    },
+    "ram_flag": {
+      "page": "basic_uart_i2c/",
+      "anchor": "ram_flag"
+    },
+    "FALSH_TABLE": {
+      "page": "basic_uart_i2c/",
+      "anchor": "FALSH_TABLE"
+    },
+    "ftable_inc": {
+      "page": "basic_uart_i2c/",
+      "anchor": "ftable_inc"
+    },
+    "map_const": {
+      "page": "basic_uart_i2c/",
+      "anchor": "map_const"
+    },
+    "boot_main": {
+      "page": "basic_uart_i2c/",
+      "anchor": "boot_main"
+    },
+    "boot_hdwinit": {
+      "page": "basic_uart_i2c/",
+      "anchor": "boot_hdwinit"
+    },
+    "fsy_file": {
+      "page": "basic_uart_i2c/",
+      "anchor": "fsy_file"
+    },
+    "vect_address": {
+      "page": "basic_uart_i2c/",
+      "anchor": "vect_address"
+    },
+    "vector_table": {
+      "page": "basic_uart_i2c/",
+      "anchor": "vector_table"
+    },
+    "uart／i2c-範例": {
+      "page": "basic_uart_i2c/",
+      "anchor": "uart／i2c-範例"
+    },
+    "flash-architecture": {
+      "page": "basic_uart_i2c/",
+      "anchor": "flash-architecture"
+    },
+    "scenario-boot-area-boot-code": {
+      "page": "basic_uart_i2c/",
+      "anchor": "scenario-boot-area-boot-code"
+    },
+    "scenario-flash-area-app-code": {
+      "page": "basic_uart_i2c/",
+      "anchor": "scenario-flash-area-app-code"
+    },
+    "project-boot-codeapp-code-modifictaion---ftableinc": {
+      "page": "basic_uart_i2c/",
+      "anchor": "project-boot-codeapp-code-modifictaion---ftableinc"
+    },
+    "project-boot-code-modifictaion---cstartasm": {
+      "page": "basic_uart_i2c/",
+      "anchor": "project-boot-code-modifictaion---cstartasm"
+    },
+    "project-boot-code-modifictaion---stkinitasm": {
+      "page": "basic_uart_i2c/",
+      "anchor": "project-boot-code-modifictaion---stkinitasm"
+    },
+    "project-boot-code-modifictaion---project-tree": {
+      "page": "basic_uart_i2c/",
+      "anchor": "project-boot-code-modifictaion---project-tree"
+    },
+    "project-boot-code-modifictaion---add-code-flash-library": {
+      "page": "basic_uart_i2c/",
+      "anchor": "project-boot-code-modifictaion---add-code-flash-library"
+    },
+    "project-boot-code-modifictaion---add-crc-compare-1": {
+      "page": "basic_uart_i2c/",
+      "anchor": "project-boot-code-modifictaion---add-crc-compare-1"
+    },
+    "project-boot-code-modifictaion---add-crc-compare-2": {
+      "page": "basic_uart_i2c/",
+      "anchor": "project-boot-code-modifictaion---add-crc-compare-2"
+    },
+    "project-boot-code-modifictaion---use-smart-config-tool-to-generate-driver": {
+      "page": "basic_uart_i2c/",
+      "anchor": "project-boot-code-modifictaion---use-smart-config-tool-to-generate-driver"
+    },
+    "project-boot-code-modifictaion---boot_mainc": {
+      "page": "basic_uart_i2c/",
+      "anchor": "project-boot-code-modifictaion---boot_mainc"
+    },
+    "project-boot-code-modifictaion---i2c-command-flow": {
+      "page": "basic_uart_i2c/",
+      "anchor": "project-boot-code-modifictaion---i2c-command-flow"
+    },
+    "project-boot-code-modifictaion---i2c-command-flow-check_generic_boot_standard_interface": {
+      "page": "basic_uart_i2c/",
+      "anchor": "project-boot-code-modifictaion---i2c-command-flow-check_generic_boot_standard_interface"
+    },
+    "project-boot-code-modifictaion---i2c-command-flow-read_device_signature": {
+      "page": "basic_uart_i2c/",
+      "anchor": "project-boot-code-modifictaion---i2c-command-flow-read_device_signature"
+    },
+    "project-boot-code-modifictaion---i2c-command-flow-read_area_information": {
+      "page": "basic_uart_i2c/",
+      "anchor": "project-boot-code-modifictaion---i2c-command-flow-read_area_information"
+    },
+    "project-boot-code-modifictaion---i2c-command-flow-start_device_image_transfer": {
+      "page": "basic_uart_i2c/",
+      "anchor": "project-boot-code-modifictaion---i2c-command-flow-start_device_image_transfer"
+    },
+    "project-boot-code-modifictaion---i2c-command-flow-terminal-operation-master-slave": {
+      "page": "basic_uart_i2c/",
+      "anchor": "project-boot-code-modifictaion---i2c-command-flow-terminal-operation-master-slave"
+    },
+    "project-boot-code-modifictaion---xmodem-update-flow": {
+      "page": "basic_uart_i2c/",
+      "anchor": "project-boot-code-modifictaion---xmodem-update-flow"
+    },
+    "project-boot-code-property-modifictaion---e2-lite-setting": {
+      "page": "basic_uart_i2c/",
+      "anchor": "project-boot-code-property-modifictaion---e2-lite-setting"
+    },
+    "project-boot-code-property-modifictaion---cc-rl-build-tool-setting": {
+      "page": "basic_uart_i2c/",
+      "anchor": "project-boot-code-property-modifictaion---cc-rl-build-tool-setting"
+    },
+    "project-boot-code-property-modifictaion---cc-rl-build-tool-setting-2": {
+      "page": "basic_uart_i2c/",
+      "anchor": "project-boot-code-property-modifictaion---cc-rl-build-tool-setting-2"
+    },
+    "project-boot-code-property-modifictaion---cc-rl-build-tool-setting-3": {
+      "page": "basic_uart_i2c/",
+      "anchor": "project-boot-code-property-modifictaion---cc-rl-build-tool-setting-3"
+    },
+    "project-boot-code-property-modifictaion---cc-rl-build-tool-setting-4": {
+      "page": "basic_uart_i2c/",
+      "anchor": "project-boot-code-property-modifictaion---cc-rl-build-tool-setting-4"
+    },
+    "reference---rl78f23-f24-user’s-manual-hardware---input-source-list": {
+      "page": "basic_uart_i2c/",
+      "anchor": "reference---rl78f23-f24-user’s-manual-hardware---input-source-list"
+    },
+    "project-rl78f23-f24-user’s-manual-hardware---vector-table": {
+      "page": "basic_uart_i2c/",
+      "anchor": "project-rl78f23-f24-user’s-manual-hardware---vector-table"
+    },
+    "project-boot-codeapp-code-modifictaion---ftableinc-2": {
+      "page": "basic_uart_i2c/",
+      "anchor": "project-boot-codeapp-code-modifictaion---ftableinc-2"
+    },
+    "project-app-code-modifictaion---cstartasm": {
+      "page": "basic_uart_i2c/",
+      "anchor": "project-app-code-modifictaion---cstartasm"
+    },
+    "project-app-code-modifictaion---ftableasm": {
+      "page": "basic_uart_i2c/",
+      "anchor": "project-app-code-modifictaion---ftableasm"
+    },
+    "project-app-code-modifictaion---fsy-file": {
+      "page": "basic_uart_i2c/",
+      "anchor": "project-app-code-modifictaion---fsy-file"
+    },
+    "project-app-code-modifictaion---project-tree": {
+      "page": "basic_uart_i2c/",
+      "anchor": "project-app-code-modifictaion---project-tree"
+    },
+    "project-app-code-modifictaion---add-data-flash-library": {
+      "page": "basic_uart_i2c/",
+      "anchor": "project-app-code-modifictaion---add-data-flash-library"
+    },
+    "project-app-code-modifictaion---use-smart-config-tool-to-generate-driver": {
+      "page": "basic_uart_i2c/",
+      "anchor": "project-app-code-modifictaion---use-smart-config-tool-to-generate-driver"
+    },
+    "project-app-code-modifictaion---remove-static-and-vect-define": {
+      "page": "basic_uart_i2c/",
+      "anchor": "project-app-code-modifictaion---remove-static-and-vect-define"
+    },
+    "project-app-code-modifictaion---mainc": {
+      "page": "basic_uart_i2c/",
+      "anchor": "project-app-code-modifictaion---mainc"
+    },
+    "project-app-code-property-modifictaion---e2-lite-setting": {
+      "page": "basic_uart_i2c/",
+      "anchor": "project-app-code-property-modifictaion---e2-lite-setting"
+    },
+    "project-app-code-property-modifictaion---cc-rl-build-tool-setting": {
+      "page": "basic_uart_i2c/",
+      "anchor": "project-app-code-property-modifictaion---cc-rl-build-tool-setting"
+    },
+    "project-app-code-property-modifictaion---cc-rl-build-tool-setting-2": {
+      "page": "basic_uart_i2c/",
+      "anchor": "project-app-code-property-modifictaion---cc-rl-build-tool-setting-2"
+    },
+    "project-app-code-property-modifictaion---cc-rl-build-tool-setting-3": {
+      "page": "basic_uart_i2c/",
+      "anchor": "project-app-code-property-modifictaion---cc-rl-build-tool-setting-3"
+    },
+    "project-app-code-property-modifictaion---cc-rl-build-tool-setting-4": {
+      "page": "basic_uart_i2c/",
+      "anchor": "project-app-code-property-modifictaion---cc-rl-build-tool-setting-4"
+    },
+    "how-to-add-interrupt-at-boot-code": {
+      "page": "basic_uart_i2c/",
+      "anchor": "how-to-add-interrupt-at-boot-code"
+    },
+    "how-to-use-hardware-crc-at-boot-code-and-app-code-project": {
+      "page": "basic_uart_i2c/",
+      "anchor": "how-to-use-hardware-crc-at-boot-code-and-app-code-project"
+    },
+    "downloads": {
+      "page": "tool-guides.html",
+      "anchor": "downloads"
+    },
+    "host-app-engineering": {
+      "page": "tool-guides.html",
+      "anchor": "host-app-engineering"
+    },
+    "image-update-policy": {
+      "page": "tool-guides.html",
+      "anchor": "image-update-policy"
+    },
+    "update-confirmation": {
+      "page": "tool-guides.html",
+      "anchor": "update-confirmation"
+    },
+    "can-fd-update": {
+      "page": "tool-guides.html",
+      "anchor": "can-fd-update"
+    },
+    "can-fd-device-engineering": {
+      "page": "can-device.html",
+      "anchor": "can-fd-device-engineering"
+    },
+    "can-fd-device-rx": {
+      "page": "can-device.html",
+      "anchor": "can-fd-device-rx"
+    },
+    "can-fd-custom-transfer": {
+      "page": "tool-guides.html",
+      "anchor": "can-fd-custom-transfer"
+    },
+    "uart-device-operation": {
+      "page": "tool-guides.html",
+      "anchor": "uart-device-operation"
+    },
+    "serial-device-engineering": {
+      "page": "serial-device.html",
+      "anchor": "serial-device-engineering"
+    },
+    "f13-mcu-can-deviceboot-啟動與更新": {
+      "page": "can-device.html",
+      "anchor": "f13-mcu-can-deviceboot-啟動與更新"
+    },
+    "板端與更新設定": {
+      "page": "can-device.html",
+      "anchor": "guide-can-device-2"
+    },
+    "flash-配置": {
+      "page": "can-device.html",
+      "anchor": "guide-can-device-3"
+    },
+    "boot-啟動與更新": {
+      "page": "can-device.html",
+      "anchor": "f13-boot-decision"
+    },
+    "工程與建置": {
+      "page": "can-device.html",
+      "anchor": "guide-can-device-9"
+    },
+    "驗證項目": {
+      "page": "can-device.html",
+      "anchor": "guide-can-device-10"
+    },
+    "設定來源": {
+      "page": "can-device.html",
+      "anchor": "guide-can-device-6"
+    },
+    "更新區塊與-flash-交接": {
+      "page": "can-device.html",
+      "anchor": "guide-can-device-8"
+    },
+    "flash與建置": {
+      "page": "can-device.html",
+      "anchor": "flash與建置"
+    },
+    "a-專案配置與共用介面": {
+      "page": "app-development.html",
+      "anchor": "guide-app-development-1"
+    },
+    "b-metadata-設定與產生來源": {
+      "page": "app-development.html",
+      "anchor": "guide-app-development-2"
+    },
+    "f-常見錯誤與只換-app-的邊界": {
+      "page": "app-development.html",
+      "anchor": "guide-app-development-6"
+    },
+    "配置與資料來源": {
+      "page": "serial-device.html",
+      "anchor": "guide-serial-device-1"
+    },
+    "編輯、產生與建置": {
+      "page": "serial-device.html",
+      "anchor": "guide-serial-device-2"
+    },
+    "metadata-offset與協定配置": {
+      "page": "serial-device.html",
+      "anchor": "guide-serial-device-3"
+    },
+    "framed-control與info": {
+      "page": "serial-device.html",
+      "anchor": "guide-serial-device-5"
+    },
+    "i2c-mailbox": {
+      "page": "i2c-device.html",
+      "anchor": "i2c-protocol"
+    },
+    "xmodem-crc128資料與診斷": {
+      "page": "xmodem-device.html",
+      "anchor": "xmodem-protocol"
+    },
+    "驗證範圍": {
+      "page": "serial-device.html",
+      "anchor": "guide-serial-device-9"
+    },
+    "1-工程來源": {
+      "page": "porting.html",
+      "anchor": "guide-porting-2"
+    },
+    "2-flash-與映像配置": {
+      "page": "porting.html",
+      "anchor": "guide-porting-3"
+    },
+    "3-startup、ram-與中斷交接": {
+      "page": "porting.html",
+      "anchor": "guide-porting-5"
+    },
+    "4-固定向量介面": {
+      "page": "porting.html",
+      "anchor": "guide-porting-9"
+    },
+    "5-設定檔與建置": {
+      "page": "porting.html",
+      "anchor": "guide-porting-10"
+    },
+    "6-初次安裝與後續更新": {
+      "page": "porting.html",
+      "anchor": "guide-porting-11"
+    },
+    "7-啟動與更新流程": {
+      "page": "porting.html",
+      "anchor": "guide-porting-12"
+    },
+    "8-app-變更與驗證": {
+      "page": "porting.html",
+      "anchor": "guide-porting-13"
+    },
+    "flash絕對位址、bin-offset與metadata-offset": {
+      "page": "reference.html",
+      "anchor": "guide-reference-2"
+    },
+    "crc-類型、計算範圍與用途": {
+      "page": "reference.html",
+      "anchor": "guide-reference-3"
+    },
+    "2-每個metadata-byteaddress、範例值與來源": {
+      "page": "reference.html",
+      "anchor": "guide-reference-5"
+    },
+    "mcu-can-devicemetadata-欄位與產生端": {
+      "page": "reference.html",
+      "anchor": "mcu-can-devicemetadata-欄位與產生端"
+    },
+    "逐-byte-實體位址與範例值": {
+      "page": "reference.html",
+      "anchor": "guide-reference-6"
+    },
+    "本表範例bin與crc位置": {
+      "page": "reference.html",
+      "anchor": "本表範例bin與crc位置"
+    },
+    "欄位的語意與修改限制": {
+      "page": "reference.html",
+      "anchor": "guide-reference-7"
+    },
+    "3-範例程式、產生端與修改位置": {
+      "page": "reference.html",
+      "anchor": "guide-reference-8"
+    },
+    "f13組語常數與實際byte的關係": {
+      "page": "reference.html",
+      "anchor": "f13組語常數與實際byte的關係"
+    },
+    "c90示例讀metadata而不依賴struct-padding": {
+      "page": "reference.html",
+      "anchor": "guide-reference-9"
+    },
+    "4-can-payload逐byte格式": {
+      "page": "reference.html",
+      "anchor": "guide-reference-10"
+    },
+    "can-upgradecontrol-requestid0x700": {
+      "page": "reference.html",
+      "anchor": "can-upgradecontrol-requestid0x700"
+    },
+    "raw-image-frameid0x7200x727": {
+      "page": "reference.html",
+      "anchor": "raw-image-frameid0x7200x727"
+    },
+    "responseid0x701": {
+      "page": "reference.html",
+      "anchor": "responseid0x701"
+    },
+    "與custom-transfer／bridge-self-test的區別": {
+      "page": "reference.html",
+      "anchor": "guide-reference-11"
+    },
+    "5-改成自己的專案修改順序與驗證": {
+      "page": "reference.html",
+      "anchor": "guide-reference-12"
+    },
+    "tool-與其他操作入口": {
+      "page": "tool-guides.html",
+      "anchor": "tool-links"
+    },
+    "mcu-can-device": {
+      "page": "can-device.html",
+      "anchor": "article_top"
+    },
+    "serial-scfg-workflow": {
+      "page": "serial-device.html",
+      "anchor": "serial-scfg-workflow"
+    },
+    "serial-uart-diagnostics": {
+      "page": "uart-device.html",
+      "anchor": "serial-uart-diagnostics"
+    },
+    "device-project-entry": {
+      "page": "porting.html",
+      "anchor": "device-project-entry"
+    },
+    "rh850-can-device": {
+      "page": "index.html",
+      "anchor": "rh850-can-device"
+    },
+    "guide-can-device-1": {
+      "page": "can-device.html",
+      "anchor": "guide-can-device-1"
+    },
+    "guide-can-device-2": {
+      "page": "can-device.html",
+      "anchor": "guide-can-device-2"
+    },
+    "guide-can-device-3": {
+      "page": "can-device.html",
+      "anchor": "guide-can-device-3"
+    },
+    "guide-can-device-9": {
+      "page": "can-device.html",
+      "anchor": "guide-can-device-9"
+    },
+    "guide-can-device-10": {
+      "page": "can-device.html",
+      "anchor": "guide-can-device-10"
+    },
+    "guide-can-device-5": {
+      "page": "can-device.html",
+      "anchor": "guide-can-device-5"
+    },
+    "guide-can-device-6": {
+      "page": "can-device.html",
+      "anchor": "guide-can-device-6"
+    },
+    "guide-can-device-7": {
+      "page": "can-device.html",
+      "anchor": "guide-can-device-7"
+    },
+    "guide-can-device-8": {
+      "page": "can-device.html",
+      "anchor": "guide-can-device-8"
+    },
+    "guide-app-development-1": {
+      "page": "app-development.html",
+      "anchor": "guide-app-development-1"
+    },
+    "guide-app-development-2": {
+      "page": "app-development.html",
+      "anchor": "guide-app-development-2"
+    },
+    "guide-app-development-3": {
+      "page": "app-development.html",
+      "anchor": "guide-app-development-3"
+    },
+    "guide-app-development-4": {
+      "page": "app-development.html",
+      "anchor": "guide-app-development-4"
+    },
+    "guide-app-development-5": {
+      "page": "app-development.html",
+      "anchor": "guide-app-development-5"
+    },
+    "guide-app-development-6": {
+      "page": "app-development.html",
+      "anchor": "guide-app-development-6"
+    },
+    "guide-app-development-7": {
+      "page": "app-development.html",
+      "anchor": "guide-app-development-7"
+    },
+    "guide-app-development-8": {
+      "page": "app-development.html",
+      "anchor": "guide-app-development-8"
+    },
+    "guide-serial-device-1": {
+      "page": "serial-device.html",
+      "anchor": "guide-serial-device-1"
+    },
+    "guide-serial-device-2": {
+      "page": "serial-device.html",
+      "anchor": "guide-serial-device-2"
+    },
+    "guide-serial-device-3": {
+      "page": "serial-device.html",
+      "anchor": "guide-serial-device-3"
+    },
+    "guide-serial-device-4": {
+      "page": "serial-device.html",
+      "anchor": "guide-serial-device-4"
+    },
+    "guide-serial-device-5": {
+      "page": "serial-device.html",
+      "anchor": "guide-serial-device-5"
+    },
+    "guide-serial-device-6": {
+      "page": "uart-device.html",
+      "anchor": "guide-serial-device-6"
+    },
+    "guide-serial-device-7": {
+      "page": "i2c-device.html",
+      "anchor": "guide-serial-device-7"
+    },
+    "guide-serial-device-8": {
+      "page": "xmodem-device.html",
+      "anchor": "guide-serial-device-8"
+    },
+    "guide-serial-device-9": {
+      "page": "serial-device.html",
+      "anchor": "guide-serial-device-9"
+    },
+    "guide-porting-1": {
+      "page": "porting.html",
+      "anchor": "guide-porting-1"
+    },
+    "guide-porting-2": {
+      "page": "porting.html",
+      "anchor": "guide-porting-2"
+    },
+    "guide-porting-3": {
+      "page": "porting.html",
+      "anchor": "guide-porting-3"
+    },
+    "guide-porting-4": {
+      "page": "porting.html",
+      "anchor": "guide-porting-4"
+    },
+    "guide-porting-5": {
+      "page": "porting.html",
+      "anchor": "guide-porting-5"
+    },
+    "guide-porting-6": {
+      "page": "porting.html",
+      "anchor": "guide-porting-6"
+    },
+    "guide-porting-7": {
+      "page": "porting.html",
+      "anchor": "guide-porting-7"
+    },
+    "guide-porting-8": {
+      "page": "porting.html",
+      "anchor": "guide-porting-8"
+    },
+    "guide-porting-9": {
+      "page": "porting.html",
+      "anchor": "guide-porting-9"
+    },
+    "guide-porting-10": {
+      "page": "porting.html",
+      "anchor": "guide-porting-10"
+    },
+    "guide-porting-11": {
+      "page": "porting.html",
+      "anchor": "guide-porting-11"
+    },
+    "guide-porting-12": {
+      "page": "porting.html",
+      "anchor": "guide-porting-12"
+    },
+    "guide-porting-13": {
+      "page": "porting.html",
+      "anchor": "guide-porting-13"
+    },
+    "guide-reference-1": {
+      "page": "reference.html",
+      "anchor": "guide-reference-1"
+    },
+    "guide-reference-2": {
+      "page": "reference.html",
+      "anchor": "guide-reference-2"
+    },
+    "guide-reference-3": {
+      "page": "reference.html",
+      "anchor": "guide-reference-3"
+    },
+    "guide-reference-4": {
+      "page": "reference.html",
+      "anchor": "guide-reference-4"
+    },
+    "guide-reference-5": {
+      "page": "reference.html",
+      "anchor": "guide-reference-5"
+    },
+    "guide-reference-6": {
+      "page": "reference.html",
+      "anchor": "guide-reference-6"
+    },
+    "guide-reference-7": {
+      "page": "reference.html",
+      "anchor": "guide-reference-7"
+    },
+    "guide-reference-8": {
+      "page": "reference.html",
+      "anchor": "guide-reference-8"
+    },
+    "guide-reference-9": {
+      "page": "reference.html",
+      "anchor": "guide-reference-9"
+    },
+    "guide-reference-10": {
+      "page": "reference.html",
+      "anchor": "guide-reference-10"
+    },
+    "guide-reference-11": {
+      "page": "reference.html",
+      "anchor": "guide-reference-11"
+    },
+    "guide-reference-12": {
+      "page": "reference.html",
+      "anchor": "guide-reference-12"
+    },
+    "tool-links": {
+      "page": "tool-guides.html",
+      "anchor": "tool-links"
+    },
+    "工程與用途": {
+      "page": "can-device.html",
+      "anchor": "guide-can-device-1"
+    },
+    "mcu-can-fd-device-工程設定": {
+      "page": "can-device.html",
+      "anchor": "guide-can-device-5"
+    },
+    "接收與中斷": {
+      "page": "can-device.html",
+      "anchor": "guide-can-device-7"
+    },
+    "c-app-vector-table新增-irq-範例": {
+      "page": "app-development.html",
+      "anchor": "guide-app-development-3"
+    },
+    "d-產生與建置": {
+      "page": "app-development.html",
+      "anchor": "guide-app-development-4"
+    },
+    "e-bin-與向量驗證": {
+      "page": "app-development.html",
+      "anchor": "guide-app-development-5"
+    },
+    "g-device-can-速率250k／500k／1m": {
+      "page": "app-development.html",
+      "anchor": "guide-app-development-7"
+    },
+    "app-bin-更新耗時參考": {
+      "page": "app-development.html",
+      "anchor": "guide-app-development-8"
+    },
+    "sc設定與重新產生": {
+      "page": "serial-device.html",
+      "anchor": "guide-serial-device-4"
+    },
+    "uart診斷格式": {
+      "page": "uart-device.html",
+      "anchor": "serial-uart-diagnostics"
+    },
+    "basic-範例與-can-golden-sample": {
+      "page": "porting.html",
+      "anchor": "guide-porting-1"
+    },
+    "重要事項boot-燒錄方式與-flash-尾端保護": {
+      "page": "porting.html",
+      "anchor": "guide-porting-4"
+    },
+    "使用者程式入口與-generate-code": {
+      "page": "porting.html",
+      "anchor": "guide-porting-6"
+    },
+    "code-flash-擦寫rom-儲存與-ram-執行": {
+      "page": "porting.html",
+      "anchor": "guide-porting-7"
+    },
+    "映像-crc32-與硬體-crc": {
+      "page": "porting.html",
+      "anchor": "guide-porting-8"
+    },
+    "1-適用角色與閱讀方式": {
+      "page": "reference.html",
+      "anchor": "guide-reference-1"
+    },
+    "crc-的連續-flash-位址": {
+      "page": "reference.html",
+      "anchor": "guide-reference-4"
+    },
+    "下載與操作入口": {
+      "page": "tool-guides.html",
+      "anchor": "downloads"
+    },
+    "f24-mcu-can-hostapp-工程與向量設定": {
+      "page": "tool-guides.html",
+      "anchor": "host-app-engineering"
+    },
+    "更新政策與通訊速度": {
+      "page": "tool-guides.html",
+      "anchor": "image-update-policy"
+    },
+    "更新確認與驗證紀錄": {
+      "page": "tool-guides.html",
+      "anchor": "update-confirmation"
+    },
+    "can-fd-app-更新操作": {
+      "page": "tool-guides.html",
+      "anchor": "can-fd-update"
+    },
+    "can-fd-custom-transfer-通訊測試": {
+      "page": "tool-guides.html",
+      "anchor": "can-fd-custom-transfer"
+    },
+    "uart／xmodem／i2c-device-操作": {
+      "page": "tool-guides.html",
+      "anchor": "uart-device-operation"
+    },
+    "serial-status-codes": {
+      "page": "serial-device.html",
+      "anchor": "serial-status-codes"
+    },
+    "uart-bootloader": {
+      "page": "uart-device.html",
+      "anchor": "uart-bootloader"
+    },
+    "guide-uart-device-1": {
+      "page": "uart-device.html",
+      "anchor": "guide-uart-device-1"
+    },
+    "guide-uart-device-2": {
+      "page": "uart-device.html",
+      "anchor": "guide-uart-device-2"
+    },
+    "guide-uart-device-3": {
+      "page": "uart-device.html",
+      "anchor": "guide-uart-device-3"
+    },
+    "uart-boot-flow": {
+      "page": "uart-device.html",
+      "anchor": "uart-boot-flow"
+    },
+    "guide-uart-device-4": {
+      "page": "uart-device.html",
+      "anchor": "guide-uart-device-4"
+    },
+    "uart-protocol": {
+      "page": "uart-device.html",
+      "anchor": "uart-protocol"
+    },
+    "guide-uart-device-5": {
+      "page": "uart-device.html",
+      "anchor": "guide-uart-device-5"
+    },
+    "guide-uart-device-6": {
+      "page": "uart-device.html",
+      "anchor": "guide-uart-device-6"
+    },
+    "i2c-bootloader": {
+      "page": "i2c-device.html",
+      "anchor": "i2c-bootloader"
+    },
+    "guide-i2c-device-1": {
+      "page": "i2c-device.html",
+      "anchor": "guide-i2c-device-1"
+    },
+    "guide-i2c-device-2": {
+      "page": "i2c-device.html",
+      "anchor": "guide-i2c-device-2"
+    },
+    "guide-i2c-device-3": {
+      "page": "i2c-device.html",
+      "anchor": "guide-i2c-device-3"
+    },
+    "i2c-boot-flow": {
+      "page": "i2c-device.html",
+      "anchor": "i2c-boot-flow"
+    },
+    "guide-i2c-device-4": {
+      "page": "i2c-device.html",
+      "anchor": "guide-i2c-device-4"
+    },
+    "i2c-protocol": {
+      "page": "i2c-device.html",
+      "anchor": "i2c-protocol"
+    },
+    "guide-i2c-device-5": {
+      "page": "i2c-device.html",
+      "anchor": "guide-i2c-device-5"
+    },
+    "guide-i2c-device-6": {
+      "page": "i2c-device.html",
+      "anchor": "guide-i2c-device-6"
+    },
+    "xmodem-bootloader": {
+      "page": "xmodem-device.html",
+      "anchor": "xmodem-bootloader"
+    },
+    "guide-xmodem-device-1": {
+      "page": "xmodem-device.html",
+      "anchor": "guide-xmodem-device-1"
+    },
+    "guide-xmodem-device-2": {
+      "page": "xmodem-device.html",
+      "anchor": "guide-xmodem-device-2"
+    },
+    "guide-xmodem-device-3": {
+      "page": "xmodem-device.html",
+      "anchor": "guide-xmodem-device-3"
+    },
+    "xmodem-boot-flow": {
+      "page": "xmodem-device.html",
+      "anchor": "xmodem-boot-flow"
+    },
+    "guide-xmodem-device-4": {
+      "page": "xmodem-device.html",
+      "anchor": "guide-xmodem-device-4"
+    },
+    "xmodem-protocol": {
+      "page": "xmodem-device.html",
+      "anchor": "xmodem-protocol"
+    },
+    "guide-xmodem-device-5": {
+      "page": "xmodem-device.html",
+      "anchor": "guide-xmodem-device-5"
+    },
+    "guide-xmodem-device-6": {
+      "page": "xmodem-device.html",
+      "anchor": "guide-xmodem-device-6"
+    },
+    "xmodem-串流完成": {
+      "page": "xmodem-device.html",
+      "anchor": "xmodem-boot-flow"
+    },
+    "工程與接線": {
+      "page": "xmodem-device.html",
+      "anchor": "guide-xmodem-device-1"
+    },
+    "通訊設定": {
+      "page": "xmodem-device.html",
+      "anchor": "guide-xmodem-device-2"
+    },
+    "boot-執行流程": {
+      "page": "xmodem-device.html",
+      "anchor": "guide-xmodem-device-3"
+    },
+    "protocol-format": {
+      "page": "xmodem-device.html",
+      "anchor": "guide-xmodem-device-4"
+    },
+    "異常與完成條件": {
+      "page": "xmodem-device.html",
+      "anchor": "guide-xmodem-device-5"
+    },
+    "程式對照與診斷": {
+      "page": "xmodem-device.html",
+      "anchor": "guide-xmodem-device-6"
+    },
+    "共用-tool-操作": {
+      "page": "tool-guides.html",
+      "anchor": "共用-tool-操作"
+    }
+  }
+}

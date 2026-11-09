@@ -1,0 +1,87 @@
+{
+  "schema": 1,
+  "site": "slide_Nuvoton_AEC_NR_operation",
+  "runtime": "2.0",
+  "pages": [
+    {
+      "html": "index.html",
+      "source": "index.md"
+    }
+  ],
+  "runtimeFiles": {},
+  "dependencies": [
+    {
+      "path": "notices_can/assets/app.js",
+      "sha256": "f1b857dae5fd6d1a74b7504c7900a354e7703e3e9ea29045170bfd2498fc7fe4"
+    },
+    {
+      "path": "notices_can/assets/style.css",
+      "sha256": "9d926d9e2987c47a8323a91366d304b03ce3b1e776c9002a165796b51b8a78aa"
+    }
+  ],
+  "sections": [
+    {
+      "source": "index.md",
+      "groups": [
+        {
+          "start": "article_audacity",
+          "end": "article_recording",
+          "images": [
+            "img/Audacity_01.jpg",
+            "img/Audacity_02.jpg",
+            "img/Audacity_03.jpg",
+            "img/Audacity_04.jpg"
+          ]
+        },
+        {
+          "start": "article_recording",
+          "end": "article_samples",
+          "images": [
+            "img/GoldWave_03.jpg",
+            "img/Audacity_05.jpg"
+          ]
+        },
+        {
+          "start": "article_samples",
+          "end": "article_checklist",
+          "images": [
+            "img/GoldWave_04.jpg",
+            "img/GoldWave_05.jpg",
+            "img/Audacity_05_set.jpg",
+            "img/Audacity_06_split.jpg",
+            "img/Audacity_07.jpg"
+          ]
+        },
+        {
+          "start": "article_audacity_zh",
+          "end": "article_recording_zh",
+          "images": [
+            "img/Audacity_01.jpg",
+            "img/Audacity_02.jpg",
+            "img/Audacity_03.jpg",
+            "img/Audacity_04.jpg"
+          ]
+        },
+        {
+          "start": "article_recording_zh",
+          "end": "article_samples_zh",
+          "images": [
+            "img/GoldWave_03.jpg",
+            "img/Audacity_05.jpg"
+          ]
+        },
+        {
+          "start": "article_samples_zh",
+          "end": "article_checklist_zh",
+          "images": [
+            "img/GoldWave_04.jpg",
+            "img/GoldWave_05.jpg",
+            "img/Audacity_05_set.jpg",
+            "img/Audacity_06_split.jpg",
+            "img/Audacity_07.jpg"
+          ]
+        }
+      ]
+    }
+  ]
+}

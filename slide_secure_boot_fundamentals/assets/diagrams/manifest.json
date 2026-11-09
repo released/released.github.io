@@ -1,0 +1,66 @@
+{
+  "origin": "Original teaching diagrams based on public sources cited next to each diagram in index.md",
+  "diagrams": [
+    {
+      "file": "two-moments.svg",
+      "kind": "mermaid",
+      "index": 0,
+      "sourceSha256": "3cd705b12901a13242c864cffcab83e4653d2903b76c07f2c3ad182516371bc1",
+      "sha256": "b4db7a728cca2d8680eba2cdc0f7bb058b41d220c52004c080aacc67baa7a012"
+    },
+    {
+      "file": "chain-of-trust.svg",
+      "kind": "mermaid",
+      "index": 1,
+      "sourceSha256": "dbb1266d2aea39aa502af4adf45fd853b1e4dae8ac52ec7a99914811c89e5be7",
+      "sha256": "55d9fe2989133f9577dadf0c197f0ea4fb0f7fc6159a2d56e8a3b973ca084a41"
+    },
+    {
+      "file": "m480-sbk.svg",
+      "kind": "mermaid",
+      "index": 2,
+      "sourceSha256": "515f37efed9334c123cb7a5b4773e9076c0acfc90da678a6aa7a9089a44fb2b2",
+      "sha256": "4693e5a9ea86e943d090cd59bb40482d2349fd96d12ed67d68f0aaa664260c90"
+    },
+    {
+      "file": "signature-flow.svg",
+      "kind": "mermaid",
+      "index": 3,
+      "sourceSha256": "b66b84a6de53ec6efa63ef14dfe1fd63613da806faa9d027c6c7949929a787e8",
+      "sha256": "6b58f45d3ced83f9aab06bf4b6e8e77f9dfbb6b8a71c2304986da9c9c38a74df"
+    },
+    {
+      "file": "boot-validation.svg",
+      "kind": "mermaid",
+      "index": 4,
+      "sourceSha256": "c9c2c4ced19a802b2af1c803f125b8e260de2a0a2964eb1517ec750f0b6032de",
+      "sha256": "c1506921a653f736e9db61337685e40781013a56bdd5129bffecf644b7f468e9"
+    },
+    {
+      "file": "key-lifecycle.svg",
+      "kind": "mermaid",
+      "index": 5,
+      "sourceSha256": "4b9623e2b9b4de30f3593378996cc1b949f348bb80bca99bb1f5b1c6011870a0",
+      "sha256": "111993f76895e3663c2068ed5fa6ebdde4fff589e726d97b4eca219a10e0fe43"
+    },
+    {
+      "file": "update-sequence.svg",
+      "kind": "mermaid",
+      "index": 6,
+      "sourceSha256": "d5a1ded2168c07ce3c936b4c0d3a1d85a60b2ee3904fbf41e2c02cd849743d94",
+      "sha256": "190ffa11232ec14860dcd867e12614641f7f449bbaaaae95c490772bc47c7a8b"
+    },
+    {
+      "file": "ab-recovery.svg",
+      "kind": "mermaid",
+      "index": 7,
+      "sourceSha256": "25ebdd8d3f76802294b1735491ec3c5615fe4a3d5c912d69205cc52e27e357fe",
+      "sha256": "23f8a4ea8b8984a43b4705ed80991468dc21650f8ff5dd0e5621f5a7a3dd53d8"
+    },
+    {
+      "file": "image-layout.svg",
+      "kind": "original-svg",
+      "sha256": "1f3465fcbd486fe8dc5a5cf1ab872b6e7cfccb897d81ea87271036b6f5d0e27e"
+    }
+  ]
+}

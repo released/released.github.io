@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 590" role="img" aria-labelledby="title desc">
+  <title id="title">MCUboot 概念映像與驗證範圍</title>
+  <desc id="desc">上方 Header、Payload 與可選 Protected TLV 形成待驗證內容。其後的驗證 TLV 提供摘要與簽章等資訊，Image trailer 則保存更新狀態。圖不按 byte 比例繪製。</desc>
+  <rect width="640" height="590" fill="#fff"/>
+  <g font-family="Arial, Microsoft JhengHei, sans-serif" fill="#17252a" text-anchor="middle">
+    <text x="320" y="33" font-size="24" font-weight="700">映像資料與更新狀態分開閱讀</text>
+    <rect x="26" y="57" width="588" height="265" rx="9" fill="#f6fafc" stroke="#176b87" stroke-width="2" stroke-dasharray="7 5"/>
+    <rect x="53" y="76" width="534" height="57" rx="5" fill="#e9f3f7" stroke="#176b87"/>
+    <text x="320" y="111" font-size="23">Header：格式、長度、版本</text>
+    <rect x="53" y="147" width="534" height="68" rx="5" fill="#edf7ef" stroke="#287644"/>
+    <text x="320" y="188" font-size="24">Firmware Payload</text>
+    <rect x="53" y="230" width="534" height="57" rx="5" fill="#e9f3f7" stroke="#176b87"/>
+    <text x="320" y="265" font-size="22">Protected TLV：受保護 Metadata（如有）</text>
+    <text x="320" y="310" font-size="17" fill="#0d4f69">待驗證內容的界限依映像格式決定</text>
+    <rect x="53" y="348" width="534" height="72" rx="5" fill="#fff4df" stroke="#a96b13"/>
+    <text x="320" y="378" font-size="23">驗證 TLV</text>
+    <text x="320" y="405" font-size="19">摘要、簽章、金鑰識別等，按格式核對</text>
+    <rect x="53" y="450" width="534" height="57" rx="5" fill="#f4f4f4" stroke="#777"/>
+    <text x="320" y="485" font-size="22">Image trailer：更新／確認狀態</text>
+    <text x="320" y="544" font-size="18">概念結構，非 byte 比例；依 MCUboot 配置與格式核對</text>
+    <text x="320" y="572" font-size="17" fill="#555">來源：docs.mcuboot.com/design.html</text>
+  </g>
+</svg>

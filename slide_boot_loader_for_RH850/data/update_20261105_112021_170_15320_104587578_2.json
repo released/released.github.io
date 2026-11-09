@@ -1,0 +1,23 @@
+{
+  "source_report": "update_20261105_112021_170_15320_104587578_2.json",
+  "source_sha256": "A2FCEF114E0A734E9D520691D6ECEDA90C14D9E11B6260F93D0699890350C567",
+  "recorded_at_utc": "2026-11-05T11:20:21.159Z",
+  "tool": "0.1.0.0115",
+  "result": "PASS",
+  "input_bytes": 978944,
+  "elapsed_ms": 502954,
+  "host_baud": 115200,
+  "can": "CAN FD 500K/2M, standard data RX filter 0x00000701 / 0x000007FF",
+  "phases_ms": {
+    "metadata": 1077,
+    "start": 688,
+    "transfer": 493488,
+    "end_crc": 689,
+    "app_confirmation": 6472
+  },
+  "image_crc32": "0x75C04946",
+  "app_confirmation": "PASS",
+  "host_counter_assessment": "NO_RECORDED_ERRORS",
+  "host_deltas": "UART overflow=0; CAN lost=0; CAN warning=0; CAN error-passive=0; CAN bus-off=0; CAN recovery=0; CAN TX failure=0",
+  "link_retries": 0
+}

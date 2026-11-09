@@ -1,11 +1,68 @@
 {
   "schema": 1,
   "site": "released.github.io",
+  "publication": {
+    "owner": "released",
+    "repository": "released.github.io",
+    "branch": "main"
+  },
   "runtime": "2.0",
   "pages": [
     {
+      "html": "example_code/index.html",
+      "source": "example_code/index.md"
+    },
+    {
+      "html": "faq_keil/index.html",
+      "source": "faq_keil/index.md"
+    },
+    {
+      "html": "faq_nuvoton/index.html",
+      "source": "faq_nuvoton/index.md"
+    },
+    {
+      "html": "faq_renesas/index.html",
+      "source": "faq_renesas/index.md"
+    },
+    {
       "html": "index.html",
       "source": "README.md"
+    },
+    {
+      "html": "notices_can_uds/bootloader/index.html",
+      "source": "notices_can_uds/bootloader/index.md"
+    },
+    {
+      "html": "notices_can_uds/implementation/index.html",
+      "source": "notices_can_uds/implementation/index.md"
+    },
+    {
+      "html": "notices_can_uds/index.html",
+      "source": "notices_can_uds/index.md"
+    },
+    {
+      "html": "notices_can_uds/iso/index.html",
+      "source": "notices_can_uds/iso/index.md"
+    },
+    {
+      "html": "notices_can_uds/layers/index.html",
+      "source": "notices_can_uds/layers/index.md"
+    },
+    {
+      "html": "notices_can_uds/references/index.html",
+      "source": "notices_can_uds/references/index.md"
+    },
+    {
+      "html": "notices_can_uds/roles/index.html",
+      "source": "notices_can_uds/roles/index.md"
+    },
+    {
+      "html": "notices_can_uds/services/index.html",
+      "source": "notices_can_uds/services/index.md"
+    },
+    {
+      "html": "notices_can/index.html",
+      "source": "notices_can/index.md"
     },
     {
       "html": "notices_i2c/index.html",
@@ -20,17 +77,408 @@
       "source": "notices_i2c/smbus/index.md"
     },
     {
+      "html": "notices_misc/index.html",
+      "source": "notices_misc/index.md"
+    },
+    {
       "html": "notices_sgpio/index.html",
       "source": "notices_sgpio/index.md"
     },
     {
+      "html": "option_byte_calculator/index.html"
+    },
+    {
+      "html": "option_byte_calculator/rh850/index.html"
+    },
+    {
+      "html": "option_byte_calculator/rl78/index.html"
+    },
+    {
+      "html": "slide_boot_loader_for_RH850/app-development.html",
+      "source": "slide_boot_loader_for_RH850/app-development.md"
+    },
+    {
+      "html": "slide_boot_loader_for_RH850/can-device.html",
+      "source": "slide_boot_loader_for_RH850/can-device.md"
+    },
+    {
+      "html": "slide_boot_loader_for_RH850/i2c-device.html",
+      "source": "slide_boot_loader_for_RH850/i2c-device.md"
+    },
+    {
+      "html": "slide_boot_loader_for_RH850/index.html",
+      "source": "slide_boot_loader_for_RH850/index.md"
+    },
+    {
+      "html": "slide_boot_loader_for_RH850/porting.html",
+      "source": "slide_boot_loader_for_RH850/porting.md"
+    },
+    {
+      "html": "slide_boot_loader_for_RH850/reference.html",
+      "source": "slide_boot_loader_for_RH850/reference.md"
+    },
+    {
+      "html": "slide_boot_loader_for_RH850/serial-device.html",
+      "source": "slide_boot_loader_for_RH850/serial-device.md"
+    },
+    {
+      "html": "slide_boot_loader_for_RH850/tool-guides.html",
+      "source": "slide_boot_loader_for_RH850/tool-guides.md"
+    },
+    {
+      "html": "slide_boot_loader_for_RH850/uart-device.html",
+      "source": "slide_boot_loader_for_RH850/uart-device.md"
+    },
+    {
+      "html": "slide_boot_loader_for_RH850/xmodem-device.html",
+      "source": "slide_boot_loader_for_RH850/xmodem-device.md"
+    },
+    {
+      "html": "slide_boot_loader_for_RL78/app-development.html",
+      "source": "slide_boot_loader_for_RL78/app-development.md"
+    },
+    {
+      "html": "slide_boot_loader_for_RL78/basic_uart_i2c/app-build.html",
+      "source": "slide_boot_loader_for_RL78/basic_uart_i2c/app-build.md"
+    },
+    {
+      "html": "slide_boot_loader_for_RL78/basic_uart_i2c/app.html",
+      "source": "slide_boot_loader_for_RL78/basic_uart_i2c/app.md"
+    },
+    {
+      "html": "slide_boot_loader_for_RL78/basic_uart_i2c/architecture.html",
+      "source": "slide_boot_loader_for_RL78/basic_uart_i2c/architecture.md"
+    },
+    {
+      "html": "slide_boot_loader_for_RL78/basic_uart_i2c/boot-build.html",
+      "source": "slide_boot_loader_for_RL78/basic_uart_i2c/boot-build.md"
+    },
+    {
+      "html": "slide_boot_loader_for_RL78/basic_uart_i2c/boot-crc.html",
+      "source": "slide_boot_loader_for_RL78/basic_uart_i2c/boot-crc.md"
+    },
+    {
+      "html": "slide_boot_loader_for_RL78/basic_uart_i2c/boot-driver.html",
+      "source": "slide_boot_loader_for_RL78/basic_uart_i2c/boot-driver.md"
+    },
+    {
+      "html": "slide_boot_loader_for_RL78/basic_uart_i2c/boot-startup.html",
+      "source": "slide_boot_loader_for_RL78/basic_uart_i2c/boot-startup.md"
+    },
+    {
+      "html": "slide_boot_loader_for_RL78/basic_uart_i2c/i2c.html",
+      "source": "slide_boot_loader_for_RL78/basic_uart_i2c/i2c.md"
+    },
+    {
+      "html": "slide_boot_loader_for_RL78/basic_uart_i2c/index.html",
+      "source": "slide_boot_loader_for_RL78/basic_uart_i2c/index.md"
+    },
+    {
+      "html": "slide_boot_loader_for_RL78/basic_uart_i2c/irq-crc.html",
+      "source": "slide_boot_loader_for_RL78/basic_uart_i2c/irq-crc.md"
+    },
+    {
+      "html": "slide_boot_loader_for_RL78/basic_uart_i2c/xmodem.html",
+      "source": "slide_boot_loader_for_RL78/basic_uart_i2c/xmodem.md"
+    },
+    {
+      "html": "slide_boot_loader_for_RL78/can-device.html",
+      "source": "slide_boot_loader_for_RL78/can-device.md"
+    },
+    {
+      "html": "slide_boot_loader_for_RL78/i2c-device.html",
+      "source": "slide_boot_loader_for_RL78/i2c-device.md"
+    },
+    {
+      "html": "slide_boot_loader_for_RL78/index.html",
+      "source": "slide_boot_loader_for_RL78/index.md"
+    },
+    {
+      "html": "slide_boot_loader_for_RL78/porting.html",
+      "source": "slide_boot_loader_for_RL78/porting.md"
+    },
+    {
+      "html": "slide_boot_loader_for_RL78/reference.html",
+      "source": "slide_boot_loader_for_RL78/reference.md"
+    },
+    {
+      "html": "slide_boot_loader_for_RL78/serial-device.html",
+      "source": "slide_boot_loader_for_RL78/serial-device.md"
+    },
+    {
+      "html": "slide_boot_loader_for_RL78/tool-guides.html",
+      "source": "slide_boot_loader_for_RL78/tool-guides.md"
+    },
+    {
+      "html": "slide_boot_loader_for_RL78/uart-device.html",
+      "source": "slide_boot_loader_for_RL78/uart-device.md"
+    },
+    {
+      "html": "slide_boot_loader_for_RL78/xmodem-device.html",
+      "source": "slide_boot_loader_for_RL78/xmodem-device.md"
+    },
+    {
+      "html": "slide_Nuvoton_AEC_NR_operation/index.html",
+      "source": "slide_Nuvoton_AEC_NR_operation/index.md"
+    },
+    {
       "html": "slide_Nuvoton_DSpotter_operation/index.html",
       "source": "slide_Nuvoton_DSpotter_operation/index.md"
+    },
+    {
+      "html": "slide_Nuvoton_peripheral_view_under_debug_mode/index.html",
+      "source": "slide_Nuvoton_peripheral_view_under_debug_mode/index.md"
+    },
+    {
+      "html": "slide_Nuvoton_secure_boot_operation_M480/index.html",
+      "source": "slide_Nuvoton_secure_boot_operation_M480/index.md"
+    },
+    {
+      "html": "slide_Nuvoton-ISP-code_in_APROM/index.html",
+      "source": "slide_Nuvoton-ISP-code_in_APROM/index.md"
+    },
+    {
+      "html": "slide_Nuvoton-ISP-code_in_LDROM_APROM/index.html",
+      "source": "slide_Nuvoton-ISP-code_in_LDROM_APROM/index.md"
+    },
+    {
+      "html": "slide_RH850_F1KM_Memory_map/index.html",
+      "source": "slide_RH850_F1KM_Memory_map/index.md"
+    },
+    {
+      "html": "slide_RH850_UART_DMA/index.html",
+      "source": "slide_RH850_UART_DMA/index.md"
+    },
+    {
+      "html": "slide_RH850/adc.html",
+      "source": "slide_RH850/adc.md"
+    },
+    {
+      "html": "slide_RH850/build.html",
+      "source": "slide_RH850/build.md"
+    },
+    {
+      "html": "slide_RH850/clock.html",
+      "source": "slide_RH850/clock.md"
+    },
+    {
+      "html": "slide_RH850/debug.html",
+      "source": "slide_RH850/debug.md"
+    },
+    {
+      "html": "slide_RH850/flash-can.html",
+      "source": "slide_RH850/flash-can.md"
+    },
+    {
+      "html": "slide_RH850/gpio.html",
+      "source": "slide_RH850/gpio.md"
+    },
+    {
+      "html": "slide_RH850/i2c.html",
+      "source": "slide_RH850/i2c.md"
+    },
+    {
+      "html": "slide_RH850/index.html",
+      "source": "slide_RH850/index.md"
+    },
+    {
+      "html": "slide_RH850/interrupt.html",
+      "source": "slide_RH850/interrupt.md"
+    },
+    {
+      "html": "slide_RH850/pwm.html",
+      "source": "slide_RH850/pwm.md"
+    },
+    {
+      "html": "slide_RH850/spi.html",
+      "source": "slide_RH850/spi.md"
+    },
+    {
+      "html": "slide_RH850/timer.html",
+      "source": "slide_RH850/timer.md"
+    },
+    {
+      "html": "slide_RH850/tools.html",
+      "source": "slide_RH850/tools.md"
+    },
+    {
+      "html": "slide_RH850/uart.html",
+      "source": "slide_RH850/uart.md"
+    },
+    {
+      "html": "slide_RL78/adc.html",
+      "source": "slide_RL78/adc.md"
+    },
+    {
+      "html": "slide_RL78/build.html",
+      "source": "slide_RL78/build.md"
+    },
+    {
+      "html": "slide_RL78/clock.html",
+      "source": "slide_RL78/clock.md"
+    },
+    {
+      "html": "slide_RL78/debug.html",
+      "source": "slide_RL78/debug.md"
+    },
+    {
+      "html": "slide_RL78/gpio.html",
+      "source": "slide_RL78/gpio.md"
+    },
+    {
+      "html": "slide_RL78/i2c.html",
+      "source": "slide_RL78/i2c.md"
+    },
+    {
+      "html": "slide_RL78/index.html",
+      "source": "slide_RL78/index.md"
+    },
+    {
+      "html": "slide_RL78/interrupt.html",
+      "source": "slide_RL78/interrupt.md"
+    },
+    {
+      "html": "slide_RL78/pwm.html",
+      "source": "slide_RL78/pwm.md"
+    },
+    {
+      "html": "slide_RL78/spi.html",
+      "source": "slide_RL78/spi.md"
+    },
+    {
+      "html": "slide_RL78/timer.html",
+      "source": "slide_RL78/timer.md"
+    },
+    {
+      "html": "slide_RL78/tools.html",
+      "source": "slide_RL78/tools.md"
+    },
+    {
+      "html": "slide_RL78/uart.html",
+      "source": "slide_RL78/uart.md"
+    },
+    {
+      "html": "slide_secure_boot_fundamentals/index.html",
+      "source": "slide_secure_boot_fundamentals/index.md"
+    },
+    {
+      "html": "slide_simple_renesas_isp_tool/can-protocol.html",
+      "source": "slide_simple_renesas_isp_tool/can-protocol.md"
+    },
+    {
+      "html": "slide_simple_renesas_isp_tool/can-update.html",
+      "source": "slide_simple_renesas_isp_tool/can-update.md"
+    },
+    {
+      "html": "slide_simple_renesas_isp_tool/custom-transfer.html",
+      "source": "slide_simple_renesas_isp_tool/custom-transfer.md"
+    },
+    {
+      "html": "slide_simple_renesas_isp_tool/device-guides.html",
+      "source": "slide_simple_renesas_isp_tool/device-guides.md"
+    },
+    {
+      "html": "slide_simple_renesas_isp_tool/downloads.html",
+      "source": "slide_simple_renesas_isp_tool/downloads.md"
+    },
+    {
+      "html": "slide_simple_renesas_isp_tool/host-firmware.html",
+      "source": "slide_simple_renesas_isp_tool/host-firmware.md"
+    },
+    {
+      "html": "slide_simple_renesas_isp_tool/index.html",
+      "source": "slide_simple_renesas_isp_tool/index.md"
+    },
+    {
+      "html": "slide_simple_renesas_isp_tool/operation.html",
+      "source": "slide_simple_renesas_isp_tool/operation.md"
+    },
+    {
+      "html": "slide_simple_renesas_isp_tool/serial-isp.html",
+      "source": "slide_simple_renesas_isp_tool/serial-isp.md"
+    },
+    {
+      "html": "slide_simple_renesas_isp_tool/status-and-reports.html",
+      "source": "slide_simple_renesas_isp_tool/status-and-reports.md"
     }
   ],
   "runtimeFiles": {
     "assets/app.js": "f1b857dae5fd6d1a74b7504c7900a354e7703e3e9ea29045170bfd2498fc7fe4",
-    "assets/style.css": "9d926d9e2987c47a8323a91366d304b03ce3b1e776c9002a165796b51b8a78aa"
+    "assets/style.css": "9d926d9e2987c47a8323a91366d304b03ce3b1e776c9002a165796b51b8a78aa",
+    "notices_can/assets/app.js": "f1b857dae5fd6d1a74b7504c7900a354e7703e3e9ea29045170bfd2498fc7fe4",
+    "notices_can/assets/style.css": "9d926d9e2987c47a8323a91366d304b03ce3b1e776c9002a165796b51b8a78aa",
+    "notices_can_uds/assets/app.js": "f1b857dae5fd6d1a74b7504c7900a354e7703e3e9ea29045170bfd2498fc7fe4",
+    "notices_can_uds/assets/style.css": "9d926d9e2987c47a8323a91366d304b03ce3b1e776c9002a165796b51b8a78aa"
   },
-  "dependencies": []
+  "dependencies": [],
+  "sections": [
+    {
+      "source": "slide_Nuvoton_AEC_NR_operation/index.md",
+      "groups": [
+        {
+          "start": "article_audacity",
+          "end": "article_recording",
+          "images": [
+            "img/Audacity_01.jpg",
+            "img/Audacity_02.jpg",
+            "img/Audacity_03.jpg",
+            "img/Audacity_04.jpg"
+          ]
+        },
+        {
+          "start": "article_recording",
+          "end": "article_samples",
+          "images": [
+            "img/GoldWave_03.jpg",
+            "img/Audacity_05.jpg"
+          ]
+        },
+        {
+          "start": "article_samples",
+          "end": "article_checklist",
+          "images": [
+            "img/GoldWave_04.jpg",
+            "img/GoldWave_05.jpg",
+            "img/Audacity_05_set.jpg",
+            "img/Audacity_06_split.jpg",
+            "img/Audacity_07.jpg"
+          ]
+        },
+        {
+          "start": "article_audacity_zh",
+          "end": "article_recording_zh",
+          "images": [
+            "img/Audacity_01.jpg",
+            "img/Audacity_02.jpg",
+            "img/Audacity_03.jpg",
+            "img/Audacity_04.jpg"
+          ]
+        },
+        {
+          "start": "article_recording_zh",
+          "end": "article_samples_zh",
+          "images": [
+            "img/GoldWave_03.jpg",
+            "img/Audacity_05.jpg"
+          ]
+        },
+        {
+          "start": "article_samples_zh",
+          "end": "article_checklist_zh",
+          "images": [
+            "img/GoldWave_04.jpg",
+            "img/GoldWave_05.jpg",
+            "img/Audacity_05_set.jpg",
+            "img/Audacity_06_split.jpg",
+            "img/Audacity_07.jpg"
+          ]
+        }
+      ]
+    }
+  ],
+  "routeMaps": [
+    "slide_boot_loader_for_RL78/basic_uart_i2c/legacy-routes.json",
+    "slide_RH850/legacy-routes.json",
+    "slide_RL78/legacy-routes.json"
+  ]
 }

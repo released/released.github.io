@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">UDS</title>
+  <rect width="64" height="64" rx="10" fill="#8a6500"/>
+  <path d="M16 14h9v22c0 5 2.4 7.4 7 7.4s7-2.4 7-7.4V14h9v22.5C48 46 42.2 51 32 51S16 46 16 36.5z" fill="#fff"/>
+</svg>

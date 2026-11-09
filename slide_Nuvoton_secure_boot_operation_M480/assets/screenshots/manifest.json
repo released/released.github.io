@@ -1,0 +1,116 @@
+[
+  {
+    "file": "icp-main-redacted.png",
+    "source": "ICP_#000.jpg",
+    "processing": "Built-in imagegen: mosaic all seven file path values and Nu-Link identifier; preserve UI and configuration. Original remains unchanged.",
+    "sha256": "1910ec683a3217c0540912a287b752d2b6c39011ab07a85ae8a57fb653610f31"
+  },
+  {
+    "file": "icp-chip-settings.jpg",
+    "source": "ICP_#001.jpg",
+    "processing": "Original image; paths already obscured where present. Educational example keys retained with user authorization.",
+    "sha256": "8be86251171a030f50746540df901f851626916d2b6e7bdb8b3f26337f575ba7"
+  },
+  {
+    "file": "icp-key-menu.jpg",
+    "source": "ICP_#002.jpg",
+    "processing": "Original image; paths already obscured where present. Educational example keys retained with user authorization.",
+    "sha256": "35cd0685ed81f357ddb5ca1db9ab83b97e1e4dad9b1c48a2d3f4d6a4e51f9dfc"
+  },
+  {
+    "file": "icp-key-generate.jpg",
+    "source": "ICP_#003.jpg",
+    "processing": "Original image; paths already obscured where present. Educational example keys retained with user authorization.",
+    "sha256": "4dd9a09568f8dab6912903a0341fbc2d50a3e8cfb1c27bed31184caef0431569"
+  },
+  {
+    "file": "icp-key-export.jpg",
+    "source": "ICP_#004.jpg",
+    "processing": "Original image; paths already obscured where present. Educational example keys retained with user authorization.",
+    "sha256": "10308ff1fbeaa595d40aa0f659716d262ccabf9c8928349146b1d048d42f2f00"
+  },
+  {
+    "file": "icp-kprom-example.jpg",
+    "source": "ICP_#007.jpg",
+    "processing": "Original image; paths already obscured where present. Educational example keys retained with user authorization.",
+    "sha256": "a043122d02618d8c2e1b12e86763840b8ca221c2ae47650507b9aa586d5744af"
+  },
+  {
+    "file": "icp-programming.jpg",
+    "source": "ICP_#008.jpg",
+    "processing": "Original image; paths already obscured where present. Educational example keys retained with user authorization.",
+    "sha256": "e9c6256df970e29b599976dba6d8ded58e42642d31eeb63fcf7dc985471171c4"
+  },
+  {
+    "file": "icp-security-lock-message.jpg",
+    "source": "ICP_#009.jpg",
+    "processing": "Original image; paths already obscured where present. Educational example keys retained with user authorization.",
+    "sha256": "eb7f39b136f7057badce854dd3b7eac0b6029a2d971e1feecb206ef6b70f0f94"
+  },
+  {
+    "file": "isp-waiting.jpg",
+    "source": "ISP_#000.jpg",
+    "processing": "Original image; paths already obscured where present. Educational example keys retained with user authorization.",
+    "sha256": "c452d71e99c01059418d3758f6401b24757fd027fe5bfd89441b90a29086dc5e"
+  },
+  {
+    "file": "isp-loading.jpg",
+    "source": "ISP_#001.jpg",
+    "processing": "Original image; paths already obscured where present. Educational example keys retained with user authorization.",
+    "sha256": "086afaeb8f5104cdbf036e5278143b2beb3d6a7ccc02b32d653edb16a9670441"
+  },
+  {
+    "file": "isp-verifying.jpg",
+    "source": "ISP_#002.jpg",
+    "processing": "Original image; paths already obscured where present. Educational example keys retained with user authorization.",
+    "sha256": "f061e35a9a492e6ee772473edf157334f39e52ccdd319ff52a4ae09b83e35d75"
+  },
+  {
+    "file": "isp-kprom-example.jpg",
+    "source": "ISP_#004.jpg",
+    "processing": "Original image; paths already obscured where present. Educational example keys retained with user authorization.",
+    "sha256": "8dc13e8e508756a658e7e95103824f9852aca6115b355d506c250662f1737025"
+  },
+  {
+    "file": "isp-connected.jpg",
+    "source": "ISP_#005.jpg",
+    "processing": "Original image; paths already obscured where present. Educational example keys retained with user authorization.",
+    "sha256": "3700ab41caf30f427d059f820c78306d4ca1ebe56c9f62a61de644837f19365c"
+  },
+  {
+    "file": "isp-key-options-button.jpg",
+    "source": "ISP_#006.jpg",
+    "processing": "Original image; paths already obscured where present. Educational example keys retained with user authorization.",
+    "sha256": "bb1cccb6dd7a0ebf80e52df2379253987a41babdb74999099ac39084f426a008"
+  },
+  {
+    "file": "isp-key-example.jpg",
+    "source": "ISP_#008.jpg",
+    "processing": "Original image; paths already obscured where present. Educational example keys retained with user authorization.",
+    "sha256": "e684d5842fbd6fab5ae4ff7f016d112a76a2dae81d13c83333c49e078e94a781"
+  },
+  {
+    "file": "isp-load-files.jpg",
+    "source": "ISP_#009.jpg",
+    "processing": "Original image; paths already obscured where present. Educational example keys retained with user authorization.",
+    "sha256": "4bb09d3a3ce0177da6f26ddf3a7b1fd392b8ee61f4d05744f87a2cb254a49e5a"
+  },
+  {
+    "file": "isp-aprom-only.jpg",
+    "source": "ISP_#011.jpg",
+    "processing": "Original image; paths already obscured where present. Educational example keys retained with user authorization.",
+    "sha256": "46920d3d6fa814d203f562089fcc262638f4eb5a765df0c372d22cbaed6d70ad"
+  },
+  {
+    "file": "isp-programming-success.jpg",
+    "source": "ISP_#012.jpg",
+    "processing": "Original image; paths already obscured where present. Educational example keys retained with user authorization.",
+    "sha256": "d879f3039ddcc8bedcee53d2fdd716ac7342e4362bf379e7bf758acdd2c74aa4"
+  },
+  {
+    "file": "isp-runtime.jpg",
+    "source": "ISP_#013.jpg",
+    "processing": "Original image; paths already obscured where present. Educational example keys retained with user authorization.",
+    "sha256": "4177757ad3f7f44651c2a2a75df0360d67a3d6ff6e27c6d749fd99c35a149651"
+  }
+]

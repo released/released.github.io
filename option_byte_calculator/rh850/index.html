@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="RH850 OPBT0、OPBT1 HEX、bit 與欄位行為雙向計算器">
+  <meta name="theme-color" content="#b3263e">
+  <title>RH850 Option Byte Calculator</title>
+  <link rel="stylesheet" href="../assets/style.css">
+<meta name="site-repository" content="released/released.github.io">
+</head>
+<body data-family="RH850" data-profiles="../data/rh850-profiles.json">
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="../">
+        <span class="brand-mark" aria-hidden="true">RH</span>
+        <span class="brand-copy"><strong>RH850 Option Byte</strong><small>OPBT Word Decoder</small></span>
+      </a>
+      <nav class="header-nav" aria-label="Calculator 選單">
+        <a href="../rl78/">RL78</a>
+        <a class="active" href="./">RH850</a>
+        <a href="https://released.github.io/">知識庫</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <section class="hero">
+      <div>
+        <p class="eyebrow">Renesas RH850</p>
+        <h1>Option Byte Calculator</h1>
+        <p>輸入 OPBT0、OPBT1 或直接勾選 bit，即時取得 32-bit HEX、欄位行為與型號限定警告。</p>
+      </div>
+      <span class="hero-badge">bit31 left · bit0 right · no byte swap</span>
+    </section>
+
+    <section class="control-card" aria-label="型號與 HEX 輸入">
+      <div class="control-top">
+        <label class="select-control">
+          <span class="control-label">MCU 型號</span>
+          <select id="model-select" class="model-select"></select>
+        </label>
+        <div id="model-reference" class="model-reference"></div>
+        <div class="control-actions">
+          <button id="reset-defaults" class="button" type="button">恢復預設值</button>
+          <button id="copy-values" class="button primary" type="button">複製 HEX</button>
+        </div>
+      </div>
+      <div id="hex-inputs" class="hex-inputs"></div>
+      <p id="input-status" class="input-status" role="status" aria-live="polite"></p>
+    </section>
+
+    <section class="summary-section">
+      <div class="section-heading"><h2>目前數值</h2><p>HEX byte groups 依 bit31 → bit0 顯示，不做 byte swap。</p></div>
+      <div id="word-summary" class="word-summary"></div>
+    </section>
+
+    <section class="workspace">
+      <nav id="word-tabs" class="word-tabs" aria-label="Option word tabs"></nav>
+      <div id="word-panel"></div>
+    </section>
+
+    <section class="validation-grid">
+      <article class="validation-card"><h2>合法性檢查</h2><div id="warning-list" class="warning-list"></div></article>
+      <article class="validation-card"><h2>型號備註</h2><div id="model-notes" class="model-notes"></div></article>
+    </section>
+  </main>
+
+  <footer class="site-footer"><a href="../">Option Byte Calculator</a> · <a href="https://released.github.io/">回到嵌入式系統知識庫</a></footer>
+  <noscript><p class="noscript">此計算器需要 JavaScript 才能執行。</p></noscript>
+  <script type="module" src="../assets/option-ui.js"></script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+#!/bin/sh
+# Keep an accidental manual push inside the single website publication target.
+case "$1:$2" in
+  origin:https://github.com/released/released.github.io|origin:https://github.com/released/released.github.io.git|origin:git@github.com:released/released.github.io.git|origin:ssh://git@github.com/released/released.github.io.git) ;;
+  *) echo 'STOP: website pushes must target released/released.github.io via origin.' >&2; exit 1 ;;
+esac
+test "$(git symbolic-ref --short HEAD)" = main || { echo 'STOP: website branch must be main.' >&2; exit 1; }
+while read -r local_ref local_sha remote_ref remote_sha; do
+  test "$remote_ref" = refs/heads/main && test "$local_sha" = "$(git rev-parse HEAD)" || {
+    echo 'STOP: only main -> main is allowed; no tags or branch deletion.' >&2; exit 1;
+  }
+  case "$local_ref" in
+    refs/heads/main|"$local_sha") ;;
+    *) echo 'STOP: only the current main commit may be pushed.' >&2; exit 1 ;;
+  esac
+done

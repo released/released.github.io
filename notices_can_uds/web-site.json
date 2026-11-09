@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "site": "notices_can_uds",
+  "runtime": "2.0",
+  "pages": [
+    {
+      "html": "bootloader/index.html",
+      "source": "bootloader/index.md"
+    },
+    {
+      "html": "implementation/index.html",
+      "source": "implementation/index.md"
+    },
+    {
+      "html": "index.html",
+      "source": "index.md"
+    },
+    {
+      "html": "iso/index.html",
+      "source": "iso/index.md"
+    },
+    {
+      "html": "layers/index.html",
+      "source": "layers/index.md"
+    },
+    {
+      "html": "references/index.html",
+      "source": "references/index.md"
+    },
+    {
+      "html": "roles/index.html",
+      "source": "roles/index.md"
+    },
+    {
+      "html": "services/index.html",
+      "source": "services/index.md"
+    }
+  ],
+  "runtimeFiles": {
+    "assets/app.js": "f1b857dae5fd6d1a74b7504c7900a354e7703e3e9ea29045170bfd2498fc7fe4",
+    "assets/style.css": "9d926d9e2987c47a8323a91366d304b03ce3b1e776c9002a165796b51b8a78aa"
+  },
+  "dependencies": []
+}

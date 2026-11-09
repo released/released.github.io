@@ -1,0 +1,11 @@
+{
+  "name": "option-byte-calculator",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "check": "node --check assets/option-engine.js && node --check assets/option-ui.js && node --check tests/browser-smoke.mjs",
+    "smoke": "node tests/browser-smoke.mjs"
+  }
+}

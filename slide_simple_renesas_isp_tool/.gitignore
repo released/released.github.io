@@ -1,0 +1,23 @@
+
+
+# Local engineering records and private state (not publication inputs)
+/AGENTS.md
+/AGENTS_for_Codex.md
+/CLAUDE.md
+/WORKSPACE_RULES.md
+/HANDOFF.md
+/CODEX_HANDOFF.md
+/SELF_CHECK.md
+/MANUAL_CLEANUP.md
+/PROJECT_README_TEMPLATE.md
+/SCREENSHOT_CHECKLIST.md
+/.codex/
+/.claude/
+/github_push.local.psd1
+/docs/internal/
+/docs/development/
+/artifacts/audits/
+/artifacts/tests/
+/.verify/
+/.env*
+!/.env.example

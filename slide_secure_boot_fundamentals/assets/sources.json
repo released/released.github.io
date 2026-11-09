@@ -1,0 +1,23 @@
+{
+  "checkedDate": "2026-11-06",
+  "policy": "Public primary sources support the rendered technical content. Local training files are research aids and are not distributed. Diagrams are original teaching models; source scope and platform limits are stated in index.md.",
+  "sources": [
+    {"id":"m480","title":"Nuvoton AN0039","url":"https://www.nuvoton.com/resource-files/AN_0039_M480_SecureBootloader_TC_Rev1.00.pdf","version":"Rev1.00","sections":"2–5","claims":"M480 ROM services, SBK/IB, KPROM and documented command-mode behavior"},
+    {"id":"mcuboot-design","title":"MCUboot design","url":"https://docs.mcuboot.com/design.html","sections":"Image format, validation, protected TLVs, trailer, downgrade prevention","claims":"Named MCUboot format and policy concepts; illustrative diagrams are not a port specification"},
+    {"id":"imgtool","title":"MCUboot imgtool","url":"https://docs.mcuboot.com/imgtool.html","sections":"Managing keys, public keys, signing images","claims":"Signing-tool responsibilities and matching verification configuration"},
+    {"id":"encrypted-images","title":"MCUboot encrypted images","url":"https://docs.mcuboot.com/encrypted_images.html","sections":"Design","claims":"Image encryption has a separate role from signing"},
+    {"id":"testplan","title":"MCUboot Mynewt test plan","url":"https://docs.mcuboot.com/testplan-mynewt.html","claims":"Reference test scenarios; not proof of validation on another port"},
+    {"id":"ra-fsp","title":"RA FSP MCUboot Port","url":"https://renesas.github.io/fsp/group___r_m___m_c_u_b_o_o_t___p_o_r_t.html","versionObserved":"6.6.0","claims":"Module configuration, key/code protection and update confirmation"},
+    {"id":"ra-basic","title":"RA6 Basic Secure Bootloader","url":"https://www.renesas.com/en/document/apn/ra6-basic-secure-bootloader-using-mcuboot-and-internal-code-flash","version":"R11AN0497 Rev1.40","claims":"Further reading for the RA MCUboot example"},
+    {"id":"ra-protected","title":"RA SCE9 Protected Mode MCUboot","url":"https://www.renesas.com/en/document/apn/ra6-secure-bootloader-using-mcuboot-protected-mode-and-internal-code-flash","version":"R11AN1048 Rev1.10","claims":"Protected Mode case with its stated target-device scope"},
+    {"id":"rx-fit","title":"RX MCUboot FIT","url":"https://www.renesas.com/en/document/apn/rx-family-mcuboot-firmware-integration-technology","version":"R01AN7374 Rev1.02","claims":"RX integration, target list and configuration-specific authentication"},
+    {"id":"skmt","title":"Renesas Security Key Management Tool","url":"https://www.renesas.com/en/software-tool/security-key-management-tool","claims":"Key wrapping, injection/update support and version compatibility"},
+    {"id":"nist","title":"NIST SP800-193","url":"https://csrc.nist.gov/pubs/sp/800/193/final","version":"Final 2018","claims":"Root/chain of trust and protection/detection/recovery principles; no product certification claim"},
+    {"id":"webcrypto","title":"W3C Web Cryptography API","url":"https://www.w3.org/TR/2017/REC-WebCryptoAPI-20170126/","version":"Recommendation 2017","claims":"Browser digest, ECDSA and key-operation semantics used by the interactive example"},
+    {"id":"crc","title":"NIST CRC glossary","url":"https://csrc.nist.gov/glossary/term/cyclic_redundancy_check","claims":"CRC is a non-cryptographic checksum used for accidental data changes"}
+  ],
+  "publicExamples": [
+    {"title":"Dedicated LDROM sample","url":"https://github.com/released/M480BSP_ISP_HID_20_SecureBoot","scope":"Example implementation; not the vendor specification"},
+    {"title":"APROM/SRAM sample","url":"https://github.com/released/M480BSP_ISP_HID_20_SecureBoot_SRAM","scope":"Example implementation; not the vendor specification"}
+  ]
+}

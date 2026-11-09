@@ -1,0 +1,25 @@
+:root { --accent: #176b87; --accent-dark: #0d4f69; }
+.crypto-lab { margin: 1.2em 0; padding: 1.2em; border: 1px solid var(--line); border-top: 4px solid var(--accent); border-radius: 4px; background: #f8fbfc; }
+.crypto-lab fieldset { margin: 0 0 1em; padding: .8em 1em; border: 1px solid var(--line); }
+.crypto-lab legend { padding: 0 .3em; font-weight: 700; }
+.crypto-lab label { display: block; margin: .5em 0; cursor: pointer; }
+.crypto-lab input { margin-right: .5em; accent-color: var(--accent); }
+.crypto-lab dl { display: grid; grid-template-columns: minmax(6em, .7fr) minmax(0, 3fr); gap: .5em 1em; margin: 1em 0; }
+.crypto-lab dt { font-weight: 700; }
+.crypto-lab dd { min-width: 0; margin: 0; }
+.crypto-lab code { overflow-wrap: anywhere; word-break: break-all; }
+.crypto-lab .lab-result { padding: .8em; border-left: 4px solid var(--accent); background: #e9f3f7; font-weight: 600; }
+.crypto-lab[data-result="pass"] .lab-result { border-color: #287644; background: #edf7ef; }
+.crypto-lab[data-result="fail"] .lab-result { border-color: #b34040; background: #fff1f1; }
+.crypto-lab .lab-note { margin-bottom: 0; color: var(--muted); font-size: .9em; }
+@media (max-width: 760px) {
+  .crypto-lab { padding: .9em; }
+  .crypto-lab dl { display: block; }
+  .crypto-lab dt { margin-top: .8em; }
+  .crypto-lab dd { margin-top: .2em; }
+}
+@media print {
+  .crypto-lab fieldset { display: none; }
+  .crypto-lab { break-inside: avoid; background: #fff; }
+  .markdown-preview img, .mermaid svg { max-width: 100%; }
+}
