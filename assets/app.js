@@ -1,11 +1,93 @@
 (function () {
   "use strict";
 
+  // Canonical runtime; deployed copies are checked by sync_web_runtime.mjs.
+  window.webGuideRuntime = "2.0";
+
   var content = document.getElementById("content");
   var toc = document.getElementById("toc");
   var sidebarButton = document.getElementById("sidebar-toc-btn");
   var backToTop = document.getElementById("back-to-top");
   var markdownSource = document.body.getAttribute("data-markdown") || "index.md";
+
+  function showError(message) {
+    var notice = document.createElement("p");
+    notice.className = "render-error";
+    notice.appendChild(document.createTextNode(message + "。原稿："));
+    var link = document.createElement("a");
+    link.href = markdownSource;
+    link.textContent = markdownSource;
+    notice.appendChild(link);
+    content.replaceChildren(notice);
+  }
+
+  function prepareNavigation() {
+    var home = document.createElement("a");
+    home.href = "/";
+    home.className = "knowledge-home";
+    home.textContent = "知識庫總索引";
+    document.getElementById("sidebar").prepend(home);
+    var siteNav = document.getElementById("site-nav");
+    if (siteNav) {
+      document.body.classList.add("has-site-header");
+      var header = document.querySelector(".site-header");
+      function sizeHeader() { document.body.style.setProperty("--header-height", header.offsetHeight + "px"); }
+      sizeHeader();
+      if (window.ResizeObserver) { new ResizeObserver(sizeHeader).observe(header); }
+      var base = /\/(roles|layers|iso|services|bootloader|implementation|references)\/(?:index\.html)?$/.test(location.pathname) ? "../" : "./";
+      [["概述", ""], ["角色", "roles/"], ["分層", "layers/"], ["ISO", "iso/"],
+        ["Services", "services/"], ["Bootloader", "bootloader/"],
+        ["實作與測試", "implementation/"], ["來源", "references/"]].forEach(function (page) {
+        var link = document.createElement("a");
+        link.href = base + page[1];
+        link.textContent = page[0];
+        if (new URL(link.href).pathname.replace(/index\.html$/, "") === location.pathname.replace(/index\.html$/, "")) { link.className = "active"; }
+        siteNav.appendChild(link);
+      });
+      sizeHeader();
+    }
+  }
+
+  function prepareImages() {
+    var viewer = document.getElementById("image-viewer");
+    if (!viewer) {
+      viewer = document.createElement("dialog");
+      viewer.id = "image-viewer";
+      viewer.setAttribute("aria-label", "圖片原尺寸檢視");
+      viewer.innerHTML = '<header><span id="image-caption"></span><a id="image-original" target="_blank" rel="noopener">開啟原圖</a><button id="image-close" type="button">關閉 ×</button></header><div class="image-canvas"><img id="image-full" alt=""></div>';
+      document.body.appendChild(viewer);
+    }
+    var opener;
+    document.getElementById("image-close").addEventListener("click", function () { viewer.close(); });
+    viewer.addEventListener("close", function () { if (opener) { opener.focus(); } });
+    content.querySelectorAll("img").forEach(function (img) {
+      img.decoding = "async";
+      var link = img.closest("a");
+      if (!link) {
+        link = document.createElement("a");
+        link.href = img.src;
+        img.replaceWith(link);
+        link.appendChild(img);
+      }
+      // Preserve links that lead to pages rather than the image itself.
+      if (link.href !== img.src) { return; }
+      link.classList.add("image-link");
+      link.setAttribute("aria-label", "放大圖片：" + img.alt);
+      if (typeof viewer.showModal !== "function") { return; }
+      link.setAttribute("aria-haspopup", "dialog");
+      link.addEventListener("click", function (event) {
+        if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) { return; }
+        event.preventDefault();
+        opener = link;
+        var full = document.getElementById("image-full");
+        full.src = img.src;
+        full.alt = img.alt;
+        document.getElementById("image-caption").textContent = img.alt;
+        document.getElementById("image-original").href = img.src;
+        viewer.showModal();
+      });
+    });
+  }
 
   function slugify(text, index) {
     var slug = text.trim().toLowerCase()
@@ -16,7 +98,8 @@
 
   function prepareHeadings() {
     var used = Object.create(null);
-    content.querySelectorAll("h1, h2, h3").forEach(function (heading, index) {
+    var headings = content.querySelectorAll("h1, h2, h3");
+    headings.forEach(function (heading, index) {
       var previous = heading.previousElementSibling;
       var manualAnchor = previous && previous.tagName === "A" && previous.id ? previous : null;
       var anchorContainer = null;
@@ -39,7 +122,9 @@
 
   function buildToc() {
     var fragment = document.createDocumentFragment();
-    content.querySelectorAll("h2, h3").forEach(function (heading) {
+    var pageTitle = content.querySelector("h1");
+    content.querySelectorAll("h1, h2, h3").forEach(function (heading) {
+      if (heading === pageTitle) { return; }
       var link = document.createElement("a");
       link.href = "#" + heading.id;
       link.textContent = heading.textContent;
@@ -52,7 +137,7 @@
   function namespaceSvgIds(container, index) {
     var svg = container.querySelector("svg");
     if (!svg) { return; }
-    var prefix = "knowledgeMap" + index + "-";
+    var prefix = "canUds" + index + "-";
     var mapping = Array.from(svg.querySelectorAll("[id]")).map(function (element) {
       return { element: element, oldId: element.id, newId: prefix + element.id };
     }).sort(function (left, right) { return right.oldId.length - left.oldId.length; });
@@ -85,26 +170,28 @@
       diagram.textContent = code.textContent;
       code.parentElement.replaceWith(diagram);
     });
-    if (!window.mermaid) { return Promise.resolve(); }
-
-    window.mermaid.initialize({
-      startOnLoad: false,
-      theme: "neutral",
-      securityLevel: "strict",
-      flowchart: { htmlLabels: true, curve: "basis" }
-    });
-    return Array.from(content.querySelectorAll(".mermaid")).reduce(function (chain, diagram, index) {
-      return chain.then(function () {
-        return window.mermaid.render("knowledgeDiagram" + index, diagram.textContent).then(function (result) {
-          diagram.innerHTML = result.svg;
-          namespaceSvgIds(diagram, index);
-          if (result.bindFunctions) { result.bindFunctions(diagram); }
+    if (window.mermaid) {
+      window.mermaid.initialize({ startOnLoad: false, theme: "neutral", securityLevel: "strict", flowchart: { htmlLabels: true, curve: "basis" } });
+      var diagrams = Array.from(content.querySelectorAll(".mermaid"));
+      return diagrams.reduce(function (chain, diagram, index) {
+        return chain.then(function () {
+          return window.mermaid.render("canUdsDiagram" + index, diagram.textContent).then(function (result) {
+            diagram.innerHTML = result.svg;
+            namespaceSvgIds(diagram, index);
+            if (result.bindFunctions) { result.bindFunctions(diagram); }
+          });
+        }).catch(function (error) {
+          console.error("Mermaid render failed", error);
+          diagram.classList.add("render-warning");
+          diagram.setAttribute("aria-label", "流程圖未完成繪製，保留原始描述");
         });
-      });
-    }, Promise.resolve()).catch(function (error) {
-      console.error("Mermaid render failed", error);
-      content.insertAdjacentHTML("afterbegin", '<p class="render-warning">部分學習地圖無法繪製；所有文字與連結仍可正常閱讀。</p>');
+      }, Promise.resolve());
+    }
+    content.querySelectorAll(".mermaid").forEach(function (diagram) {
+      diagram.classList.add("render-warning");
+      diagram.prepend(document.createTextNode("流程圖元件未載入，以下保留原始描述：\n"));
     });
+    return Promise.resolve();
   }
 
   function observeSections() {
@@ -113,12 +200,10 @@
     var observer = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         if (!entry.isIntersecting) { return; }
-        links.forEach(function (link) {
-          link.classList.toggle("active", link.hash === "#" + entry.target.id);
-        });
+        links.forEach(function (link) { link.classList.toggle("active", link.hash === "#" + entry.target.id); });
       });
     }, { rootMargin: "-15% 0px -75% 0px" });
-    content.querySelectorAll("h2, h3").forEach(function (heading) { observer.observe(heading); });
+    content.querySelectorAll("h1, h2, h3").forEach(function (heading) { observer.observe(heading); });
   }
 
   function scrollToInitialHash() {
@@ -127,13 +212,14 @@
     try { id = decodeURIComponent(window.location.hash.slice(1)); }
     catch (error) { id = window.location.hash.slice(1); }
     var target = document.getElementById(id);
-    if (!target) { return; }
-    var previousBehavior = document.documentElement.style.scrollBehavior;
-    document.documentElement.style.scrollBehavior = "auto";
-    target.scrollIntoView({ block: "start" });
-    window.requestAnimationFrame(function () {
-      document.documentElement.style.scrollBehavior = previousBehavior;
-    });
+    if (target) {
+      var previousBehavior = document.documentElement.style.scrollBehavior;
+      document.documentElement.style.scrollBehavior = "auto";
+      target.scrollIntoView({ block: "start" });
+      window.requestAnimationFrame(function () {
+        document.documentElement.style.scrollBehavior = previousBehavior;
+      });
+    }
   }
 
   function toggleSidebar(force) {
@@ -143,18 +229,27 @@
   }
 
   sidebarButton.addEventListener("click", function () { toggleSidebar(); });
+  sidebarButton.textContent = "≡";
+  sidebarButton.setAttribute("aria-controls", "sidebar");
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape" && window.innerWidth <= 760) { toggleSidebar(false); sidebarButton.focus(); }
+  });
   document.addEventListener("click", function (event) {
     if (window.innerWidth <= 760 && document.body.hasAttribute("html-show-sidebar-toc") &&
         !document.getElementById("sidebar").contains(event.target) && event.target !== sidebarButton) {
       toggleSidebar(false);
     }
   });
-  window.addEventListener("scroll", function () {
-    backToTop.classList.toggle("visible", window.scrollY > 700);
-  }, { passive: true });
+  window.addEventListener("scroll", function () { backToTop.classList.toggle("visible", window.scrollY > 700); }, { passive: true });
+  var desktopSidebar = window.matchMedia("(min-width: 761px)");
+  function syncSidebar(event) { toggleSidebar(event.matches); }
+  syncSidebar(desktopSidebar);
+  if (desktopSidebar.addEventListener) { desktopSidebar.addEventListener("change", syncSidebar); }
+  else { desktopSidebar.addListener(syncSidebar); }
+  prepareNavigation();
 
   if (!window.marked) {
-    content.innerHTML = '<p class="render-error">Markdown renderer 載入失敗。請直接閱讀 <a href="' + markdownSource + '">' + markdownSource + '</a>。</p>';
+    showError("Markdown renderer 載入失敗");
     return;
   }
 
@@ -164,16 +259,26 @@
       return response.text();
     })
     .then(function (markdown) {
-      content.innerHTML = window.marked.parse(markdown, { gfm: true });
+      // Set loading hints before DOM insertion, so offscreen images stay deferred.
+      var template = document.createElement("template");
+      template.innerHTML = window.marked.parse(markdown, { gfm: true });
+      template.content.querySelectorAll("img").forEach(function (img, index) {
+        img.loading = index === 0 ? "eager" : "lazy";
+        img.decoding = "async";
+      });
+      content.replaceChildren(template.content);
       prepareHeadings();
+      backToTop.href = "#" + content.querySelector("h1").id;
       buildToc();
+      prepareImages();
       return prepareMermaid();
     })
     .then(function () {
       observeSections();
       scrollToInitialHash();
+      window.dispatchEvent(new Event("guide:ready"));
     })
     .catch(function (error) {
-      content.innerHTML = '<p class="render-error">無法載入知識庫（' + error.message + '）。請直接閱讀 <a href="' + markdownSource + '">' + markdownSource + '</a>。</p>';
+      showError("無法載入知識庫（" + error.message + "）");
     });
 }());

@@ -1,7 +1,7 @@
 param()
 $ErrorActionPreference = 'Stop'
 $siteRoot = Split-Path -Parent $PSScriptRoot
-foreach ($relative in @('index.html','index.md','assets/guide.css','assets/guide.js')) {
+foreach ($relative in @('index.html','index.md','assets/guide.css')) {
     if (!(Test-Path -LiteralPath (Join-Path $siteRoot $relative) -PathType Leaf)) { throw ('Missing guide file: ' + $relative) }
 }
 $html = [IO.File]::ReadAllText((Join-Path $siteRoot 'index.html'),[Text.Encoding]::UTF8)

@@ -1,5 +1,7 @@
 param([string]$ReferenceRoot='')
 $ErrorActionPreference='Stop'
+& node (Join-Path $PSScriptRoot 'verify_web.mjs') (Split-Path -Parent $PSScriptRoot)
+if($LASTEXITCODE) { throw 'Web publication baseline failed.' }
 $siteRoot=Split-Path -Parent $PSScriptRoot
 foreach($relative in @('README.md','README.html','index.html','favicon.ico','assets\app.js','assets\style.css','assets\knowledge-base.svg')) {
     if(!(Test-Path -LiteralPath (Join-Path $siteRoot $relative) -PathType Leaf)) {
