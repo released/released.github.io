@@ -2,6 +2,7 @@ param([string[]]$Project=@(), [switch]$CheckOnly, [string]$DecisionHubRoot='')
 $ErrorActionPreference='Stop'
 $root=Split-Path -Parent $PSScriptRoot
 $name='PUBLIC_CONTENT_GUIDELINES_zh-TW.md'
+if(!$DecisionHubRoot) { $DecisionHubRoot=$env:DECISION_HUB_ROOT }
 if(!$DecisionHubRoot) { $DecisionHubRoot=[IO.Path]::GetFullPath((Join-Path $root '..\..\..\python\#READ_ME_FIRST#')) }
 $canonical=Join-Path $DecisionHubRoot ('rules\'+$name)
 if(!(Test-Path -LiteralPath $canonical -PathType Leaf)) { throw 'Decision-center public-content source is unavailable; specify -DecisionHubRoot.' }

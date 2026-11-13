@@ -446,6 +446,26 @@
     "tool-image-loading": {
       "page": "status-and-reports.html",
       "anchor": "tool-image-loading"
+    },
+    "f24-i2c-transfer": {
+      "page": "serial-isp.html",
+      "anchor": "f24-i2c-transfer"
+    },
+    "f24-i2c-update": {
+      "page": "serial-isp.html",
+      "anchor": "f24-i2c-update"
+    },
+    "f24-i2c-update-measurements": {
+      "page": "serial-isp.html",
+      "anchor": "f24-i2c-update-measurements"
+    },
+    "i2c-image-waits": {
+      "page": "serial-isp.html",
+      "anchor": "i2c-image-waits"
+    },
+    "i2c-test-bin-sequence": {
+      "page": "serial-isp.html",
+      "anchor": "i2c-test-bin-sequence"
     }
   }
 }

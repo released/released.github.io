@@ -10,13 +10,15 @@ foreach($folder in @('slide_simple_renesas_isp_tool','slide_boot_loader_for_RL78
     foreach($page in $map.pages.PSObject.Properties.Name){$guideReaderPages+=($folder+'\'+$page+'.md')}
 }
 $sources = @((Join-Path $projectRoot 'index.md'),
-    (Join-Path $projectRoot 'SCREENSHOT_CHECKLIST.md'),
     (Join-Path $projectRoot 'index.html'),
     (Join-Path $webRoot 'slide_boot_loader_for_RL78\index.md'),
     (Join-Path $webRoot 'slide_boot_loader_for_RL78\basic_uart_i2c\index.md'),
     (Join-Path $webRoot 'slide_boot_loader_for_RL78\basic_uart_i2c\index.html'),
     (Join-Path $webRoot 'README.md'),
     (Join-Path $webRoot 'README.html'))
+$localChecklist=Join-Path $projectRoot 'SCREENSHOT_CHECKLIST.md'
+if(Test-Path -LiteralPath $localChecklist -PathType Leaf){$sources+=$localChecklist}
+else{Write-Host 'SKIP optional local screenshot record; public sources remain required.'}
 $sources+=@($guideReaderPages | ForEach-Object{Join-Path $webRoot $_})
 $sources+=@($guideReaderPages | ForEach-Object{Join-Path $webRoot ([IO.Path]::ChangeExtension($_,'html'))})
 $sources=@($sources | Select-Object -Unique)

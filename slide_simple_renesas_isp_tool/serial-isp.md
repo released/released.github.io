@@ -18,6 +18,8 @@ Device UART0 獨立提供診斷文字，供 terminal 觀察。
 RL78 F13／F24／G16／G22 與 RH850 各有獨立的 UART、Xmodem、I2C Boot／App／Transfer 工程。
 這些串列工程已通過離線建置及程式模型測試；實際接線、中斷、Flash、重啟與斷電恢復另作實板驗證。
 
+F24 I2C 的原始 App 及 8..247 KiB 容量測試映像已有一般更新與重啟後 App 確認資料；條件與耗時見[F24 I2C 更新量測](#f24-i2c-update-measurements)。其他平台、速度及故障恢復分別驗證。
+
 Boot 流程與協定格式可依介面直接查閱：
 
 | 平台 | UART | I2C | Xmodem | 共用契約 |
@@ -162,6 +164,101 @@ flowchart TD
 Xmodem Transfer 先以 command0x24 宣告389 useful bytes及 CRC32，再進行128-byte block接收；
 最後不足128 bytes以1A padding，完成後回到 framed control，讀取 counters。
 CRC16驗證每個區塊，CRC32驗證 useful bytes；診斷用 RAM sink不啟動 Flash或reset。
+
+<a id="f24-i2c-transfer"></a>
+
+#### F24 I2C Custom Transfer
+
+此流程使用 `RL78_F24_I2C_Slave_Transfer`，驗證 bridge 與 device 的雙向通訊。
+資料使用 I2C，診斷文字使用 device UART0；腳位集中於本章「接線與速度」。
+
+| 步驟 | 操作 | 預期結果 |
+| --- | --- | --- |
+| 1 | 安裝 Transfer HEX，另開 device UART0 terminal | 出現 I2C Custom Transfer 啟動文字；bus idle 時可用 z/Z 一般重置 |
+| 2 | 選 bridge COM，按 Open + Probe Host | Host 身分及 I2C 能力有效 |
+| 3 | 選 I2C／Custom Transfer，核對 port、100 kHz、7-bit 0x20 | 設定與所安裝範例一致；不需要 App BIN |
+| 4 | 按 Discover Test Target | Device LIVE 顯示 F24／Custom Transfer；不提供 Boot／installed App 資料 |
+| 5 | 按 Transfer Test | PING、96-byte ECHO、counters 及最後 INFO 重讀均通過 |
+
+封包文字與測試結果可分別核對：
+
+- `seq` 隨 request 遞增，RX／TX 的 sequence、command、長度須對應。
+- PING 使用前三個測試 bytes；96-byte ECHO 使用 `i XOR 0xA5`。前兩列為 `A5 A4 A7 A6 A1 A0 A3 A2`、`AD AC AF AE A9 A8 AB AA`。
+- Payload 每 8 bytes 換行，最後不足 8 bytes 仍完整顯示，空資料顯示 `data=[]`；每筆 request 使用固定圖樣。
+- STATS 是 device 本次執行的累積值；Discover 或額外查詢會增加 requests。正常測試不增加 errors／written，trace 不取代 Tool 的 CRC 與內容比對。
+- 此流程不發出 Flash 更新命令。Boot／App 更新使用 I2C ISP workflow。
+
+<a id="f24-i2c-update"></a>
+
+#### F24 I2C App 更新
+
+安裝 `RL78_F24_ISP_Boot_loader_I2C` 的 Boot HEX，更新檔使用配對
+`RL78_F24_ISP_Boot_loader_I2C_app` 的 `_update.bin` 或同次建置產生的容量測試 BIN。
+
+1. 選 **I2C → I2C ISP**，核對 port、速度與 7-bit address，再載入 BIN。
+2. **Discover Target** 讀取即時狀態；Device 已在 App 時按 **Enter Boot**，等待 Boot 確認。
+3. **Compare Metadata／Preflight** 通過後，執行 **Start Device Update**。
+4. Worker staging 完整 metadata，START 通過後依序傳送 64-byte WRITE，最後由 END 驗證完整映像。
+5. END 回覆成功後等待重啟；App ready 與全部 256-byte installed metadata 相符，才確認更新完成。
+6. 核對報告及 UART0 App 啟動／counter。若結果未確認，保留原始錯誤並重新讀取狀態，不重複 erase／WRITE／END 來推定成功。
+
+<!-- F24_I2C_MEASURED_BEGIN -->
+<a id="f24-i2c-update-measurements"></a>
+
+#### F24 I2C App 更新量測
+
+量測條件：F24 device R7F124FPJ5xFB，F24 bridge，I2C 100 kHz／7-bit 0x20，Host Link 115200。
+Tool 0.1.0.138；Host FW 1.8.1／build 20261023。表格由六份選定更新報告的實際欄位整理，時間單位為秒。
+
+| App BIN | bytes | WRITE | END CRC | App 確認 | 總耗時 | 結果與資料 |
+| --- | --- | --- | --- | --- | --- | --- |
+| 原始 App | 6960 | 12.566 | 0.203 | 1.990 | 15.666 | [PASS／摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_i2c_6960b.html) |
+| 8 KiB | 8192 | 14.711 | 0.186 | 2.074 | 17.890 | [PASS／摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_i2c_8192b.html) |
+| 24 KiB | 24576 | 44.282 | 0.325 | 1.994 | 47.493 | [PASS／摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_i2c_24576b.html) |
+| 56 KiB | 57344 | 99.547 | 0.541 | 2.039 | 103.055 | [PASS／摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_i2c_57344b.html) |
+| 120 KiB | 122880 | 215.953 | 0.998 | 2.806 | 220.635 | [PASS／摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_i2c_122880b.html) |
+| 247 KiB | 252928 | 439.099 | 1.850 | 4.536 | 446.359 | [PASS／摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_i2c_252928b.html) |
+
+- 六份映像均取得 START／END 成功回覆、APP_READY，並核對全部 256-byte installed metadata；獨立 UART0 Log 有對應的 boot-validated 啟動文字及後續 counter。
+- 總耗時採報告 elapsed_ms，包含 Metadata、START、WRITE、END CRC、App 確認及流程開銷；不採載入 BIN 畫面保留的前次 Result／Elapsed。
+- 120／247 KiB 在重啟後唯讀確認期間分別觀察到 2／7 次 I2C_NACK，之後均確認 App。報告 link_retries 為 0 不代表所有 I2C 查詢一次成功。
+- Host counter assessment 為 UNAVAILABLE，無法據此宣稱 bus 無錯誤；這與映像／App 確認成功分開判斷。
+- 最大測試 App 為 247 KiB，未進入尾端 1 KiB 保留區。結果限此映像與接線條件；冷啟動、斷電恢復、故障注入、其他 MCU 或速度另行驗證。
+<!-- F24_I2C_MEASURED_END -->
+
+<a id="i2c-image-waits"></a>
+
+#### 等待時間與映像大小
+
+| 階段 | 等待依據 | 判讀方式 |
+| --- | --- | --- |
+| ENTER request／reply | 一般 ISP request 的回覆期限 | App 先完整回覆，再 reset；incoming BIN 尚未傳送，不依新 BIN 大小延長 |
+| ENTER 成功回覆後 | Live INFO 的已安裝 App 大小，估計兩次驗證 | 未知大小保留 6000 ms；不是使用目前載入的新 BIN |
+| END request／reply | Device 完整映像驗證及 END 回覆期限 | 保留實際 status、ACK 與耗時；逾時不重送 END |
+| END 成功回覆後 | 新映像大小及實測 END 驗證耗時 | 先保留重啟靜默時間，再查詢 App ready／metadata |
+
+- 重啟靜默排程以每 KiB 8 ms 加 500 ms 餘裕估計，限制於 1000..6000 ms；這是查詢排程，不是硬體時間保證，也不改變 wire timeout。
+- 靜默期間不送 device 查詢；後續確認使用 12 秒預算，完成的 health probes 之間至少間隔 100 ms，等待可取消。
+- 已安裝 8 KiB App、載入 24 KiB BIN 時，Enter Boot 仍依已安裝 8 KiB 排程。新映像通過 END 後，才以 24 KiB 計算重啟等待。
+- I2C reply deadline 表示尚未確認命令回覆，不等同 device 回傳 Flash error；需分開核對 request、reply、reset 與 App 確認階段。
+
+<a id="i2c-test-bin-sequence"></a>
+
+#### 容量測試 BIN
+
+App 工程的 `generate_test_bins.ps1`／建置後步驟依該次 `_update.bin` 產生 `test_bins/auto`。
+測試檔保留程式與向量，以 FF 擴充容量，更新映像長度及末端 CRC。
+
+| 核對項目 | 意義 |
+| --- | --- |
+| `flash032KiB_app024KiB` | 測試預算 32 KiB 減去 8 KiB Boot，App BIN 為 24 KiB；不改寫實際 MCU Flash geometry |
+| F24 最大 App | 256 KiB Flash 減 8 KiB Boot 與尾端 1 KiB 保留區，為 247 KiB |
+| `manifest.csv` | 列出來源 BIN 雜湊、每份測試 BIN 長度／CRC／雜湊與範圍 |
+| 驅動或 runtime 修正後 | 重建 App 及容量測試 BIN；只同步來源或只重建 Boot，不會更新舊 App 執行內容 |
+
+建議順序為原始 App BIN → 較小容量 → 逐級擴大至可用上限，每次核對 END、App ready 與 installed metadata。
+同路徑檔案重新產生後，需在 Tool 再次 **Load Update Image**；已載入的離線快取不會隨磁碟檔案自動更新。
+各容量的實板結果依實際 BIN 分別確認，不能由較小容量或舊映像的成功推定。
 
 <a id="serial-device-diagnostics"></a>
 

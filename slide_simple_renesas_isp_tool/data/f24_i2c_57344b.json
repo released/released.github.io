@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "source_report_sha256": "CC2B940C73ECE011460C6A733939B67A60E8EEBFD6EFF2AF374D3E586AFF0883",
+  "recorded_at_utc": "2026-11-13T03:40:25.790Z",
+  "tool": "0.1.0.138",
+  "host": "RL78/F24 bridge FW 1.8.1 build 20261023",
+  "interface": {
+    "protocol": "I2C ISP",
+    "rate_hz": 100000,
+    "address_7bit": 32,
+    "host_baud": 115200
+  },
+  "image": {
+    "file": "RL78_F24_ISP_Boot_loader_I2C_app_test_FF_flash064KiB_app056KiB.bin",
+    "target": "R7F124FPJ5xFB",
+    "bytes": 57344,
+    "crc32": "0xAD51426F",
+    "sha256": "78EC0CD163A9DF495803DEC9290FDC332D53B58CA352525C248135F3599B8DB5"
+  },
+  "result": "PASS",
+  "program": {
+    "last_confirmed": "app_confirmed",
+    "start": "acknowledged",
+    "end": "acknowledged",
+    "accepted_bytes": 57344,
+    "end_elapsed_ms": 541
+  },
+  "installed_metadata_bytes_match": 256,
+  "mcu_app_boot_validated": true,
+  "cold_start_verified": false,
+  "elapsed_ms": 103055,
+  "phases_ms": {
+    "1/5 Metadata": 453,
+    "2/5 Start": 218,
+    "3/5 Write": 99547,
+    "4/5 END CRC": 541,
+    "5/5 Confirm App": 2039
+  },
+  "host_counter_assessment": "UNAVAILABLE",
+  "link_retries": 0,
+  "app_confirmation_i2c_nack_observations": 0
+}

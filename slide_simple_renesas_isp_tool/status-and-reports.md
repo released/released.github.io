@@ -75,7 +75,7 @@ App 啟動確認涵蓋必要初始化與映像身分，板上的應用功能仍�
 | 尚未 Probe Host | `Next: Open + Probe Host, then Discover Target.` | Probe → Discover |
 | 已 Probe，尚未 Discover | `Next: Discover Target (available in Boot or App mode).` | Discover → 依回報模式繼續 |
 | Discover 回報 Boot | `Boot mode detected. Enter Boot is not needed` | 核對 BIN／條件 → Start Device Update；有無已安裝 App 都依實際模式判斷 |
-| Discover 回報 App | 粗體黑字 `Next: Enter Boot. App mode detected` | Discover → Enter Boot → 核對 BIN／條件 → Start Device Update；進入 Boot 或作業執行中時，回復一般提示 |
+| Discover 回報 App | 粗體黑字 `Next: Enter Boot.` | Discover → Enter Boot → 核對 BIN／條件 → Start Device Update；進入 Boot 或作業執行中時，回復一般提示 |
 
 App 的 INFO／ENTER 回覆由該 App 實作。
 若自行開發的 App 未提供更新協定，可使用專案定義的 reset／recovery 方式停留 Boot，再 Discover；Tool 不以未回覆推定裝置已進入 Boot。
@@ -86,6 +86,15 @@ App 的 INFO／ENTER 回覆由該 App 實作。
 <a id="app-restart-confirmation"></a>
 
 ### 重啟等待與 App 確認
+
+<a id="uart0-local-reset"></a>
+
+#### UART0 本機重置
+
+- F13 Classical、F24 Classical／CAN FD、RH850 Classical／CAN FD 的 Custom Transfer 與 App 支援 UART0 `z`／`Z` 一般 MCU 重置。
+- UART0 為115200、8-N-1；Terminal TX需接 Device UART0 RX，並共地。只有接 Device TX 的單向 Log 線無法送出此命令。
+- 接收與重置在主迴圈處理。App 重啟依原本 Boot／App 驗證流程執行；Tool 的 Enter Boot 與此本機重置各自獨立。
+- Boot 更新期間沿用其原有控制流程；完成狀態仍依 live App 確認，不以 UART0 文字取代。
 
 END CRC 通過後，Tool 依新 App BIN 大小與本次 END CRC 實測耗時，安排 1～6 秒的重啟等待，再開始 APP_READY 唯讀查詢。
 等待期間不送出 CAN 請求，不切換 COM 或重送 END；Cancel 仍可結束確認流程。
@@ -143,8 +152,8 @@ flowchart TD
 ### Tool 欄位與狀態判讀
 
 畫面上的資訊分為離線 BIN、目前連線裝置與本次操作設定。
-`LOADED APP BIN | OFFLINE` 與共用映像區大多來自檔案，不代表板上已安裝相同內容。
-`Device LIVE policy` 則來自已探索的裝置；尚未取得的 live 資訊不以 BIN 補入。
+`UPDATE BIN | OFFLINE` 與共用映像區大多來自檔案，不代表板上已安裝相同內容。
+`Installed Rule (LIVE)` 則來自已探索的裝置；尚未取得的 live 資訊不以 BIN 補入。
 五張資訊卡的位置與來源見 [主畫面](https://released.github.io/slide_simple_renesas_isp_tool/#tool-operation)。
 
 <a id="tool-console-layout"></a>
@@ -158,30 +167,39 @@ flowchart TD
 | --- | --- | --- |
 | 藍灰 | HOST BRIDGE | Probe讀回的bridge身分／能力 |
 | 青綠 | DEVICE TARGET、DEVICE BOOT、DEVICE APP | 所選device的即時INFO；三張卡屬於同一device |
-| 米褐 | 第二排的LOADED APP BIN及右側三個BIN群組 | 載入檔案的metadata／CRC，不代表已寫入device |
+| 米褐 | 第二排的UPDATE BIN及右側三個BIN群組 | 載入檔案的metadata／CRC，不代表已寫入device |
 
 Misc更新的live卡片屬於bridge，會一併使用Host藍灰識別。
-`Device LIVE policy` 有明確LIVE標籤，是下方欄位中來自裝置的政策；其餘BIN欄位以檔案解析為主。
+`Installed Rule (LIVE)` 有明確LIVE標籤，是下方欄位中來自裝置的政策；其餘BIN欄位以檔案解析為主。
 來源色不表示成功或失敗；紅色錯誤底與狀態側條仍保留，避免來源與驗證結果混用。
 
 | 群組 | 位置與用途 | 資料關聯 |
 | --- | --- | --- |
-| 1. HOST CONNECTION | 最上方；COM、Host Baud、Probe、Close、Reset 與 Cancel | PC ↔ bridge 的連線；先 Probe 才取得 Host 身分與周邊能力 |
-| 2. INFORMATION | 第一排是Host／Device／Boot／App即時資訊；第二排是Loaded BIN及精簡metadata | 即時板端回覆與載入檔案獨立核對 |
-| 3. PERIPHERAL / TARGET | 左下；CAN／I2C／UART / Xmodem／Misc、port、速度、ID／位址及探索操作 | 決定通訊路徑與目前目標；TAB 僅涵蓋此群組 |
-| 4. LOAD / UPDATE IMAGE | 中下；載入 BIN、App Start、Compare Metadata、Preflight 與更新 | 載入後，群組 2 顯示解析結果；前置條件與完成後下一步顯示於此 |
-| 5. MESSAGE LOG | 右下；訊息、檔案紀錄、報告、詳細 trace 與自動捲動 | 記錄操作過程；可暫停跟隨新訊息來閱讀歷史內容 |
+| 1. Host Connection | 最上方；COM、Host Baud、Probe、Close、Reset 與 Cancel | PC ↔ bridge 的連線；先 Probe 才取得 Host 身分與周邊能力 |
+| 2. Live Status & Update BIN | 第一排是Host／Device／Boot／App即時資訊；第二排是Loaded BIN及精簡metadata | 即時板端回覆與載入檔案獨立核對 |
+| 3. Interface & Target | 左下；CAN／I2C／UART / Xmodem／Misc、port、速度、ID／位址及探索操作 | 決定通訊路徑與目前目標；TAB 僅涵蓋此群組 |
+| 4. Image & Update | 中下；載入 BIN、App Start、Compare Metadata、Preflight 與更新 | 載入後，群組 2 顯示解析結果；前置條件與完成後下一步顯示於此 |
+| 5. Logs & Reports | 右下；訊息、檔案紀錄、報告、詳細 trace 與自動捲動 | 記錄操作過程；可暫停跟隨新訊息來閱讀歷史內容 |
+
+主畫面的資訊分工：
+
+- 身分卡顯示 Host、Device、Boot、已安裝 App 與離線 BIN；來源標示保留，卡片不重複操作教學。
+- 狀態列顯示目前連線或操作結果；Image & Update 顯示首要阻擋原因及下一步。完整條件由 `Preflight` 查看，寫入前仍由 worker 重新驗證。
+- Custom Transfer 使用 `Discover Test Target` 與 `Transfer Test`；不需要 BIN，也不寫入 Flash。更新按鈕收起，離線 BIN 查看仍可使用。
+- I2C／UART 主畫面保留資料埠、診斷 UART0、共地與電壓條件。`Connection Details...` 提供各 MCU 範例腳位、位址／速度條件；唯讀且不開啟 COM，執行中停用。
+- `New App Rule` 表示 BIN 安裝後採用的版本規則；`Installed Rule (LIVE)` 表示目前有效 App 控制的版本規則。
+- 完成提示區顯示下一個操作；狀態列保留 CRC、App 啟動及通訊清理結果。App 未確認或清理未知時，保留明確警告，不以重複更新解決未知結果。
 
 | 第二排群組 | 主畫面欄位 |
 | --- | --- |
-| BIN check / layout | CRC Result、Metadata Status、App Range、Image / Capacity |
-| BIN interface / policy | Interface / Rate、Routing / IDs、Update Policy、Protocol / Format |
-| BIN compatibility / LIVE policy | Boot / IRQ ABI、BIN Version Policy、Device LIVE policy、Flash / Boot |
+| BIN validation / layout | CRC Result、Metadata Status、App Range、Image / Capacity |
+| BIN update contract | Interface / Rate、Routing / IDs、Allowed Updates、Protocol / Format |
+| Compatibility / version rules | Min Boot / IRQ ABI、New App Rule、Installed Rule (LIVE)、Flash / Boot |
 
 Loaded BIN卡提供MCU、版本、build及檔案大小；下方的 `BIN Details...` 開啟唯讀視窗，保留全部20項欄位、完整檔案路徑及目前Workflow的檢查結果。
 卡片使用四行摘要；過長的單行或額外內容以省略號表示，滑鼠停留可查看全文。
 包含Calculated／Stored CRC、Target、Minimum／Erase等細節；不需連線，也可查看不符合目前路由的BIN。
-`Device LIVE policy`仍明確標示為裝置來源，不以離線BIN補成live資料。
+`Installed Rule (LIVE)`仍明確標示為裝置來源，不以離線BIN補成live資料。
 操作執行中暫停開啟詳情，不中斷worker或發送通訊命令。
 
 [逐欄說明](#tool-ui-metadata)列出各欄位的意義。
@@ -256,7 +274,7 @@ CRC 正確但向量結構錯誤的 BIN 會在 START 前拒絕。未知 CAN IRQ A
 
 | 顯示文字／位置 | 顏色 | 代表意義 | 後續查看 |
 | --- | --- | --- | --- |
-| `VALID`／Metadata Status | 綠 | CAN 映像的格式、欄位與配置檢查通過；不包含 CRC 相符或 live 裝置相容的保證 | 同時看 CRC Result、Update Policy 與 Preflight；Misc 判定範圍見 [介面差異](#tool-ui-adapters) |
+| `VALID`／Metadata Status | 綠 | CAN 映像的格式、欄位與配置檢查通過；不包含 CRC 相符或 live 裝置相容的保證 | 同時看 CRC Result、Allowed Updates 與 Preflight；Misc 判定範圍見 [介面差異](#tool-ui-adapters) |
 | `INVALID (see log)`／Metadata Status | 紅 | CAN metadata 不符合映像契約；部分欄位會維持 `N/A` | Shared Log 的原始原因；不要以尚未顯示的數值當成零 |
 | `MATCH`／CRC Result | 綠 | 計算值等於檔案儲存值 | 仍須核對 metadata 與 live 裝置；CRC 不是來源認證 |
 | `MISMATCH`／CRC Result | 紅 | 計算值與儲存值不同 | 核對檔案是否截斷、封裝後被修改，或選到非更新產物；重新建置並封裝 |
@@ -272,12 +290,12 @@ CRC 正確但向量結構錯誤的 BIN 會在 START 前拒絕。未知 CAN IRQ A
 | `Ready:`／prerequisite | 綠 | 目前操作的前置條件已符合 | 可開始操作；不是已完成更新 |
 | `[COMPLETE]`／狀態與共用映像區 | 綠；CAN 停止未確認時為黃色警告 | 更新／啟動核對已完成，保留本次結果與下一步 | 依 [完成提示](#update-completion) 檢查 App 或明確 RUN；不把下一次更新需要進入 Boot 當成這次失敗 |
 | `Missing:`／prerequisite，或停用按鈕 | 黃；不相容時可為紅 | 缺少連線、Boot 模式、映像、能力或其他條件；作業執行中也會停用按鈕 | 先讀該區文字，再開 Preflight；不一定是 BIN 錯誤 |
-| `[BLOCKED] Selected CAN mode/bitrate...`／前置條件區 | 粗體黑字、錯誤底色與邊框 | 已載入 BIN 不支援所選 CAN 模式或速率 | 依 `Check BIN supported...` 提示，核對 `Interface / Rate`、Device Boot 與 CAN 設定；相容後才顯示 Discover／Enter Boot 等下一步 |
+| `[BLOCKED] Selected CAN mode/bitrate...`／前置條件區 | 粗體黑字、錯誤底色與邊框 | 已載入 BIN 不支援所選 CAN 模式或速率 | 依 `Match Interface / Rate` 提示，核對 `Interface / Rate`、Device Boot 與 CAN 設定；相容後才顯示 Discover／Enter Boot 等下一步 |
 | `CAN stop is not confirmed` | 粗體操作提示 | Host CAN 的停止結果尚未確認 | Close COM → Open + Probe Host → Discover；確認前不切換介面或開始更新 |
 | `Host returned I2C_NACK / I2C_ARBITRATION_LOST / I2C_BUS_ERROR` | 錯誤 | Host 已回覆 I2C 交易結果 | 核對所選 port、7-bit address、SCL 速度、pull-up 與 Device 供電；保留原始錯誤與 Log |
 | `Next: Enter Boot.`／前置條件區 | 粗體黑字、等待底色 | Discover 已確認 App 模式，且 Enter Boot 可操作 | 先 Enter Boot，再依 BIN／條件執行 Start Device Update；BIN 模式／速率不符時，優先顯示阻擋原因 |
 
-`Update Policy` 與 `Boot / IRQ ABI` 的背景色目前表示映像角色／允許介面與所選 TAB 是否相符。
+`Allowed Updates` 與 `Min Boot / IRQ ABI` 的背景色目前表示映像角色／允許介面與所選 TAB 是否相符。
 兩欄呈綠色不代表已與 live Boot 版本或 IRQ ABI 比對成功；實際契約比較見 [Metadata 差異表](#tool-metadata-comparison)。
 狀態列的 `[WORKING]` 文字表示作業執行中，`[ERROR]`／紅色表示有原始錯誤可從 `Error Details` 再次查看。
 
@@ -324,10 +342,10 @@ CRC 範例 `0x12345678` 僅示意兩欄相等，不是這份示例的實測 chec
 | --- | --- | --- | --- |
 | Interface / Rate | BIN 宣告的更新介面與速度 | `Classical; 500K / N/A` | 不是目前下拉選單值或 Host Baud；Classical 的 data rate 不適用。Misc 顯示其更新 UART |
 | Routing / IDs | BIN 的 ID 格式、request／response ID | `STD 0x00000700 / 0x00000701` | CAN 顯示 request／response ID；UART 顯示 bridge 資料通道；I2C 顯示7-bit address。均須與 live 契約核對 |
-| Update Policy | BIN 的角色與允許更新介面 | `DEVICE APP \| CAN` | CAN BIN 切到 I2C／Misc 不會自動變成可更新；不相容時先確認目的地與編譯契約 |
-| Boot / IRQ ABI | BIN 要求的最低 Boot 版本／IRQ 介面識別 | `1.0.0 / 0x31563146` | live Boot 須達最低版本，IRQ ABI 須相符；不要求 App 與 Boot 版號相等，數值與顏色不能取代 live 比較 |
-| BIN Version Policy | 本份 BIN 安裝成功後採用的版本順序政策 | `ENABLED \| same / newer` 或 `DISABLED \| any version` | 不決定本次是否能降版；由目前有效 App 的 Device LIVE policy 決定 |
-| Device LIVE policy | live device 回報的目前有效 App 政策 | `ENABLED \| same / newer`；未探索時 `Discover Target required` | 一般更新依此判斷；`RECOVERY \| no valid App` 與 `N/A` 不當成已取得 disabled 政策 |
+| Allowed Updates | BIN 的角色與允許更新介面 | `DEVICE APP \| CAN` | CAN BIN 切到 I2C／Misc 不會自動變成可更新；不相容時先確認目的地與編譯契約 |
+| Min Boot / IRQ ABI | BIN 要求的最低 Boot 版本／IRQ 介面識別 | `1.0.0 / 0x31563146` | live Boot 須達最低版本，IRQ ABI 須相符；不要求 App 與 Boot 版號相等，數值與顏色不能取代 live 比較 |
+| New App Rule | 本份 BIN 安裝成功後採用的版本順序政策 | `ENABLED \| same / newer` 或 `DISABLED \| any version` | 不決定本次是否能降版；由目前有效 App 的 Installed Rule (LIVE) 決定 |
+| Installed Rule (LIVE) | live device 回報的目前有效 App 政策 | `ENABLED \| same / newer`；未探索時 `Discover Target required` | 一般更新依此判斷；`RECOVERY \| no valid App` 與 `N/A` 不當成已取得 disabled 政策 |
 
 欄位編輯與產生方式見 [App 設定與建置](https://released.github.io/slide_boot_loader_for_RL78/#device-app-config)。
 每個 byte 的 offset／Flash address 與對應程式見 [Metadata 位址對照](https://released.github.io/slide_boot_loader_for_RL78/#flash-metadata-can-reference)。
@@ -360,10 +378,10 @@ Misc 更新與明確 RUN 的操作見 [Host App 更新](https://released.github.
 | `VALID` + `MISMATCH` | CAN metadata 通過，但檔案 checksum 不符 | 重新取得或封裝 BIN；不進行更新 |
 | `MATCH` + `INVALID (see log)` | checksum 相符，但映像契約未通過 | 檔案種類、metadata 配置與 log 原因；CRC 不能取代格式檢查 |
 | `VALID` + `MATCH`，更新仍停用 | 檔案通過離線檢查，仍可能缺少 live 條件或有相容性差異 | [Preflight](#tool-preflight)、[Metadata 差異表](#tool-metadata-comparison)與 prerequisite 文字 |
-| `Selected CAN mode is not supported by the image.` | BIN 允許的模式與 Tool 選擇不符；例如 CAN FD BIN 搭配 Classical CAN | 依 `Check BIN supported CAN mode` 核對 BIN 的 `Interface / Rate`，載入與 Device Boot 及 CAN Mode 一致的 BIN；此時不接續顯示 Discover 指引 |
+| `BIN does not support the selected CAN mode.` | BIN 允許的模式與 Tool 選擇不符；例如 CAN FD BIN 搭配 Classical CAN | 依 `Match Interface / Rate` 核對 BIN 的 `Interface / Rate`，載入與 Device Boot 及 CAN Mode 一致的 BIN；此時不接續顯示 Discover 指引 |
 | `Selected CAN bitrate is not supported by the image.` | BIN 允許的 nominal／data bitrate 與選項不符 | 核對 BIN `Interface / Rate`、Device Boot 設定與所選速率；Tool 設定不會改變 Device Boot 的速率 |
 | `App Start Override does not match image metadata (...)` | 手動起點與 BIN 不同；括號內為實際位址 | 回到 `Auto`，或使用與工程配置相符的值；不以此欄搬移 BIN |
-| `CAN Upgrade image metadata magic is invalid.` | 映像識別值不符 | 是否載入正確的封裝產物，而不是 HEX、raw BIN 或其他角色映像 |
+| `Device image metadata magic is invalid (CAN or ISP required).` | 映像識別值不符 | 是否載入正確的封裝產物，而不是 HEX、raw BIN 或其他角色映像 |
 | `Image update policy is missing, malformed or unsupported.` | 更新角色／介面等 policy 無法通過解析 | App／工程 header、產生流程及封裝輸出 |
 | `Firmware image length does not match its metadata.` | 檔案大小與宣告值不同，或未符合最小長度／4-byte 對齊條件 | 是否截斷、誤選產物、最小長度配置錯誤，或封裝後另有附加資料 |
 | `Reserved metadata extension bytes must be 0xFF for this image format.` | 保留區不是契約要求的 `0xFF` | metadata 產生配置；不在保留區自行填資料 |
@@ -385,7 +403,7 @@ Misc 更新與明確 RUN 的操作見 [Host App 更新](https://released.github.
 #### 版本政策與 force upgrade old version firmware
 
 版本政策只有一個設定來源：MCU 目前有效 App 的 metadata。
-Tool 的 `Installed Policy` 顯示目前政策，`BIN Version Policy` 顯示成功更新後將採用的設定；不提供另一個常駐開關。
+Tool 的 `Installed Policy` 顯示目前政策，`New App Rule` 顯示成功更新後將採用的設定；不提供另一個常駐開關。
 
 | 已安裝 App 的 version control | 舊版 BIN | 同版 BIN | 新版 BIN |
 | --- | --- | --- | --- |
@@ -458,7 +476,7 @@ CAN、UART／Xmodem／I2C更新、Misc更新及Misc RUN結束時，Tool 在 EXE 
 #### 更新完成後開啟 Firmware update report
 
 1. 更新成功後，確認完成對話框與 `[COMPLETE]` 提示。報告會自動儲存，不需先按 Export Summary。
-2. 在右下 `MESSAGE LOG` 群組按 `Open Last Report`，以預設瀏覽器開啟 **Firmware update report**；Tool 不會自行開啟瀏覽器。
+2. 在右下 `Logs & Reports` 群組按 `Open Last Report`，以預設瀏覽器開啟 **Firmware update report**；Tool 不會自行開啟瀏覽器。
 3. 先核對 `operation`、`result` 與 `message`，再查看目的地、載入映像、CRC、App 確認及階段時間。
    CAN 更新包含 App 啟動確認；Misc 寫入完成仍需明確 RUN，RUN 的確認另存一份報告。各結果見[完成提示與下一步](#update-completion)。
 4. 需要保存或分享紀錄時，可從 EXE 旁的 `reports/` 取得同名 `update_*.html` 與 `update_*.json`。
@@ -498,10 +516,22 @@ HTML 報告無外部腳本或資源需求。
 | host／port／host_baud／can | 本次選定的 Host 身分、COM 與速度、CAN 設定 |
 | elapsed_ms／phases_ms | 整次作業與各階段耗時；不是 analyzer 測得的 bus time |
 | details | 映像 CRC／大小／版本／build、已 ACK 區塊、ABORT 與 App 確認結果 |
+| device_program | UART／I2C／Xmodem 的最後確認階段、START 與 END／EOT 結果、已接受 bytes 與 END／EOT 耗時；其他更新路徑為 null |
 | host_deltas | 本次 CAN 更新前後的 UART overflow、CAN lost／warning／error-passive／TX failure／bus-off／recovery 差值 |
 | host_counter_assessment／host_counter_note | 本次計數比較的判定及範圍；與映像寫入／App 確認結果分開記錄 |
 | host_peaks | Host 自開機或 CLEAR_STATS 起的 queue 高水位、最長等待／交易／dispatcher 時間；不是本次區間峰值 |
 | link_retries | 本次 Host Link 重試；已知重連重設時為 null，不當成零 |
+
+`device_program.start/end` 分為 `not_attempted`、`unconfirmed`、`rejected`、`acknowledged`。
+
+- `not_attempted` 表示尚未呼叫資料交換；進度畫面進入 END 階段本身不代表已送出。
+- `unconfirmed` 表示已嘗試交換，但缺少有效確認，不能據此推定裝置未執行。
+- `rejected` 表示收到符合 sequence／command／CRC 的明確拒絕回覆。
+- `acknowledged` 表示有效確認；更新成功仍須通過後續 App 與 installed metadata 核對。
+
+`accepted_bytes` 是本次 session 已接受的資料量，不保證每筆資料已完成 Flash programming。
+END／EOT 已嘗試後，不以裝置 ABORT、重送 END／EOT 或重寫映像來解除未知結果；Host bus reservation 的清理仍獨立執行。
+整體 `FAIL/CANCELED` 與已確認的寫入階段並存，報告保留兩者。
 
 <a id="tool-preflight"></a>
 
