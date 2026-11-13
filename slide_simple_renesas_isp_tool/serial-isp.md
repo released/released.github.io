@@ -7,6 +7,9 @@
 接線、可調通訊設定、App 更新及串列通訊測試。
 
 <!-- UART_TOOL_GUIDE_BEGIN -->
+
+- I2C／UART 的 `Connection Details...` 提供 Host 與各 MCU 範例腳位、共地／電壓條件及 Device 速度／位址要求；可離線查看，操作執行中停用。主畫面保留必要接線提醒。
+- Custom Transfer 使用 Discover／Transfer Test，不需要 BIN，也不寫入 Flash。
 <a id="uart-device-operation"></a>
 <a id="serial-device-operation"></a>
 
@@ -18,7 +21,8 @@ Device UART0 獨立提供診斷文字，供 terminal 觀察。
 RL78 F13／F24／G16／G22 與 RH850 各有獨立的 UART、Xmodem、I2C Boot／App／Transfer 工程。
 這些串列工程已通過離線建置及程式模型測試；實際接線、中斷、Flash、重啟與斷電恢復另作實板驗證。
 
-F24 I2C 的原始 App 及 8..247 KiB 容量測試映像已有一般更新與重啟後 App 確認資料；條件與耗時見[F24 I2C 更新量測](#f24-i2c-update-measurements)。其他平台、速度及故障恢復分別驗證。
+F24 I2C 的原始 App 及 8..247 KiB 容量測試映像已有一般更新與重啟後 App 確認資料；
+條件與耗時見[F24 I2C 更新量測](#f24-i2c-update-measurements)。其他平台、速度及故障恢復分別驗證。
 
 Boot 流程與協定格式可依介面直接查閱：
 
@@ -263,6 +267,24 @@ App 工程的 `generate_test_bins.ps1`／建置後步驟依該次 `_update.bin` 
 <a id="serial-device-diagnostics"></a>
 
 ### Device 串列診斷
+
+<a id="serial-uart0-console"></a>
+
+#### UART0 本機操作與封包文字
+
+- F13／F24 I2C App 與 Custom Transfer，以獨立 UART0 提供診斷文字；I2C 傳送二進位協定。
+- Terminal 使用 115200、8-N-1；傳送 `z` 或 `Z` 可要求一般 MCU 重置。App 重啟仍經過原本的 Boot 驗證流程；進入更新模式使用 Tool 的 Enter Boot。
+- 有效封包顯示 `RX`／`TX`、16-bit `seq`、`cmd`、`len` 與完整 payload。回覆需對應相同 sequence；Tool 另外檢查 CRC 與回傳資料。
+- PING／ECHO 測試資料為 `i XOR 0xA5`，例如 `A5 A4 A7 A6`；sequence 隨 request 遞增，資料本身維持固定測試圖樣。
+- 文字輸出在主迴圈進行；I2C 的 TX trace 等到完整回覆經最後 NACK／STOP 確認。CRC 錯誤或不完整的 frame 不會成為有效封包 trace。
+- `TRACE ISP LOG_DROP` 表示診斷文字被丟棄，不能據此推定資料傳輸遺失。F13／F24 使用獨立有上限的文字佇列。
+- I2C 回覆未被完整讀取時，mailbox 在最後活動後 2 秒放棄交易。該回覆不算成功傳送，待輸出的相關 trace 以文字丟棄處理，待執行的 ENTER 動作也會取消。
+- 交易已放棄、資料 bus idle 且沒有更新作業時，UART0 `z/Z` 可要求一般重置；不需要先完成另一筆通訊。bus 仍忙碌時持續等待，逾時本身不會自動重置 MCU。
+
+此處本機控制說明適用於 F13／F24 I2C App 與 Transfer。
+
+Transfer Test 分開記錄 PING／ECHO／counter（Xmodem 另含 CRC128 streaming）與最後 live INFO 重讀結果。
+子測試通過後若 INFO 重讀失敗，整體作業仍為失敗。操作名稱及錯誤檢查方向依實際 I2C／UART／Xmodem 介面顯示；原始錯誤保留於 Log 與錯誤明細。
 
 支援診斷能力的 UART／Xmodem App 或 Transfer，在 Discover、Transfer Test及更新後確認 App時，
 Tool會顯示 `Device UART observations`。這是 Device本次執行的快照，不是每次更新的差值。

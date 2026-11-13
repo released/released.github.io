@@ -1046,6 +1046,34 @@
     "共用-tool-操作": {
       "page": "tool-guides.html",
       "anchor": "共用-tool-操作"
+    },
+    "device-upgrade-paths": {
+      "page": "index.html",
+      "anchor": "device-upgrade-paths"
+    },
+    "upgrade-f13-can": {
+      "page": "can-device.html",
+      "anchor": "upgrade-f13-can"
+    },
+    "upgrade-f24-can": {
+      "page": "can-device.html",
+      "anchor": "upgrade-f24-can"
+    },
+    "upgrade-f24-can-fd": {
+      "page": "can-device.html",
+      "anchor": "upgrade-f24-can-fd"
+    },
+    "upgrade-f13-i2c": {
+      "page": "i2c-device.html",
+      "anchor": "upgrade-f13-i2c"
+    },
+    "f13-i2c-update-measurements": {
+      "page": "i2c-device.html",
+      "anchor": "f13-i2c-update-measurements"
+    },
+    "upgrade-f24-i2c": {
+      "page": "i2c-device.html",
+      "anchor": "upgrade-f24-i2c"
     }
   }
 }

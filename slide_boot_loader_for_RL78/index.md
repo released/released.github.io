@@ -8,6 +8,19 @@
 依閱讀目的選擇 MCU device 工程、App 設定、移植或格式參考。
 日常更新與通訊驗證見 [Simple Renesas ISP Tool](../slide_simple_renesas_isp_tool/)。
 
+<a id="device-upgrade-paths"></a>
+
+## 依型號與周邊更新 App
+
+各入口包含接線、配對映像、Tool 操作、Boot 接收驗證及 App 返回 Boot 流程。
+
+| 型號 | Classical CAN | CAN FD | UART ISP | I2C ISP | Xmodem |
+| --- | --- | --- | --- | --- | --- |
+| F13 | [操作與機制](can-device.html#upgrade-f13-can) | — | — | [操作與機制](i2c-device.html#upgrade-f13-i2c) | — |
+| F24 | [操作與機制](can-device.html#upgrade-f24-can) | [操作與機制](can-device.html#upgrade-f24-can-fd) | — | [操作與機制](i2c-device.html#upgrade-f24-i2c) | — |
+
+「—」表示本指南沒有該型號與介面的配對工程。
+
 ## 依閱讀目的查閱
 
 | 目的 | 直接入口 |

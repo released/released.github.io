@@ -146,6 +146,19 @@ Boot 建立時脈與 RAM／ECC 狀態；App 接續核對交接時脈，再初始
 | FCL／RAM reader | 專用 RAM 區域及可執行範圍 | Flash／image API、linker 與 post-build guard |
 
 Boot→App 交接會先遮罩中斷、停止 Boot 周邊、更新 RAM cookie，再透過 assembly 入口設定 App 的 EBASE／INTBP。
+
+CAN／CAN FD 的 RH850 工程各自保有 `boot_app_handoff.h`，使用 `0xFEDFFFF0..0xFEDFFFFF` 的 16-byte retention RAM：
+
+| 相對位置 | 內容 | 用途 |
+| --- | --- | --- |
+| +0 | signature | 辨識交接結構 |
+| +4 | request | ENTER／更新完成等一次性請求 |
+| +8 | request 反碼 | 檢查請求完整性 |
+| +12 | owner／updated flag | Boot=`0xAA`、App=`0x55`，以及更新狀態位元 |
+
+- 一般 stack／`.bss`／data 初始化避開此區；冷 reset 由 Boot 依 ECC 規則先初始化再使用。
+- 請求消費與 Flash metadata／CRC 驗證各自進行；位址與欄位不沿用 RL78 的配置。
+
 App 的一般 EIINT 依 App table 直接取得 handler；完整路徑與新增 IRQ 步驟見 [IRQ 編輯](app-development.html#rh850-app-editing)。
 
 

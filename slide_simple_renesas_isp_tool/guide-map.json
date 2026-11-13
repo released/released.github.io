@@ -466,6 +466,14 @@
     "i2c-test-bin-sequence": {
       "page": "serial-isp.html",
       "anchor": "i2c-test-bin-sequence"
+    },
+    "uart0-local-reset": {
+      "page": "status-and-reports.html",
+      "anchor": "uart0-local-reset"
+    },
+    "serial-uart0-console": {
+      "page": "serial-isp.html",
+      "anchor": "serial-uart0-console"
     }
   }
 }

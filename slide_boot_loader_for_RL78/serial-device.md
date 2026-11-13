@@ -33,6 +33,15 @@ Tool選取值、Boot／App初始化、live INFO與BIN需對應的項目集中於
 
 ### 配置與資料來源
 
+F13／F24 I2C App 與 Transfer 的 `custom_func.c` 擁有 UART0 console：
+
+- `isp_console.inc` 在主迴圈輸出有效封包的 sequence、command、length 與完整 payload；ISR 不解析文字或執行 reset。
+- F13／F24 保存有上限的封包快照，診斷輸出在主迴圈處理。
+- UART0 `z`／`Z` 只要求一般重置；資料介面完成目前回覆後才允許重置，I2C 包含最後 NACK／STOP。診斷 TX 停滯不會無限阻擋已可執行的重置。
+- I2C backend 區分完整回覆與已放棄交易。最後活動後 2 秒仍未完成的 mailbox 會清除；App／Transfer 同步取消該回覆的待執行動作及未完成文字，不將放棄視為成功 ACK。
+- 交易放棄後，明確輸入 UART0 `z/Z` 仍須通過 bus idle 與非更新中條件；不會自動重置，也不會沿用已取消的 ENTER 動作。
+- Boot／App metadata、IRQ、Flash geometry、UART1 binary 與 I2C mailbox 格式維持各自契約。UART0 接線與操作集中於[串列 device 操作](https://released.github.io/slide_simple_renesas_isp_tool/#uart-device-operation)。
+
 | MCU | CPU／時鐘 | Code Flash／RAM | App最大完整BIN | 尾端保護區 |
 | --- | --- | --- | --- | --- |
 | F13 | 32MHz／X1 4MHz | 128KiB／8KiB | 119KiB | 0x1FC00..0x1FFFF |
@@ -90,6 +99,9 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\build.ps1
 
 Pre-build產生完整表與metadata；post-build核對實際linked image、ISR返回方式、CRC、ROM／RAM範圍後產生_update.bin與app_build_report.html。
 HTML列出實際BIN的metadata bytes、IRQ、CRC與雜湊；它是編譯報告，不是板上更新結果。
+
+- F13 I2C App 以 `.boot_info` 保留 `0xFF710..0xFF71F` 的 no-init 交接 RAM；owner、HANDOFF、更新完成與返回 Boot 標記不由 startup 清除。
+- F13 App post-build 以實際 map 核對交接區、堆疊及一般 RAM 初始化範圍互不重疊，且堆疊至少保留 512 bytes；動態堆疊用量仍需依 App 工作負載驗證。各標記的生命週期與位址差異見 [RAM 交接契約](https://released.github.io/slide_boot_loader_for_RL78/porting.html#guide-porting-5)。
 
 ```mermaid
 flowchart TD
@@ -286,6 +298,21 @@ Status 名稱與值來自工程內 `hal/isp/isp_protocol.h`，命令條件由 `i
 <a id="guide-serial-device-9"></a>
 
 ### 驗證範圍
+
+共用驅動修正須分別檢查 MCU、介面與 Boot／App／Transfer 的適用範圍。
+來源同步、目標建置、更新 BIN 與容量測試 BIN 是不同產物；同步來源後，既有 BIN 仍保有原本的執行內容。
+
+- F13／F24 I2C 工程各自編譯本地 driver；Boot 與 App 都需納入修正評估。
+- App-only 建置保留配對 Boot；Boot 更新另依安裝流程處理。
+- App 重建後重新產生容量測試 BIN，核對來源雜湊、CRC、長度與保護區；Tool 重新載入該檔案。
+- 其他介面及 RH850 依實際 driver／IRQ／timer 判斷，不直接套用 RL78 暫存器對策。
+
+操作與容量測試順序見[Tool I2C 流程](https://released.github.io/slide_simple_renesas_isp_tool/serial-isp.html#i2c-test-bin-sequence)。
+
+F24 I2C 一般更新已涵蓋原始 App 與 8／24／56／120／247 KiB 映像：
+END 成功、App ready 與全部 installed metadata 相符，UART0 也有重啟後持續運作紀錄。
+環境、分階段耗時及限制集中於[F24 I2C 更新量測](https://released.github.io/slide_simple_renesas_isp_tool/serial-isp.html#f24-i2c-update-measurements)。
+此結果不延伸為其他 MCU／介面、冷啟動、斷電恢復或原始異常根因的驗證。
 
 離線檢查包含實際App BIN、production PC client、C engine、transport loop／receiver、四系列IICA register模型，以及CS+ linked metadata／vector／ROM／RAM guards。
 App-only建置會比對Boot來源與產物雜湊，確認未被改寫。

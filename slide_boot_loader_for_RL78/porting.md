@@ -186,6 +186,38 @@ App BIN 容量包含向量表、metadata、程式／填充與最後 4 bytes CRC3
 Boot 交接前關閉中斷、整理周邊狀態並寫入 App owner。
 App 經自己的 startup 初始化後，再啟用所需周邊與 IRQ。
 
+下列 RAM 交接契約涵蓋 CAN、CAN FD 與 F13／F24 I2C ISP；實際位址由配對工程的 `boot_app_handoff.h`、板端存取與 linker 決定。Flash metadata／CRC 驗證及 RAM 交接各自負責不同階段。
+
+| 標記 | 用途與生命週期 | RL78 交接區內的位置 |
+| --- | --- | --- |
+| IRQ owner | Boot=`0xAA`、App=`0x55`；由中斷轉送邏輯使用 | 基址 + 0，1 byte |
+| HANDOFF | Boot 驗證映像後、進入 App 前寫入 `0x46444E48`；App 讀取後清除 | 基址 + 4，4 bytes |
+| UPDATE_COMPLETE | 成功更新流程寫入 `0x44505543`；App 讀取一次並清除，用於更新完成 log | 基址 + 8，4 bytes |
+
+返回 Boot 請求由 App 完成通訊回覆後寫入，Boot 消費請求並選擇 recovery 流程。各配對工程配置如下：
+
+| 配對工程 | 16-byte 交接區 | 返回 Boot 請求 |
+| --- | --- | --- |
+| F13 Classical CAN | `0xFF710..0xFF71F` | 獨立的 `0xFF700` |
+| F24 Classical CAN／CAN FD | `0xFF710..0xFF71F` | `0xFF71C` |
+| F13／F24 I2C ISP | `0xFF710..0xFF71F` | `0xFF71C` |
+
+- No-init 區必須有實際的絕對位址變數或 linker 保留區。固定地址指標描述存取位置，仍需另外完成 RAM 配置。
+- Stack 範圍、stack 初始化、`.bss` 清除、`.data` 複製與 RAM／ECC 初始化均需避開交接區；以實際 map 與所選 startup 核對。
+- 冷啟動依 MCU 的 reset／ECC 規則初始化交接狀態；由 Boot 驗證 Flash 後重新建立本次交接。RAM 標記的保存範圍不延伸為斷電保存。
+- `END CRC` 確認映像驗證階段；完成更新仍需 App 啟動、APP_READY 與 live 身分確認。標記遺失時的 App 行為依工程實作，可能返回 Boot 或缺少啟動來源資訊。
+
+```mermaid
+flowchart TD
+    V["Boot 驗證 metadata / vectors / CRC"] --> H["寫入 HANDOFF 與 App owner"]
+    H --> S["App startup：保留 no-init 交接 RAM"]
+    S --> C["App 讀取並消費一次性標記"]
+    C --> A["初始化 App 周邊與 IRQ"]
+    A --> R["Tool 確認 APP_READY 與 live image"]
+```
+
+RH850 使用獨立的 retention RAM／signature／request／反碼配置，見 [RH850 startup 交接](https://released.github.io/slide_boot_loader_for_RH850/porting.html#rh850-startup-handoff)。
+
 F13 的 `f13_board_support` 與 startup user-area clock hook 負責時鐘交接。
 F24 的 `hal/device`、`hal/flash` 與 startup projection 負責板端初始化及 RFD RAM 配置。
 這些來源分別保留在各自工程中。

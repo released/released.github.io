@@ -14,3 +14,5 @@ foreach($name in @('sync_device_workshop.ps1','sync_update_evidence.ps1','sync_t
 }
 & powershell.exe -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot 'verify_local.ps1') -ToolRoot $ReferenceRoot
 if($LASTEXITCODE) { throw 'Web references/public-content verification failed.' }
+& node (Join-Path $ReferenceRoot 'scripts\verify_device_upgrade_release.mjs') $webRoot
+if($LASTEXITCODE) { throw 'Device guide publication includes an unaccepted engineering role.' }

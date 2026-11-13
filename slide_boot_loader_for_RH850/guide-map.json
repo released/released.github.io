@@ -758,6 +758,18 @@
     "rh850-can-block-write": {
       "page": "can-device.html",
       "anchor": "rh850-can-block-write"
+    },
+    "device-upgrade-paths": {
+      "page": "index.html",
+      "anchor": "device-upgrade-paths"
+    },
+    "upgrade-rh850-can": {
+      "page": "can-device.html",
+      "anchor": "upgrade-rh850-can"
+    },
+    "upgrade-rh850-can-fd": {
+      "page": "can-device.html",
+      "anchor": "upgrade-rh850-can-fd"
     }
   }
 }

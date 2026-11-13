@@ -91,6 +91,17 @@ flowchart LR
 START 檢查完整 staged Metadata；WRITE 依序寫入，END 驗證完整映像。
 I2C ACK 只代表 bus byte／交易的接收，更新結果仍以 framed reply status 與 App 確認判斷。
 
+| 階段 | 完成條件 | 等待或失敗時的處理 |
+| --- | --- | --- |
+| ENTER | 完整成功 reply 經最終 NACK／STOP 後才要求 reset | 回覆未確認不推定已進 Boot；新 BIN 尚未傳送 |
+| WRITE | 對應 sequence／command 的成功 reply | 保留最後確認 offset；不把 bus ACK 當作 Flash 成功 |
+| END | 完整映像驗證及成功 reply | 保留 status 與驗證耗時；不重送 END |
+| 重啟後 | App ready 及全部 installed metadata 相符 | 與 END 成功分開判斷；依已安裝／新映像所在階段排程等待 |
+
+大小估計與靜默查詢排程見[Tool I2C 更新與等待](https://released.github.io/slide_simple_renesas_isp_tool/serial-isp.html#i2c-image-waits)。
+Mailbox 的最後活動與逾時取樣須使用一致的 IRQ 保護，避免 ISR 更新活動時間後，主迴圈以較舊時間誤判逾時。
+真正超過 2 秒未完成的交易仍會放棄；App／Transfer 取消該回覆的待執行動作與診斷所有權，不因此自動 reset。
+
 <a id="guide-i2c-device-4"></a>
 <a id="i2c-protocol"></a>
 <a id="guide-serial-device-7"></a>

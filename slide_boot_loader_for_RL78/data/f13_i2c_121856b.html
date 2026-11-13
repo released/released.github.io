@@ -1,0 +1,41 @@
+<!doctype html><html lang="zh-Hant"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>F13 I2C 更新量測摘要</title><style>body{font:16px system-ui;margin:2rem;max-width:70rem}table{border-collapse:collapse;width:100%}th,td{border:1px solid #aaa;padding:.6rem;text-align:left;vertical-align:top}pre{white-space:pre-wrap;overflow-wrap:anywhere;margin:0}th{width:15rem;background:#eee}@media(max-width:600px){body{margin:1rem}table,tbody,tr,th,td{display:block;width:auto}tr{margin:.8rem 0}th{border-bottom:0}}</style><h1>F13 I2C 更新量測摘要</h1><p><a href="../i2c-device.html#f13-i2c-update-measurements">更新時間表與條件</a></p><p>來源報告的選定欄位；映像與來源報告由 SHA256 識別。</p><table><tr><th>schema</th><td><pre>1</pre></td></tr>
+<tr><th>source_report</th><td><pre>update_20261113_133901_664_12576_8127656_5.json</pre></td></tr>
+<tr><th>source_report_sha256</th><td><pre>C75AE6A58C4E72257B23B3A87DF925C1108EE2FB0DE69B87D6FE2BA2841F222C</pre></td></tr>
+<tr><th>recorded_at_utc</th><td><pre>2026-11-13T13:39:01.659Z</pre></td></tr>
+<tr><th>tool</th><td><pre>0.1.0.138</pre></td></tr>
+<tr><th>host</th><td><pre>RL78/F24 bridge FW 1.8.1 build 20261023</pre></td></tr>
+<tr><th>interface</th><td><pre>{
+  &quot;protocol&quot;: &quot;I2C ISP&quot;,
+  &quot;rate_hz&quot;: 100000,
+  &quot;address_7bit&quot;: 32,
+  &quot;host_baud&quot;: 115200
+}</pre></td></tr>
+<tr><th>image</th><td><pre>{
+  &quot;file&quot;: &quot;RL78_F13_ISP_Boot_loader_I2C_app_test_FF_flash128KiB_app119KiB.bin&quot;,
+  &quot;target&quot;: &quot;R5F10BMG&quot;,
+  &quot;bytes&quot;: 121856,
+  &quot;crc32&quot;: &quot;0x5CA665EA&quot;,
+  &quot;sha256&quot;: &quot;054AE2DB273853105DB247EB3BAB1A10C81EE0BF6043D033379C5771EBFFAB50&quot;
+}</pre></td></tr>
+<tr><th>result</th><td><pre>PASS</pre></td></tr>
+<tr><th>program</th><td><pre>{
+  &quot;last_confirmed&quot;: &quot;app_confirmed&quot;,
+  &quot;start&quot;: &quot;acknowledged&quot;,
+  &quot;end&quot;: &quot;acknowledged&quot;,
+  &quot;accepted_bytes&quot;: 121856,
+  &quot;end_elapsed_ms&quot;: 1183
+}</pre></td></tr>
+<tr><th>installed_metadata_bytes_match</th><td><pre>256</pre></td></tr>
+<tr><th>mcu_app_boot_validated</th><td><pre>true</pre></td></tr>
+<tr><th>cold_start_verified</th><td><pre>false</pre></td></tr>
+<tr><th>elapsed_ms</th><td><pre>214357</pre></td></tr>
+<tr><th>phases_ms</th><td><pre>{
+  &quot;1/5 Metadata&quot;: 434,
+  &quot;2/5 Start&quot;: 219,
+  &quot;3/5 Write&quot;: 208912,
+  &quot;4/5 END CRC&quot;: 1183,
+  &quot;5/5 Confirm App&quot;: 3385
+}</pre></td></tr>
+<tr><th>host_counter_assessment</th><td><pre>UNAVAILABLE</pre></td></tr>
+<tr><th>link_retries</th><td><pre>0</pre></td></tr>
+<tr><th>app_confirmation_i2c_nack_observations</th><td><pre>4</pre></td></tr></table></html>

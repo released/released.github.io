@@ -198,6 +198,7 @@ V1 是可編輯的觀察標籤，不取代 metadata 的版本號；修改位置�
 
 接收使用 RXMB0 中斷與 8 筆 RAM queue；Boot／App 向量與 Flash 交接詳見
 [FD device 接收與中斷](https://released.github.io/slide_boot_loader_for_RL78/#can-fd-device-rx)。
+CAN FD 的 IRQ owner、HANDOFF、更新完成與返回 Boot 標記，依 [RAM 交接契約](https://released.github.io/slide_boot_loader_for_RL78/porting.html#guide-porting-5) 保存及消費；Flash CRC 通過後仍需完成 App 確認。
 實板核對時保留 Tool Log、Firmware update report 與 device UART Log，分別確認：
 
 | 階段 | 可觀察結果 |
