@@ -1074,6 +1074,14 @@
     "upgrade-f24-i2c": {
       "page": "i2c-device.html",
       "anchor": "upgrade-f24-i2c"
+    },
+    "upgrade-f24-uart": {
+      "page": "uart-device.html",
+      "anchor": "upgrade-f24-uart"
+    },
+    "f24-uart-update-measurements": {
+      "page": "uart-device.html",
+      "anchor": "f24-uart-update-measurements"
     }
   }
 }

@@ -17,7 +17,7 @@
 | 型號 | Classical CAN | CAN FD | UART ISP | I2C ISP | Xmodem |
 | --- | --- | --- | --- | --- | --- |
 | F13 | [操作與機制](can-device.html#upgrade-f13-can) | — | — | [操作與機制](i2c-device.html#upgrade-f13-i2c) | — |
-| F24 | [操作與機制](can-device.html#upgrade-f24-can) | [操作與機制](can-device.html#upgrade-f24-can-fd) | — | [操作與機制](i2c-device.html#upgrade-f24-i2c) | — |
+| F24 | [操作與機制](can-device.html#upgrade-f24-can) | [操作與機制](can-device.html#upgrade-f24-can-fd) | [操作與機制](uart-device.html#upgrade-f24-uart) | [操作與機制](i2c-device.html#upgrade-f24-i2c) | — |
 
 「—」表示本指南沒有該型號與介面的配對工程。
 

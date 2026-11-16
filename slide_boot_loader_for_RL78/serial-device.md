@@ -317,6 +317,8 @@ END 成功、App ready 與全部 installed metadata 相符，UART0 也有重啟�
 離線檢查包含實際App BIN、production PC client、C engine、transport loop／receiver、四系列IICA register模型，以及CS+ linked metadata／vector／ROM／RAM guards。
 App-only建置會比對Boot來源與產物雜湊，確認未被改寫。
 這些檢查不代替實板電氣、Flash timing、中斷、動態stack、重啟與斷電測試。
+F24 UART 的原始 App 及 8..247 KiB 映像完成一般更新、END CRC 與 App 身分確認；各組有 UART0 啟動與持續 counter。條件、獨立報告與未涵蓋情境見 [F24 UART 更新量測](https://released.github.io/slide_simple_renesas_isp_tool/serial-isp.html#f24-uart-update-measurements)。
+
 <!-- SERIAL_DEVICE_GUIDE_END -->
 
 ---

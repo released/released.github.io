@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "result": "PASS",
+  "tool": "0.1.0.139",
+  "host": "RL78/F24 bridge FW 1.8.1 build 20261023",
+  "interface": {
+    "protocol": "UART ISP",
+    "device_baud": 115200,
+    "format": "8-N-1",
+    "host_baud": 115200
+  },
+  "image": {
+    "target": "R7F124FPJ5xFB",
+    "bytes": 6724,
+    "crc32": "0x4ACC44A0",
+    "sha256": "EB48E4278EEDC748CE5C459B32D9862DD7CAEDFE63F2E825C91B6FFB04351F19"
+  },
+  "program": {
+    "last_confirmed": "app_confirmed",
+    "start": "acknowledged",
+    "end": "acknowledged",
+    "accepted_bytes": 6724,
+    "end_elapsed_ms": 128
+  },
+  "elapsed_ms": 13615,
+  "phases_ms": {
+    "1/5 Metadata": 411,
+    "2/5 Start": 172,
+    "3/5 Write": 10573,
+    "4/5 END CRC": 128,
+    "5/5 Confirm App": 1930
+  },
+  "installed_metadata_bytes_match": 256,
+  "mcu_app_boot_validated": true,
+  "cold_start_verified": false,
+  "host_counter_assessment": "UNAVAILABLE",
+  "link_retries": 0,
+  "device_uart": {
+    "rx_errors": 0,
+    "rx_drops": 0,
+    "tx_timeouts": 0,
+    "rx_peak": 1,
+    "rx_pending": 0
+  },
+  "app_confirmation_busy_observations": 0,
+  "source_report_sha256": "3404C8FE20AABC9429D9C3CFDD18CEF04A4549B7CD6D99BE2F73AA7C71143CA2"
+}

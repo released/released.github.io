@@ -24,6 +24,8 @@ RL78 F13／F24／G16／G22 與 RH850 各有獨立的 UART、Xmodem、I2C Boot／
 F24 I2C 的原始 App 及 8..247 KiB 容量測試映像已有一般更新與重啟後 App 確認資料；
 條件與耗時見[F24 I2C 更新量測](#f24-i2c-update-measurements)。其他平台、速度及故障恢復分別驗證。
 
+F24 UART 的原始 App 與 8..247 KiB 映像亦有 END／App 確認及 UART0 運作資料；見 [F24 UART 更新量測](#f24-uart-update-measurements)。
+
 Boot 流程與協定格式可依介面直接查閱：
 
 | 平台 | UART | I2C | Xmodem | 共用契約 |
@@ -315,6 +317,31 @@ Boot更新與I2C mailbox維持各自能力；不因缺少UART診斷而拒絕更�
 
 成功、失敗、取消都產生 JSON／HTML report；Tool不自動開啟瀏覽器。
 報告欄位與開啟方式見 [Firmware update report](https://released.github.io/slide_simple_renesas_isp_tool/#update-html-report)；
+<!-- F24_UART_MEASURED_BEGIN -->
+<a id="f24-uart-update-measurements"></a>
+
+#### F24 UART App 更新量測
+
+- Device：R7F124FPJ5xFB；F24 bridge；UART1 115200／8-N-1，Host Link 115200。
+- Tool 0.1.0.139；Host FW 1.8.1 build 20261023。六份獨立報告與實際 BIN 的 size／CRC32 相符。
+- 六次 START、END 均已確認，接受 bytes 等於映像大小；APP_READY 與全部 256-byte installed metadata 相符，UART0 有 boot-validated、update completed 及後續 counter。
+
+| 映像 | Bytes | Write 秒 | END CRC 秒 | App 確認秒 | 總秒數 | 報告 |
+| --- | ---: | ---: | ---: | ---: | ---: | --- |
+| 原始 App | 6724 | 10.573 | 0.128 | 1.930 | 13.615 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_uart_6724b.html) |
+| 8 KiB | 8192 | 12.208 | 0.144 | 1.946 | 15.187 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_uart_8192b.html) |
+| 24 KiB | 24576 | 36.835 | 0.256 | 1.961 | 39.942 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_uart_24576b.html) |
+| 56 KiB | 57344 | 86.038 | 0.480 | 1.962 | 89.369 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_uart_57344b.html) |
+| 120 KiB | 122880 | 184.479 | 0.945 | 2.635 | 188.949 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_uart_122880b.html) |
+| 247 KiB | 252928 | 380.445 | 1.842 | 9.557 | 392.734 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_uart_252928b.html) |
+
+- Device UART 的 RX errors、RX drops、TX timeouts 均為 0；這些欄位是 Device 當次執行快照。
+- Host counter assessment 為 **UNAVAILABLE**，不能據此推定 Host 全程零錯誤；Host Link retry 為 0。
+- 247 KiB 的唯讀 App 確認有 37 次 Host BUSY 觀察，最終確認成功；沒有重送 Flash START／END。
+- UART Custom Transfer 的 PING／ECHO／counters 另有通過紀錄。Xmodem 的 binary TransferTest 已通過；UART0 診斷輸出需另依實際映像確認，不能延伸成 Xmodem Boot／App 更新驗證。
+- 本表涵蓋一般更新與軟體重啟後 App 確認；冷啟動、斷電及其他故障恢復不由本批資料推定。
+<!-- F24_UART_MEASURED_END -->
+
 <!-- UART_TOOL_GUIDE_END -->
 
 <a id="4-i2c-master"></a>

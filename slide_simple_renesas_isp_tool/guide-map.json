@@ -474,6 +474,10 @@
     "serial-uart0-console": {
       "page": "serial-isp.html",
       "anchor": "serial-uart0-console"
+    },
+    "f24-uart-update-measurements": {
+      "page": "serial-isp.html",
+      "anchor": "f24-uart-update-measurements"
     }
   }
 }
