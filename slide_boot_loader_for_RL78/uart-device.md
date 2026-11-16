@@ -165,7 +165,7 @@ flowchart LR
 - Device UART 的 RX errors、RX drops、TX timeouts 均為 0；這些欄位是 Device 當次執行快照。
 - Host counter assessment 為 **UNAVAILABLE**，不能據此推定 Host 全程零錯誤；Host Link retry 為 0。
 - 247 KiB 的唯讀 App 確認有 37 次 Host BUSY 觀察，最終確認成功；沒有重送 Flash START／END。
-- UART Custom Transfer 的 PING／ECHO／counters 另有通過紀錄。Xmodem 的 binary TransferTest 已通過；UART0 診斷輸出需另依實際映像確認，不能延伸成 Xmodem Boot／App 更新驗證。
+- UART Custom Transfer 及獨立 Xmodem Transfer 均有通過紀錄；Xmodem Boot／App 的更新與 UART0 trace 證據集中於 [F24 Xmodem 更新量測](https://released.github.io/slide_simple_renesas_isp_tool/serial-isp.html#f24-xmodem-update-measurements)。
 - 本表涵蓋一般更新與軟體重啟後 App 確認；冷啟動、斷電及其他故障恢復不由本批資料推定。
 <!-- F24_UART_MEASURED_END -->
 <!-- DEVICE_UPGRADE_PATHS_END -->

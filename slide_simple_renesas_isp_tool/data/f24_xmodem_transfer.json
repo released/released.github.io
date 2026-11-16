@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "result": "PASS",
+  "protocol": "XMODEM-CRC128",
+  "device": "R7F124FPJ5xFB",
+  "ping_echo_counters_passed": true,
+  "crc128_stream_passed": true,
+  "stream_bytes": 389,
+  "flash_commands": false,
+  "uart0_trace_verified": true,
+  "trace_rx_tx_pairs": 9,
+  "payload_bytes_per_row": 8,
+  "device_uart_before": {
+    "rx_errors": 44,
+    "rx_drops": 0,
+    "tx_timeouts": 0,
+    "rx_peak": 1,
+    "rx_pending": 0
+  },
+  "device_uart_after": {
+    "rx_errors": 44,
+    "rx_drops": 0,
+    "tx_timeouts": 0,
+    "rx_peak": 1,
+    "rx_pending": 0
+  },
+  "counter_scope": "Device lifetime snapshots; unchanged44 RX errors are not a clean-bus result.",
+  "preceding_connection_observations": {
+    "host_uart_poll_timeout_command": "0x61",
+    "background_read_os_error": 995,
+    "explicit_reopen_before_success": true,
+    "cause_established": false
+  },
+  "uart0_z_reset_evidenced": false,
+  "cold_start_verified": false,
+  "source_tool_log_sha256": "7259A6BA0BFEB21C79B9FDCDB5812713EF0CE01D9DF1F6E63B168C774AC4089F",
+  "source_uart_log_sha256": "37B72FAE9D1DFBBD6C5409409F874F986993EF204F27C25495D11B327F2195DF"
+}

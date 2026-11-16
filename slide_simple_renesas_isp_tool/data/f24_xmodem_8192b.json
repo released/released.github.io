@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "result": "PASS",
+  "tool": "0.1.0.139",
+  "host": "RL78/F24 bridge FW 1.8.1 build 20261023",
+  "interface": {
+    "protocol": "XMODEM-CRC128",
+    "device_baud": 115200,
+    "format": "8-N-1",
+    "host_baud": 115200
+  },
+  "image": {
+    "target": "R7F124FPJ5xFB",
+    "bytes": 8192,
+    "crc32": "0x95861932",
+    "sha256": "500E079A06EDBCDACA4E33350B3C493D42A68F2480BAE40BF78330C8D341CC12"
+  },
+  "program": {
+    "last_confirmed": "app_confirmed",
+    "start": "acknowledged",
+    "end": "acknowledged",
+    "accepted_bytes": 8192,
+    "end_elapsed_ms": 127
+  },
+  "elapsed_ms": 11138,
+  "phases_ms": {
+    "1/5 Metadata": 384,
+    "2/5 Start": 1184,
+    "3/5 Write": 7155,
+    "4/5 END CRC": 127,
+    "5/5 Confirm App": 1956
+  },
+  "installed_metadata_bytes_match": 256,
+  "mcu_app_boot_validated": true,
+  "uart0_trace_rows_verified": true,
+  "cold_start_verified": false,
+  "uart0_z_reset_evidenced": false,
+  "host_counter_assessment": "UNAVAILABLE",
+  "link_retries": 0,
+  "device_uart": {
+    "rx_errors": 0,
+    "rx_drops": 0,
+    "tx_timeouts": 0,
+    "rx_peak": 1,
+    "rx_pending": 0
+  },
+  "app_confirmation_busy_observations": 0,
+  "source_report_sha256": "F173AE09A503E1AD1541C3A10321C068B41C3C291A6A178D7E3C6E92240CA870"
+}

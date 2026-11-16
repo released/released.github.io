@@ -319,6 +319,8 @@ App-only建置會比對Boot來源與產物雜湊，確認未被改寫。
 這些檢查不代替實板電氣、Flash timing、中斷、動態stack、重啟與斷電測試。
 F24 UART 的原始 App 及 8..247 KiB 映像完成一般更新、END CRC 與 App 身分確認；各組有 UART0 啟動與持續 counter。條件、獨立報告與未涵蓋情境見 [F24 UART 更新量測](https://released.github.io/slide_simple_renesas_isp_tool/serial-isp.html#f24-uart-update-measurements)。
 
+F24 Xmodem 的原始 App 與 8..247 KiB 映像已有 EOT／END CRC、APP_READY、全部 installed metadata 及 UART0 重啟與持續 counter 的對照資料。獨立 Transfer 有 framed trace，但累積 RX errors=44 保留；實測條件與限制見 [F24 Xmodem 量測](https://released.github.io/slide_simple_renesas_isp_tool/serial-isp.html#f24-xmodem-update-measurements)。不延伸為其他 MCU、z/Z 人工重置、冷啟動或斷電恢復的實板證據。
+
 <!-- SERIAL_DEVICE_GUIDE_END -->
 
 ---

@@ -1082,6 +1082,14 @@
     "f24-uart-update-measurements": {
       "page": "uart-device.html",
       "anchor": "f24-uart-update-measurements"
+    },
+    "upgrade-f24-xmodem": {
+      "page": "xmodem-device.html",
+      "anchor": "upgrade-f24-xmodem"
+    },
+    "f24-xmodem-update-measurements": {
+      "page": "xmodem-device.html",
+      "anchor": "f24-xmodem-update-measurements"
     }
   }
 }

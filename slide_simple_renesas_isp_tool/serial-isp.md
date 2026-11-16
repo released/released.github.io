@@ -19,12 +19,14 @@ Tool 只開啟 bridge 的 Host Link COM，再由 bridge UART1 或 IICA0 與 MCU 
 Device UART0 獨立提供診斷文字，供 terminal 觀察。
 
 RL78 F13／F24／G16／G22 與 RH850 各有獨立的 UART、Xmodem、I2C Boot／App／Transfer 工程。
-這些串列工程已通過離線建置及程式模型測試；實際接線、中斷、Flash、重啟與斷電恢復另作實板驗證。
+各工程具有獨立的介面與映像契約；實板適用範圍以各型號章節及量測條件為準。
 
 F24 I2C 的原始 App 及 8..247 KiB 容量測試映像已有一般更新與重啟後 App 確認資料；
 條件與耗時見[F24 I2C 更新量測](#f24-i2c-update-measurements)。其他平台、速度及故障恢復分別驗證。
 
 F24 UART 的原始 App 與 8..247 KiB 映像亦有 END／App 確認及 UART0 運作資料；見 [F24 UART 更新量測](#f24-uart-update-measurements)。
+
+F24 Xmodem 的 Transfer、原始 App 與 8..247 KiB 更新結果見 [F24 Xmodem 量測與限制](#f24-xmodem-update-measurements)；累積錯誤快照與成功更新分別呈現。
 
 Boot 流程與協定格式可依介面直接查閱：
 
@@ -338,9 +340,37 @@ Boot更新與I2C mailbox維持各自能力；不因缺少UART診斷而拒絕更�
 - Device UART 的 RX errors、RX drops、TX timeouts 均為 0；這些欄位是 Device 當次執行快照。
 - Host counter assessment 為 **UNAVAILABLE**，不能據此推定 Host 全程零錯誤；Host Link retry 為 0。
 - 247 KiB 的唯讀 App 確認有 37 次 Host BUSY 觀察，最終確認成功；沒有重送 Flash START／END。
-- UART Custom Transfer 的 PING／ECHO／counters 另有通過紀錄。Xmodem 的 binary TransferTest 已通過；UART0 診斷輸出需另依實際映像確認，不能延伸成 Xmodem Boot／App 更新驗證。
+- UART Custom Transfer 及獨立 Xmodem Transfer 均有通過紀錄；Xmodem Boot／App 的更新與 UART0 trace 證據集中於 [F24 Xmodem 更新量測](https://released.github.io/slide_simple_renesas_isp_tool/serial-isp.html#f24-xmodem-update-measurements)。
 - 本表涵蓋一般更新與軟體重啟後 App 確認；冷啟動、斷電及其他故障恢復不由本批資料推定。
 <!-- F24_UART_MEASURED_END -->
+
+<!-- F24_XMODEM_MEASURED_BEGIN -->
+<a id="f24-xmodem-update-measurements"></a>
+
+#### F24 Xmodem App 更新量測
+
+- Device：R7F124FPJ5xFB；F24 bridge；UART1 115200／8-N-1，Host Link 115200。
+- Tool 0.1.0.139；Host FW 1.8.1 build 20261023。六份獨立報告與實際 BIN 的 size／CRC32 相符。
+- 六次 START、END 均已確認，接受 bytes 等於映像大小；APP_READY 與全部 256-byte installed metadata 相符，UART0 有 boot-validated、update completed 及後續 counter。
+
+| 映像 | Bytes | Write 秒 | END CRC 秒 | App 確認秒 | 總秒數 | 報告 |
+| --- | ---: | ---: | ---: | ---: | ---: | --- |
+| 原始 App | 7856 | 6.883 | 0.127 | 1.944 | 10.851 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_xmodem_7856b.html) |
+| 8 KiB | 8192 | 7.155 | 0.127 | 1.956 | 11.138 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_xmodem_8192b.html) |
+| 24 KiB | 24576 | 21.464 | 0.240 | 1.943 | 25.544 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_xmodem_24576b.html) |
+| 56 KiB | 57344 | 50.549 | 0.480 | 1.958 | 54.884 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_xmodem_57344b.html) |
+| 120 KiB | 122880 | 108.125 | 0.928 | 2.648 | 113.598 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_xmodem_122880b.html) |
+| 247 KiB | 252928 | 222.702 | 1.841 | 9.531 | 235.969 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_xmodem_252928b.html) |
+
+- Device UART 的 RX errors、RX drops、TX timeouts 均為 0；這些欄位是 Device 當次執行快照。
+- Host counter assessment 為 **UNAVAILABLE**，不能據此推定 Host 全程零錯誤；Host Link retry 為 0。
+- 247 KiB 的唯讀 App 確認有 37 次 Host BUSY 觀察，最終確認成功；沒有重送 Flash START／END。
+- 獨立 Xmodem Transfer 通過 PING、96-byte ECHO、389-byte CRC32 sink／CRC128 串流與 counters；UART0 的 9 組 framed RX／TX、sequence／command、完整 payload 及每列 8 bytes 可互相核對。[Transfer 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_xmodem_transfer.html)
+- Transfer 成功段前後的 Device UART RX errors 均為 **44**，RX drops／TX timeouts 為 0；這是同一次執行的累積快照，不能解讀成全程零錯誤，也不能與更新後 App 的 0 跨執行相減。
+- 原始連線階段曾有 Host command 0x61 TIMEOUT 及讀取中斷 995；重新 Open + Probe 後才取得上述 Transfer 成功紀錄。錯誤原因沒有由本批資料確立。
+- 六次 App 重啟均有 boot-validated、update completed、UART0 console 與後續 counter；提供的 log 沒有 z/Z 人工重置訊息，故不將功能宣告視為該操作的實板證據。
+- 本表涵蓋一般更新與軟體重啟後 App 確認；冷啟動、斷電及其他故障恢復不由本批資料推定。
+<!-- F24_XMODEM_MEASURED_END -->
 
 <!-- UART_TOOL_GUIDE_END -->
 

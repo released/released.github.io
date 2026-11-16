@@ -478,6 +478,10 @@
     "f24-uart-update-measurements": {
       "page": "serial-isp.html",
       "anchor": "f24-uart-update-measurements"
+    },
+    "f24-xmodem-update-measurements": {
+      "page": "serial-isp.html",
+      "anchor": "f24-xmodem-update-measurements"
     }
   }
 }
