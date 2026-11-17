@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "result": "PASS",
+  "device": "R5F10BMG",
+  "protocol": "XMODEM-CRC128",
+  "flash_commands": false,
+  "ping_echo_counters_passed": true,
+  "crc128_stream_passed": true,
+  "trace_rx_tx_pairs": 11,
+  "payload_bytes_per_row": 8,
+  "device_uart_before": {
+    "rx_errors": 658,
+    "rx_drops": 0,
+    "tx_timeouts": 0,
+    "rx_peak": 1,
+    "rx_pending": 0
+  },
+  "device_uart_after": {
+    "rx_errors": 658,
+    "rx_drops": 0,
+    "tx_timeouts": 0,
+    "rx_peak": 1,
+    "rx_pending": 0
+  },
+  "uart0_z_reset_evidenced": false,
+  "earlier_host_internal_error_0x61": false,
+  "earlier_error_cause_established": false,
+  "source_tool_log_sha256": "8A0A78DA4111800F74FCD4CEA2BF9A189C3C98ADCD9458F02A4ADDB5017B37CA",
+  "source_uart_log_sha256": "944442EAD9CCA3FEF548852EAA780219E8033EDFC8CAC18FB24D36DC5680F67D"
+}

@@ -321,6 +321,8 @@ F24 UART 的原始 App 及 8..247 KiB 映像完成一般更新、END CRC 與 App
 
 F24 Xmodem 的原始 App 與 8..247 KiB 映像已有 EOT／END CRC、APP_READY、全部 installed metadata 及 UART0 重啟與持續 counter 的對照資料。獨立 Transfer 有 framed trace，但累積 RX errors=44 保留；實測條件與限制見 [F24 Xmodem 量測](https://released.github.io/slide_simple_renesas_isp_tool/serial-isp.html#f24-xmodem-update-measurements)。不延伸為其他 MCU、z/Z 人工重置、冷啟動或斷電恢復的實板證據。
 
+F13 的 UART ISP 與 Xmodem 各有獨立的接線、更新步驟及 Boot／App 流程；[UART ISP 量測](https://released.github.io/slide_simple_renesas_isp_tool/serial-isp.html#f13-uart-update-measurements)與 [Xmodem 量測](https://released.github.io/slide_simple_renesas_isp_tool/serial-isp.html#f13-xmodem-update-measurements)包含原始 App、24／56／119 KiB 的更新結果及 UART0 輸出條件。Transfer 的累積 RX 錯誤與更新後 App 快照分別呈現；冷啟動、斷電恢復與人工 z/Z 操作不由這批更新資料推定。
+
 <!-- SERIAL_DEVICE_GUIDE_END -->
 
 ---

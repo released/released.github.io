@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "result": "PASS",
+  "device": "R5F10BMG",
+  "protocol": "UART ISP",
+  "flash_commands": false,
+  "ping_echo_counters_passed": true,
+  "crc128_stream_passed": false,
+  "trace_rx_tx_pairs": 8,
+  "payload_bytes_per_row": 8,
+  "device_uart_before": {
+    "rx_errors": 1159,
+    "rx_drops": 0,
+    "tx_timeouts": 0,
+    "rx_peak": 1,
+    "rx_pending": 0
+  },
+  "device_uart_after": {
+    "rx_errors": 1159,
+    "rx_drops": 0,
+    "tx_timeouts": 0,
+    "rx_peak": 1,
+    "rx_pending": 0
+  },
+  "uart0_z_reset_evidenced": false,
+  "earlier_host_internal_error_0x61": true,
+  "earlier_error_cause_established": false,
+  "source_tool_log_sha256": "DB566B2D534AABBFD6E8D0660FBEADCD3609468351214F8C9A0AA208D4916710",
+  "source_uart_log_sha256": "6A836D380E605962EF3B2A8F8AF8F20D40BCB5C8E8247C63339C27F3710868CE"
+}

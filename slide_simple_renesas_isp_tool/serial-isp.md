@@ -372,6 +372,52 @@ Boot更新與I2C mailbox維持各自能力；不因缺少UART診斷而拒絕更�
 - 本表涵蓋一般更新與軟體重啟後 App 確認；冷啟動、斷電及其他故障恢復不由本批資料推定。
 <!-- F24_XMODEM_MEASURED_END -->
 
+<!-- F13_UART_MEASURED_BEGIN -->
+<a id="f13-uart-update-measurements"></a>
+
+#### F13 UART ISP App 更新量測
+
+- Device：R5F10BMG；F24 bridge；Device UART1 與 Host Link 各為 115200／8-N-1。Tool 0.1.0.139，Host FW 1.8.1 build 20261023。
+- 四份報告與實際 BIN 的大小、CRC32、SHA256 相符。START、END／EOT、完整接受 bytes、APP_READY 及全部 256-byte installed metadata 均已確認。
+- UART0 有四次 boot-validated／update completed、後續 counter 與完整 framed RX／TX；payload 每列 8 bytes。
+
+| 映像 | Bytes | Write 秒 | END CRC 秒 | App 確認秒 | 總秒數 | 報告 |
+| --- | ---: | ---: | ---: | ---: | ---: | --- |
+| 原始 App | 10556 | 15.750 | 0.176 | 1.944 | 18.761 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f13_uart_10556b.html) |
+| 24 KiB | 24576 | 36.784 | 0.303 | 1.960 | 39.940 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f13_uart_24576b.html) |
+| 56 KiB | 57344 | 85.957 | 0.576 | 2.024 | 89.445 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f13_uart_57344b.html) |
+| 119 KiB | 121856 | 182.768 | 1.136 | 3.209 | 188.001 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f13_uart_121856b.html) |
+
+- 更新後 Device UART 快照的 RX errors／drops／TX timeouts 為 0；Bridge UART1 deltas 的 RX errors／drops 為 0，每次記有 backend aborts=1。abort 計數與 Device UART 錯誤為不同觀察項。
+- Host counter assessment 為 **UNAVAILABLE**，Host Link retry 為 0；不能由此推定所有 Host 計數全程零錯誤。
+- 獨立 Transfer 的 PING／ECHO／counters 通過，沒有 Flash 命令。8 組 UART0 RX／TX 的 sequence、command、payload 與八位元組分行相符。[Transfer 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f13_uart_transfer.html)
+- Transfer 成功段前後的累積 Device RX errors 均為 **1159**，drops／TX timeouts 為 0；不能與更新後 App 的 0 跨執行相減。較早曾有 Host command 0x61 INTERNAL_ERROR；其原因未由本批資料確立。
+- 本批涵蓋正常更新後 App 確認；z/Z 人工重置、冷啟動、斷電及其他型號的結果另行驗證。
+<!-- F13_UART_MEASURED_END -->
+
+<!-- F13_XMODEM_MEASURED_BEGIN -->
+<a id="f13-xmodem-update-measurements"></a>
+
+#### F13 Xmodem App 更新量測
+
+- Device：R5F10BMG；F24 bridge；Device UART1 與 Host Link 各為 115200／8-N-1。Tool 0.1.0.139，Host FW 1.8.1 build 20261023。
+- 四份報告與實際 BIN 的大小、CRC32、SHA256 相符。START、END／EOT、完整接受 bytes、APP_READY 及全部 256-byte installed metadata 均已確認。
+- UART0 有四次 boot-validated／update completed、後續 counter 與完整 framed RX／TX；payload 每列 8 bytes。
+
+| 映像 | Bytes | Write 秒 | END CRC 秒 | App 確認秒 | 總秒數 | 報告 |
+| --- | ---: | ---: | ---: | ---: | ---: | --- |
+| 原始 App | 12636 | 11.108 | 0.192 | 1.944 | 15.143 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f13_xmodem_12636b.html) |
+| 24 KiB | 24576 | 21.721 | 0.287 | 1.958 | 25.862 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f13_xmodem_24576b.html) |
+| 56 KiB | 57344 | 51.094 | 0.576 | 2.022 | 55.588 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f13_xmodem_57344b.html) |
+| 119 KiB | 121856 | 108.767 | 1.136 | 3.208 | 115.010 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f13_xmodem_121856b.html) |
+
+- 更新後 Device UART 快照的 RX errors／drops／TX timeouts 為 0；Bridge UART1 deltas 的 RX errors／drops 為 0，每次記有 backend aborts=1。abort 計數與 Device UART 錯誤為不同觀察項。
+- Host counter assessment 為 **UNAVAILABLE**，Host Link retry 為 0；不能由此推定所有 Host 計數全程零錯誤。
+- 獨立 Transfer 的 PING／ECHO／counters 及 CRC128 streaming 通過，沒有 Flash 命令。11 組 UART0 RX／TX 的 sequence、command、payload 與八位元組分行相符。[Transfer 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f13_xmodem_transfer.html)
+- Transfer 成功段前後的累積 Device RX errors 均為 **658**，drops／TX timeouts 為 0；不能與更新後 App 的 0 跨執行相減。
+- 本批涵蓋正常更新後 App 確認；z/Z 人工重置、冷啟動、斷電及其他型號的結果另行驗證。
+<!-- F13_XMODEM_MEASURED_END -->
+
 <!-- UART_TOOL_GUIDE_END -->
 
 <a id="4-i2c-master"></a>

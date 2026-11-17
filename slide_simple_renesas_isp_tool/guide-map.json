@@ -482,6 +482,14 @@
     "f24-xmodem-update-measurements": {
       "page": "serial-isp.html",
       "anchor": "f24-xmodem-update-measurements"
+    },
+    "f13-uart-update-measurements": {
+      "page": "serial-isp.html",
+      "anchor": "f13-uart-update-measurements"
+    },
+    "f13-xmodem-update-measurements": {
+      "page": "serial-isp.html",
+      "anchor": "f13-xmodem-update-measurements"
     }
   }
 }

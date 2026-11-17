@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "result": "PASS",
+  "tool": "0.1.0.139",
+  "host": "Bridge 0x0101  FW 1.8.1 build 20261023  Host Link v2 / 115200 baud",
+  "interface": {
+    "protocol": "UART ISP",
+    "device_baud": 115200,
+    "host_baud": 115200,
+    "format": "8-N-1"
+  },
+  "image": {
+    "target": "R5F10BMG",
+    "bytes": 24576,
+    "crc32": "0xB83A5B58",
+    "sha256": "E91DE24A0FDB840D1CE8B69F180BE2C0937ACF810AFF85D372273011BF27885C"
+  },
+  "elapsed_ms": 39940,
+  "phases_ms": {
+    "1/5 Metadata": 383,
+    "2/5 Start": 176,
+    "3/5 Write": 36784,
+    "4/5 END CRC": 303,
+    "5/5 Confirm App": 1960
+  },
+  "program": {
+    "last_confirmed": "app_confirmed",
+    "start": "acknowledged",
+    "end": "acknowledged",
+    "accepted_bytes": 24576,
+    "end_elapsed_ms": 303
+  },
+  "installed_metadata_bytes_match": 256,
+  "mcu_app_boot_validated": true,
+  "mcu_uart0_trace_pairs": 73,
+  "payload_bytes_per_row": 8,
+  "device_uart_errors": 0,
+  "device_uart_drops": 0,
+  "device_uart_tx_timeouts": 0,
+  "bridge_uart_rx_errors": 0,
+  "bridge_uart_rx_drops": 0,
+  "bridge_backend_aborts": 1,
+  "host_counter_assessment": "UNAVAILABLE",
+  "link_retries": 0,
+  "cold_start_verified": false,
+  "uart0_z_reset_evidenced": false,
+  "source_report_sha256": "217F422A7C77F00BE339734B4BD0E2C38508D340B234D16EE74BDAF7BFF920A4"
+}

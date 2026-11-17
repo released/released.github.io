@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "result": "PASS",
+  "tool": "0.1.0.139",
+  "host": "Bridge 0x0101  FW 1.8.1 build 20261023  Host Link v2 / 115200 baud",
+  "interface": {
+    "protocol": "XMODEM-CRC128",
+    "device_baud": 115200,
+    "host_baud": 115200,
+    "format": "8-N-1"
+  },
+  "image": {
+    "target": "R5F10BMG",
+    "bytes": 24576,
+    "crc32": "0xE9D0D471",
+    "sha256": "34103F5930F9149E4696870B81333C33B69EE79B6AAC925B74D5710ACEBCBE69"
+  },
+  "elapsed_ms": 25862,
+  "phases_ms": {
+    "1/5 Metadata": 383,
+    "2/5 Start": 1184,
+    "3/5 Write": 21721,
+    "4/5 END CRC": 287,
+    "5/5 Confirm App": 1958
+  },
+  "program": {
+    "last_confirmed": "app_confirmed",
+    "start": "acknowledged",
+    "end": "acknowledged",
+    "accepted_bytes": 24576,
+    "end_elapsed_ms": 287
+  },
+  "installed_metadata_bytes_match": 256,
+  "mcu_app_boot_validated": true,
+  "mcu_uart0_trace_pairs": 73,
+  "payload_bytes_per_row": 8,
+  "device_uart_errors": 0,
+  "device_uart_drops": 0,
+  "device_uart_tx_timeouts": 0,
+  "bridge_uart_rx_errors": 0,
+  "bridge_uart_rx_drops": 0,
+  "bridge_backend_aborts": 1,
+  "host_counter_assessment": "UNAVAILABLE",
+  "link_retries": 0,
+  "cold_start_verified": false,
+  "uart0_z_reset_evidenced": false,
+  "source_report_sha256": "3DBEC43A538FBA88C711563C4F0FF12F1E0525187F846829EFA3BD096D30A7BD"
+}

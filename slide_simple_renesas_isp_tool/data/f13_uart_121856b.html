@@ -1,0 +1,46 @@
+<!doctype html><html lang="zh-Hant"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>F13 UART ISP 量測摘要</title><style>body{font:16px system-ui;margin:2rem;max-width:70rem}table{border-collapse:collapse;width:100%}th,td{border:1px solid #aaa;padding:.6rem;text-align:left;vertical-align:top}pre{white-space:pre-wrap;overflow-wrap:anywhere;margin:0}th{width:15rem;background:#eee}@media(max-width:600px){body{margin:1rem}table,tbody,tr,th,td{display:block;width:auto}tr{margin:.8rem 0}th{border-bottom:0}}</style><h1>F13 UART ISP 量測摘要</h1><p><a href="../serial-isp.html#f13-uart-update-measurements">操作、量測與限制</a></p><p>選定報告欄位；成功操作與累積錯誤快照分別呈現。</p><table><tr><th>schema</th><td><pre>1</pre></td></tr>
+<tr><th>result</th><td><pre>PASS</pre></td></tr>
+<tr><th>tool</th><td><pre>0.1.0.139</pre></td></tr>
+<tr><th>host</th><td><pre>Bridge 0x0101  FW 1.8.1 build 20261023  Host Link v2 / 115200 baud</pre></td></tr>
+<tr><th>interface</th><td><pre>{
+  &quot;protocol&quot;: &quot;UART ISP&quot;,
+  &quot;device_baud&quot;: 115200,
+  &quot;host_baud&quot;: 115200,
+  &quot;format&quot;: &quot;8-N-1&quot;
+}</pre></td></tr>
+<tr><th>image</th><td><pre>{
+  &quot;target&quot;: &quot;R5F10BMG&quot;,
+  &quot;bytes&quot;: 121856,
+  &quot;crc32&quot;: &quot;0xF6C3BBE1&quot;,
+  &quot;sha256&quot;: &quot;9B38632EFDD3D0EAE97980550F9EF855468B6C7B755C349DD00514CDEE4D86D4&quot;
+}</pre></td></tr>
+<tr><th>elapsed_ms</th><td><pre>188001</pre></td></tr>
+<tr><th>phases_ms</th><td><pre>{
+  &quot;1/5 Metadata&quot;: 381,
+  &quot;2/5 Start&quot;: 175,
+  &quot;3/5 Write&quot;: 182768,
+  &quot;4/5 END CRC&quot;: 1136,
+  &quot;5/5 Confirm App&quot;: 3209
+}</pre></td></tr>
+<tr><th>program</th><td><pre>{
+  &quot;last_confirmed&quot;: &quot;app_confirmed&quot;,
+  &quot;start&quot;: &quot;acknowledged&quot;,
+  &quot;end&quot;: &quot;acknowledged&quot;,
+  &quot;accepted_bytes&quot;: 121856,
+  &quot;end_elapsed_ms&quot;: 1136
+}</pre></td></tr>
+<tr><th>installed_metadata_bytes_match</th><td><pre>256</pre></td></tr>
+<tr><th>mcu_app_boot_validated</th><td><pre>true</pre></td></tr>
+<tr><th>mcu_uart0_trace_pairs</th><td><pre>73</pre></td></tr>
+<tr><th>payload_bytes_per_row</th><td><pre>8</pre></td></tr>
+<tr><th>device_uart_errors</th><td><pre>0</pre></td></tr>
+<tr><th>device_uart_drops</th><td><pre>0</pre></td></tr>
+<tr><th>device_uart_tx_timeouts</th><td><pre>0</pre></td></tr>
+<tr><th>bridge_uart_rx_errors</th><td><pre>0</pre></td></tr>
+<tr><th>bridge_uart_rx_drops</th><td><pre>0</pre></td></tr>
+<tr><th>bridge_backend_aborts</th><td><pre>1</pre></td></tr>
+<tr><th>host_counter_assessment</th><td><pre>UNAVAILABLE</pre></td></tr>
+<tr><th>link_retries</th><td><pre>0</pre></td></tr>
+<tr><th>cold_start_verified</th><td><pre>false</pre></td></tr>
+<tr><th>uart0_z_reset_evidenced</th><td><pre>false</pre></td></tr>
+<tr><th>source_report_sha256</th><td><pre>12E98AC172C7E4BCCE4523D717C25B46B27CB37F964680CD0B081178A93AD650</pre></td></tr></table></html>
