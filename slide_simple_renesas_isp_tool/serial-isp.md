@@ -234,6 +234,29 @@ Tool 0.1.0.138；Host FW 1.8.1／build 20261023。表格由六份選定更新報
 - 最大測試 App 為 247 KiB，未進入尾端 1 KiB 保留區。結果限此映像與接線條件；冷啟動、斷電恢復、故障注入、其他 MCU 或速度另行驗證。
 <!-- F24_I2C_MEASURED_END -->
 
+<!-- G16_I2C_MEASURED_BEGIN -->
+<a id="g16-i2c-update-measurements"></a>
+
+#### G16 I2C App 更新量測
+
+配對接線、操作步驟與 Boot／App 流程見 [G16 × I2C](https://released.github.io/slide_boot_loader_for_RL78/i2c-device.html#upgrade-g16-i2c)。
+
+- Device：R5F121BCAFP，HOCO／CPU 16 MHz；F24 bridge；I2C 100 kHz／7-bit 0x20；Host Link 115200。Tool 0.1.0.139，Host FW 1.8.1 build 20261023。
+- 兩份報告與對應 BIN 的長度、CRC32 相符，映像及來源報告由 SHA256 識別。START／END 成功、完整接受 bytes、APP_READY 與全部 256-byte installed metadata 均已確認。
+- 獨立 UART0 擷取有兩次 boot-validated／update completed 與後續 counter；唯讀 metadata 回覆與兩份 BIN 的 256 bytes 分別相符。
+
+| 映像 | Bytes | Write 秒 | END CRC 秒 | App 確認秒 | 總秒數 | 報告 |
+| --- | ---: | ---: | ---: | ---: | ---: | --- |
+| 原始 App | 12116 | 20.736 | 0.356 | 1.992 | 23.959 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/g16_i2c_12116b.html) |
+| 23 KiB | 23552 | 40.147 | 0.539 | 2.039 | 43.606 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/g16_i2c_23552b.html) |
+
+- 最大完整 App BIN 為 23 KiB，範圍至 `0x07BFF`；Boot 8 KiB 與尾端 `0x07C00..0x07FFF` 保留區不在 App 更新範圍。
+- 第二次更新從執行中的 App 經 ENTER 返回 Boot。UART0 擷取有 ENTER RX，沒有對應 TX trace；Tool 的 Boot 確認與後續更新成功分開記錄，不以此推定回覆遺失原因。
+- Host counter assessment 為 **UNAVAILABLE**，Host Link retry 為 0；本段未觀察到 App 確認 I2C_NACK，仍不能推定所有 bus 計數全程零錯誤。
+- 獨立 Transfer 的本批擷取涵蓋 Discover／INFO、一組 RX／TX、每列 8 bytes，沒有 Flash 命令；PING／ECHO／counters 尚未由此擷取證實。[Discover 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/g16_i2c_transfer.html)
+- 結果限正常更新後 App 確認。UART0 z/Z 人工重置、冷啟動、斷電恢復、其他介面／型號與故障注入另行驗證。
+<!-- G16_I2C_MEASURED_END -->
+
 <a id="i2c-image-waits"></a>
 
 #### 等待時間與映像大小

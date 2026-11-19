@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "result": "PASS",
+  "scope": "Discover / INFO only",
+  "device": "R5F121BCAFP",
+  "protocol": "I2C ISP",
+  "flash_commands": false,
+  "discovery_passed": true,
+  "ping_echo_counters_evidenced": false,
+  "trace_rx_tx_pairs": 1,
+  "payload_bytes_per_row": 8,
+  "uart0_z_reset_evidenced": false,
+  "source_tool_log_sha256": "919A709B05E4B4B8ACA71028F57CEF9F42809F2AE239CC32E750149AFAE81D2D",
+  "source_uart_log_sha256": "57A914E0983471FB66698D276D7561EB47488A11E3EC339A0859ABB23ABFF118"
+}

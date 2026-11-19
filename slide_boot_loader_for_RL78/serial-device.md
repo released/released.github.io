@@ -323,6 +323,23 @@ F24 Xmodem 的原始 App 與 8..247 KiB 映像已有 EOT／END CRC、APP_READY�
 
 F13 的 UART ISP 與 Xmodem 各有獨立的接線、更新步驟及 Boot／App 流程；[UART ISP 量測](https://released.github.io/slide_simple_renesas_isp_tool/serial-isp.html#f13-uart-update-measurements)與 [Xmodem 量測](https://released.github.io/slide_simple_renesas_isp_tool/serial-isp.html#f13-xmodem-update-measurements)包含原始 App、24／56／119 KiB 的更新結果及 UART0 輸出條件。Transfer 的累積 RX 錯誤與更新後 App 快照分別呈現；冷啟動、斷電恢復與人工 z/Z 操作不由這批更新資料推定。
 
+G16 的 I2C Boot、App、Transfer 使用相同的 16 MHz 除錯設定：
+
+- CC-RL 的 User option bytes 為 `EEF7F9`，OCD option byte 為 `85`；對應 Flash `0xC0..0xC3` 的 `EE F7 F9 85`。
+- Security option byte 維持停用、值留空；此欄位與獨立的 10-byte OCD Security ID 不同。
+- CC-RL 明確設定 `C0=EE`，停用 WDT 與待機計數。SC 未配置 WDT 時產生的 IAR 專用預設 `EF` 不適用此設定；保留產生檔，由 linker 選項決定 CC-RL 映像。
+- 其餘 option bytes 與產生的 BSP 設定核對。BSP 中標示供 IAR 使用的巨集，不會取代 CC-RL 的專案設定。
+- Pre-build 核對設定；post-build 直接核對 linked HEX 的四個位元組，再進行封裝。App 更新 BIN 從 `0x2000` 起，不包含 Boot 的 option bytes；App-only 建置不改寫配對 Boot。
+
+G16 的 option bytes 有以下限制，位元定義見 [G16 硬體手冊第 21 章](https://www.renesas.com/en/document/mah/rl78g16-users-manual-hardware)：
+
+- `C0=EF` 的 `WDTON=0、WDSTBYON=1` 為禁止組合；此設定使用 `EE`。
+- `C2=F9` 選擇 16 MHz，`F8` 屬禁止設定。
+- OCD 的低 7 位固定為 `0000101`，啟用除錯時使用 `C3=85`。G16 不支援以 `84` 選擇 ID 認證失敗清除 Flash。
+
+
+G16 I2C 的兩份 App 更新量測與擷取範圍見 [G16 I2C 更新量測](https://released.github.io/slide_simple_renesas_isp_tool/serial-isp.html#g16-i2c-update-measurements)；UART／Xmodem 與冷啟動結果另行驗證。
+
 <!-- SERIAL_DEVICE_GUIDE_END -->
 
 ---

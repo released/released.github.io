@@ -7,9 +7,11 @@
 在 repository 根目錄執行：
 
 ```powershell
-.\github_push.bat --check
-.\github_push.bat
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\publish_site.ps1 -DryRun
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\publish_site.ps1
 ```
+
+根目錄 `github_push.bat` 是本機操作入口，保留於磁碟並由 Git 忽略；原始碼 checkout 使用上述 helper。既有本機 batch 可繼續使用 `--check` 或互動發布。
 
 - `--check` 檢查 Git 目的地、網站內容與受影響的來源契約，不修改 Git 狀態。
 - 預設 commit message 為 `update`；檢查通過後，輸入 `PUSH` 才會提交與推送。

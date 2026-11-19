@@ -66,6 +66,7 @@ function Get-WebChangeFingerprint([string]$Root) {
 }
 
 function Test-WebLocalRecord([string]$Path) {
+    if($Path -ceq 'github_push.bat'){return $true}
     return $Path -match '(^|/)(AGENTS(?:_for_Codex)?\.md|CLAUDE\.md|WORKSPACE_RULES\.md|PROJECT_README_TEMPLATE\.md|SCREENSHOT_CHECKLIST\.md|SELF_CHECK[^/]*\.md|CODEX_HANDOFF\.md|HANDOFF\.md|MANUAL_CLEANUP\.md|github_push\.local\.psd1)$'
 }
 

@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "result": "PASS",
+  "tool": "0.1.0.139",
+  "host": "Bridge 0x0101  FW 1.8.1 build 20261023  Host Link v2 / 115200 baud",
+  "interface": {
+    "protocol": "I2C ISP",
+    "rate_hz": 100000,
+    "address_7bit": 32,
+    "host_baud": 115200
+  },
+  "image": {
+    "target": "R5F121BCAFP",
+    "bytes": 12116,
+    "crc32": "0x275F9435",
+    "sha256": "E9470E07FD0DA37CA07B99D40477FBD247C7B4ACD94B9DA7A75B8D134DCF9147"
+  },
+  "elapsed_ms": 23959,
+  "phases_ms": {
+    "1/5 Metadata": 435,
+    "2/5 Start": 218,
+    "3/5 Write": 20736,
+    "4/5 END CRC": 356,
+    "5/5 Confirm App": 1992
+  },
+  "program": {
+    "last_confirmed": "app_confirmed",
+    "start": "acknowledged",
+    "end": "acknowledged",
+    "accepted_bytes": 12116,
+    "end_elapsed_ms": 356
+  },
+  "installed_metadata_bytes_match": 256,
+  "mcu_app_boot_validated": true,
+  "payload_bytes_per_row": 8,
+  "host_counter_assessment": "UNAVAILABLE",
+  "link_retries": 0,
+  "app_confirmation_i2c_nack_observations": 0,
+  "cold_start_verified": false,
+  "uart0_z_reset_evidenced": false,
+  "uart0_enter_tx_trace_evidenced": false,
+  "source_report_sha256": "ABDE9EE26D781EB0F3AD294C47C8F76E7F350ADEA546CAC1D837B2BF76E1A738"
+}

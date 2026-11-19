@@ -37,3 +37,5 @@ push-all.local.psd1
 output/
 node_modules/
 docs/internal/
+
+/github_push.bat
