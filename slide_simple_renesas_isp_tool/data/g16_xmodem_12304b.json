@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "result": "PASS",
+  "interface": {
+    "protocol": "XMODEM-CRC128",
+    "device_baud": 115200,
+    "host_baud": 115200,
+    "format": "8-N-1"
+  },
+  "image": {
+    "target": "R5F121BCAFP",
+    "bytes": 12304,
+    "crc32": "0x07C9213C",
+    "sha256": "46E46274E5A180DA4E7DDFEEFC8E93A3E0249F381142CAA25BF539E535751A45"
+  },
+  "recorded_at_utc": "2026-11-21T16:29:30.361Z",
+  "elapsed_ms": 14917,
+  "phases_ms": {
+    "1/5 Metadata": 383,
+    "2/5 Start": 1200,
+    "3/5 Write": 10773,
+    "4/5 END CRC": 287,
+    "5/5 Confirm App": 1945
+  },
+  "program": {
+    "last_confirmed": "app_confirmed",
+    "start": "acknowledged",
+    "end": "acknowledged",
+    "accepted_bytes": 12304,
+    "end_elapsed_ms": 287
+  },
+  "installed_metadata_bytes_match": 256,
+  "uart0_matching_metadata_groups": 6,
+  "mcu_app_boot_validated": true,
+  "payload_bytes_per_row": 8,
+  "device_uart_errors": 0,
+  "device_uart_drops": 0,
+  "device_uart_tx_timeouts": 0,
+  "bridge_uart_rx_errors": 0,
+  "bridge_uart_rx_drops": 0,
+  "bridge_backend_aborts": 1,
+  "host_counter_assessment": "UNAVAILABLE",
+  "link_retries": 0,
+  "cold_start_verified": false,
+  "uart0_z_reset_evidenced": false,
+  "source_report_sha256": "7E6DDFE9A75BB780F306ED5E9A4401D6F1210CA1B40B03770E92A90D6A0729BE",
+  "source_tool_log_sha256": "5D52963EF4E09487A4EB66977A0D091DB4E88A8C9DE84D750B4014D0B5FD3A96",
+  "source_uart_log_sha256": "3145945499DB4E66ECAF32121C36AB5791DDEE8C2675FAC2A5470605664066C9",
+  "additional_confirmed_run": {
+    "elapsed_ms": 14949,
+    "source_report_sha256": "4E8E79F221C753411F5A5BA95B12D2A93D689A28F5C43D0E3ACDA0A1BC125574",
+    "result": "PASS",
+    "last_confirmed": "app_confirmed"
+  }
+}

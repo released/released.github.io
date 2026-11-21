@@ -1,0 +1,47 @@
+<!doctype html><html lang="zh-Hant"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>G16 UART ISP 量測摘要</title><style>body{font:16px system-ui;margin:2rem;max-width:70rem}table{border-collapse:collapse;width:100%}th,td{border:1px solid #aaa;padding:.6rem;text-align:left;vertical-align:top}pre{white-space:pre-wrap;overflow-wrap:anywhere;margin:0}th{background:#eee}@media(max-width:600px){body{margin:1rem}table,tbody,tr,th,td{display:block;width:auto}}</style><h1>G16 UART ISP 量測摘要</h1><p><a href="../../slide_boot_loader_for_RL78/experiments.html#g16-uart-update-measurements">實驗條件與限制</a></p><p>選定報告欄位；Device 累積快照、Bridge 觀察與更新結果分別呈現。</p><table><tr><th>schema</th><td><pre>1</pre></td></tr>
+<tr><th>result</th><td><pre>PASS</pre></td></tr>
+<tr><th>interface</th><td><pre>{
+  &quot;protocol&quot;: &quot;UART ISP&quot;,
+  &quot;device_baud&quot;: 115200,
+  &quot;host_baud&quot;: 115200,
+  &quot;format&quot;: &quot;8-N-1&quot;
+}</pre></td></tr>
+<tr><th>image</th><td><pre>{
+  &quot;target&quot;: &quot;R5F121BCAFP&quot;,
+  &quot;bytes&quot;: 23552,
+  &quot;crc32&quot;: &quot;0x690C64C4&quot;,
+  &quot;sha256&quot;: &quot;4CA4873538C6D4ACA7755D5F02EB276ED2FD722B6E5794CB586C4950CCD22135&quot;
+}</pre></td></tr>
+<tr><th>recorded_at_utc</th><td><pre>2026-11-21T16:36:40.079Z</pre></td></tr>
+<tr><th>elapsed_ms</th><td><pre>38577</pre></td></tr>
+<tr><th>phases_ms</th><td><pre>{
+  &quot;1/5 Metadata&quot;: 384,
+  &quot;2/5 Start&quot;: 176,
+  &quot;3/5 Write&quot;: 35247,
+  &quot;4/5 END CRC&quot;: 496,
+  &quot;5/5 Confirm App&quot;: 1945
+}</pre></td></tr>
+<tr><th>program</th><td><pre>{
+  &quot;last_confirmed&quot;: &quot;app_confirmed&quot;,
+  &quot;start&quot;: &quot;acknowledged&quot;,
+  &quot;end&quot;: &quot;acknowledged&quot;,
+  &quot;accepted_bytes&quot;: 23552,
+  &quot;end_elapsed_ms&quot;: 496
+}</pre></td></tr>
+<tr><th>installed_metadata_bytes_match</th><td><pre>256</pre></td></tr>
+<tr><th>uart0_matching_metadata_groups</th><td><pre>2</pre></td></tr>
+<tr><th>mcu_app_boot_validated</th><td><pre>true</pre></td></tr>
+<tr><th>payload_bytes_per_row</th><td><pre>8</pre></td></tr>
+<tr><th>device_uart_errors</th><td><pre>0</pre></td></tr>
+<tr><th>device_uart_drops</th><td><pre>0</pre></td></tr>
+<tr><th>device_uart_tx_timeouts</th><td><pre>0</pre></td></tr>
+<tr><th>bridge_uart_rx_errors</th><td><pre>0</pre></td></tr>
+<tr><th>bridge_uart_rx_drops</th><td><pre>0</pre></td></tr>
+<tr><th>bridge_backend_aborts</th><td><pre>1</pre></td></tr>
+<tr><th>host_counter_assessment</th><td><pre>UNAVAILABLE</pre></td></tr>
+<tr><th>link_retries</th><td><pre>0</pre></td></tr>
+<tr><th>cold_start_verified</th><td><pre>false</pre></td></tr>
+<tr><th>uart0_z_reset_evidenced</th><td><pre>false</pre></td></tr>
+<tr><th>source_report_sha256</th><td><pre>11A2DF8BFEF18B413787F5BAB10B6171C1C597192B36ACC76298E4E158719A06</pre></td></tr>
+<tr><th>source_tool_log_sha256</th><td><pre>297BAE9017049614100A2D7C6CF9A913D10937EFFC45E9758088098C406C20A4</pre></td></tr>
+<tr><th>source_uart_log_sha256</th><td><pre>8A2403485456F0E0350A6148D8611EF9358E3F87B1CD9B8EB547F29AB3E1498D</pre></td></tr></table></html>

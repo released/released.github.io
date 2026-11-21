@@ -1174,6 +1174,26 @@
     "串列介面共用操作": {
       "page": "tool-guides.html",
       "anchor": "uart-device-operation"
+    },
+    "upgrade-g16-uart": {
+      "page": "uart-device.html",
+      "anchor": "upgrade-g16-uart"
+    },
+    "upgrade-g16-xmodem": {
+      "page": "xmodem-device.html",
+      "anchor": "upgrade-g16-xmodem"
+    },
+    "g16-boot-console-security": {
+      "page": "serial-device.html",
+      "anchor": "g16-boot-console-security"
+    },
+    "g16-uart-update-measurements": {
+      "page": "experiments.html",
+      "anchor": "g16-uart-update-measurements"
+    },
+    "g16-xmodem-update-measurements": {
+      "page": "experiments.html",
+      "anchor": "g16-xmodem-update-measurements"
     }
   }
 }

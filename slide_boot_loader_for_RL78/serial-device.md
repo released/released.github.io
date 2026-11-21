@@ -341,7 +341,15 @@ G16 的 option bytes 有以下限制，位元定義見 [G16 硬體手冊第 21 �
 - OCD 的低 7 位固定為 `0000101`，啟用除錯時使用 `C3=85`。G16 不支援以 `84` 選擇 ID 認證失敗清除 Flash。
 
 
-G16 I2C 的兩份 App 更新量測與擷取範圍見 [G16 I2C 更新量測](https://released.github.io/slide_simple_renesas_isp_tool/serial-isp.html#g16-i2c-update-measurements)；UART／Xmodem 與冷啟動結果另行驗證。
+<a id="g16-boot-console-security"></a>
+
+### G16 Boot 診斷與下載認證
+
+- UART／Xmodem Boot 保留診斷程式，Board 初始化後、App 檢查前設定靜默；執行期間沒有 UART0 `0`／`1` log 控制入口。App／Transfer 的 UART0 console 與 Boot 分開。
+- G16 的 on-chip debug Security ID 位於 `0xC4..0xCD`，長度 10 bytes；範例的 linker 與 CS+ debugger ID 均為 `00000000000000000000`。建置檢查連結輸出及分割後 Boot HEX 的實際 ID，避免未設定區域被填成全 FF。
+- OCD `0xC3=0x85` 保持啟用；G16 的認證失敗不會自動清除 Flash。此 ID 與 Flash programmer 的 serial programming security ID 是不同設定。[G16 硬體手冊](https://www.renesas.com/en/document/mah/rl78g16-users-manual-hardware)
+
+G16 的設定與量測依介面查閱：[I2C](experiments.html#g16-i2c-update-measurements)／[UART](experiments.html#g16-uart-update-measurements)／[Xmodem](experiments.html#g16-xmodem-update-measurements)。各表分別列出正常更新與獨立 Transfer 的證據範圍；冷啟動等結果不由正常更新推定。
 
 <!-- SERIAL_DEVICE_GUIDE_END -->
 

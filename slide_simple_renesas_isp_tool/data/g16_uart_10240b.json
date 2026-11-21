@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "result": "PASS",
+  "interface": {
+    "protocol": "UART ISP",
+    "device_baud": 115200,
+    "host_baud": 115200,
+    "format": "8-N-1"
+  },
+  "image": {
+    "target": "R5F121BCAFP",
+    "bytes": 10240,
+    "crc32": "0x2DCD9F43",
+    "sha256": "5EAC2D5F4C08CDABF77EA5ED1BF8684AC455F83347E5171C3862F686F2B22531"
+  },
+  "recorded_at_utc": "2026-11-21T16:35:44.566Z",
+  "elapsed_ms": 18359,
+  "phases_ms": {
+    "1/5 Metadata": 383,
+    "2/5 Start": 176,
+    "3/5 Write": 15271,
+    "4/5 END CRC": 256,
+    "5/5 Confirm App": 1944
+  },
+  "program": {
+    "last_confirmed": "app_confirmed",
+    "start": "acknowledged",
+    "end": "acknowledged",
+    "accepted_bytes": 10240,
+    "end_elapsed_ms": 256
+  },
+  "installed_metadata_bytes_match": 256,
+  "uart0_matching_metadata_groups": 4,
+  "mcu_app_boot_validated": true,
+  "payload_bytes_per_row": 8,
+  "device_uart_errors": 0,
+  "device_uart_drops": 0,
+  "device_uart_tx_timeouts": 0,
+  "bridge_uart_rx_errors": 0,
+  "bridge_uart_rx_drops": 0,
+  "bridge_backend_aborts": 1,
+  "host_counter_assessment": "UNAVAILABLE",
+  "link_retries": 0,
+  "cold_start_verified": false,
+  "uart0_z_reset_evidenced": false,
+  "source_report_sha256": "08E1114C4C21FA01CA793FFAB9BC8671EB3F5FF3A7DBF3194C0FECB88511156C",
+  "source_tool_log_sha256": "297BAE9017049614100A2D7C6CF9A913D10937EFFC45E9758088098C406C20A4",
+  "source_uart_log_sha256": "8A2403485456F0E0350A6148D8611EF9358E3F87B1CD9B8EB547F29AB3E1498D"
+}

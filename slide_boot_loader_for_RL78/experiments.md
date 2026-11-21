@@ -28,8 +28,8 @@
 | --- | --- | --- |
 | CAN／CAN FD | F13／F24，按模式與 MCU 分列 | [映像大小與報告](#device-update-timing) |
 | I2C | [F13](#f13-i2c-update-measurements)／[F24](#f24-i2c-update-measurements)／[G16](#g16-i2c-update-measurements) | [工程與機制](i2c-device.html) |
-| UART | [F13](#f13-uart-update-measurements)／[F24](#f24-uart-update-measurements) | [工程與機制](uart-device.html) |
-| Xmodem | [F13](#f13-xmodem-update-measurements)／[F24](#f24-xmodem-update-measurements) | [工程與機制](xmodem-device.html) |
+| UART | [F13](#f13-uart-update-measurements)／[F24](#f24-uart-update-measurements)／[G16](#g16-uart-update-measurements) | [工程與機制](uart-device.html) |
+| Xmodem | [F13](#f13-xmodem-update-measurements)／[F24](#f24-xmodem-update-measurements)／[G16](#g16-xmodem-update-measurements) | [工程與機制](xmodem-device.html) |
 | 其他工程組合 | 本指南未列實板更新紀錄 | [依介面選擇工程](index.html#boot-interfaces) |
 
 <a id="device-update-timing"></a>
@@ -263,6 +263,29 @@ Tool 0.1.0.138；Host FW 1.8.1／build 20261023。表格由六份選定更新報
 - 本表涵蓋一般更新與軟體重啟後 App 確認；冷啟動、斷電及其他故障恢復不由本批資料推定。
 <!-- F24_UART_MEASURED_END -->
 
+<!-- G16_UART_MEASURED_BEGIN -->
+<a id="g16-uart-update-measurements"></a>
+
+### G16 UART ISP App 更新量測
+
+配對工程、接線與 Boot／App 機制見 [G16 × UART ISP](uart-device.html#upgrade-g16-uart)。
+
+- Device：R5F121BCAFP，HOCO／CPU 16 MHz；F24 bridge；Device UART1 與 Host Link 各為 115200／8-N-1。Tool 0.1.0.146，Host FW 1.8.1 build 20261023。
+- 兩份報告與實際 BIN 的長度、CRC32 相符，來源報告及映像由 SHA256 識別。START、END／EOT、完整接受 bytes、APP_READY 與全部 256-byte installed metadata 均已確認。
+- UART0 擷取各有兩次 boot-validated／update completed、後續 counter 與完整 RX／TX。payload 每列最多 8 bytes；四頁 metadata 組合分別與兩份 BIN 的 256 bytes 相同。
+
+| 映像 | Bytes | Write 秒 | END CRC 秒 | App 確認秒 | 總秒數 | 報告 |
+| --- | ---: | ---: | ---: | ---: | ---: | --- |
+| 原始 App | 10240 | 15.271 | 0.256 | 1.944 | 18.359 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/g16_uart_10240b.html) |
+| 23 KiB | 23552 | 35.247 | 0.496 | 1.945 | 38.577 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/g16_uart_23552b.html) |
+
+- 最大完整 App BIN 為 23 KiB，範圍至 `0x07BFF`；Boot 8 KiB 與 `0x07C00..0x07FFF` 保留區不在 App 更新範圍。第二份映像從執行中的 App 經 ENTER 返回 Boot 更新。
+- 更新後 Device UART 快照的 RX errors／drops／TX timeouts 為 0；Bridge RX errors／drops 為 0，backend aborts=1 仍保留。Host counter assessment 為 **UNAVAILABLE**、Host Link retry 為 0，不推定全程零錯誤。
+- 獨立 UART Transfer 的 PING／ECHO／counters 與 final INFO 三次通過，沒有 Flash 命令。[Transfer 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/g16_uart_transfer.html)
+- Transfer 成功段的累積 Device RX errors 保持 **119**，drops／TX timeouts 為 0；此批未提供 Transfer UART0 擷取，不能與 App 的 0 跨執行相減。
+- 結果限正常更新後 App 確認；z/Z 人工重置、冷啟動、斷電恢復及其他介面／型號另行驗證。
+<!-- G16_UART_MEASURED_END -->
+
 <a id="experiment-xmodem"></a>
 
 ## Xmodem
@@ -317,6 +340,30 @@ Tool 0.1.0.138；Host FW 1.8.1／build 20261023。表格由六份選定更新報
 - 六次 App 重啟均有 boot-validated、update completed、UART0 console 與後續 counter；提供的 log 沒有 z/Z 人工重置訊息，故不將功能宣告視為該操作的實板證據。
 - 本表涵蓋一般更新與軟體重啟後 App 確認；冷啟動、斷電及其他故障恢復不由本批資料推定。
 <!-- F24_XMODEM_MEASURED_END -->
+
+<!-- G16_XMODEM_MEASURED_BEGIN -->
+<a id="g16-xmodem-update-measurements"></a>
+
+### G16 Xmodem App 更新量測
+
+配對工程、接線與 Boot／App 機制見 [G16 × Xmodem](xmodem-device.html#upgrade-g16-xmodem)。
+
+- Device：R5F121BCAFP，HOCO／CPU 16 MHz；F24 bridge；Device UART1 與 Host Link 各為 115200／8-N-1。Tool 0.1.0.146，Host FW 1.8.1 build 20261023。
+- 三份報告與實際 BIN 的長度、CRC32 相符，來源報告及映像由 SHA256 識別。START、END／EOT、完整接受 bytes、APP_READY 與全部 256-byte installed metadata 均已確認。
+- UART0 擷取各有兩次 boot-validated／update completed、後續 counter 與完整 RX／TX。payload 每列最多 8 bytes；四頁 metadata 組合分別與兩份 BIN 的 256 bytes 相同。
+
+| 映像 | Bytes | Write 秒 | END CRC 秒 | App 確認秒 | 總秒數 | 報告 |
+| --- | ---: | ---: | ---: | ---: | ---: | --- |
+| 原始 App | 12304 | 10.773 | 0.287 | 1.945 | 14.917 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/g16_xmodem_12304b.html) |
+| 23 KiB | 23552 | 20.616 | 0.480 | 1.944 | 24.952 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/g16_xmodem_23552b.html) |
+
+- 原始 App 另有一次 14.949 秒的 PASS 報告；表列相同映像的另一次 14.917 秒紀錄。兩次均確認 APP_READY／installed metadata。
+- 最大完整 App BIN 為 23 KiB，範圍至 `0x07BFF`；Boot 8 KiB 與 `0x07C00..0x07FFF` 保留區不在 App 更新範圍。第二份映像從執行中的 App 經 ENTER 返回 Boot 更新。
+- 更新後 Device UART 快照的 RX errors／drops／TX timeouts 為 0；Bridge RX errors／drops 為 0，backend aborts=1 仍保留。Host counter assessment 為 **UNAVAILABLE**、Host Link retry 為 0，不推定全程零錯誤。
+- 獨立 Xmodem Transfer 的三次 Discover／INFO 通過；此批 log 未包含 Transfer Test／CRC128 streaming，因此不列為該項已驗證。[Transfer 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/g16_xmodem_transfer.html)
+- Transfer 成功段的累積 Device RX errors 保持 **104**，drops／TX timeouts 為 0；此批未提供 Transfer UART0 擷取，不能與 App 的 0 跨執行相減。
+- 結果限正常更新後 App 確認；z/Z 人工重置、冷啟動、斷電恢復及其他介面／型號另行驗證。
+<!-- G16_XMODEM_MEASURED_END -->
 
 ---
 

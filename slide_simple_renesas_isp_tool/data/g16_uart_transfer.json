@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "device": "R5F121BCAFP",
+  "interface": "UART ISP",
+  "result": "PASS",
+  "scope": "Discover / INFO / PING / ECHO / counters / final INFO",
+  "discovery_passed": true,
+  "discovery_count": 1,
+  "transfer_test_pass_count": 3,
+  "ping_echo_counters_evidenced": true,
+  "crc128_stream_evidenced": false,
+  "flash_commands": false,
+  "device_uart_before": {
+    "rx_errors": 119,
+    "rx_drops": 0,
+    "tx_timeouts": 0
+  },
+  "device_uart_after": {
+    "rx_errors": 119,
+    "rx_drops": 0,
+    "tx_timeouts": 0
+  },
+  "trace_rx_tx_pairs": 0,
+  "uart0_trace_evidenced": false,
+  "uart0_z_reset_evidenced": false,
+  "source_tool_log_sha256": "598EC82AB8D872D10114585049DE077148F659178C1894F8EEF9FB47334EEBD1"
+}
