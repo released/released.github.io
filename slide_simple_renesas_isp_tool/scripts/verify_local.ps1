@@ -144,50 +144,25 @@ function Assert-TransferExampleNavigation([string]$Text) {
 }
 Assert-TransferExampleNavigation $ispText
 Write-Host 'PASS: Custom Transfer section has three MCU/mode categories, source URLs and operation links.'
-function Assert-DeviceModeNavigation([string]$Text) {
-    $blocks=[regex]::Matches($Text,'(?s)<!-- DEVICE_MODE_NAV_BEGIN -->.*?<!-- DEVICE_MODE_NAV_END -->')
-    if($blocks.Count -ne 1){throw 'Expected one Bootloader device mode navigation block.'}
-    foreach($deviceMode in @(
-        @{Label='Classical CAN';Tokens=@('F13','F24');Links=@('#f13-boot-decision',
-            '#f24-can-device','/#f13-device-update')},
-        @{Label='CAN FD';Tokens=@('F24');Links=@('#can-fd-device-engineering','/#can-fd-update')},
-        @{Label='Custom Transfer';Tokens=@('F13','F24','Classical CAN','CAN FD');Links=@('/#custom-transfer')})) {
-        $rows=[regex]::Matches($blocks[0].Value,'(?m)^\| '+[regex]::Escape($deviceMode.Label)+'[^\r\n]*\r?$')
-        if($rows.Count -ne 1){throw "Missing Bootloader mode row: $($deviceMode.Label)"}
-        foreach($link in $deviceMode.Links){
-            if(!$rows[0].Value.Contains($link+')')){
-                throw "Missing Bootloader mode link: $($deviceMode.Label) / $link"
-            }
-        }
-        foreach($token in $deviceMode.Tokens){
-            if(!$rows[0].Value.Contains($token)){throw "Missing Bootloader device/mode: $token"}
-        }
+function Assert-InterfaceNavigation([string]$Text,[string]$Marker,[switch]$Boot) {
+    $blocks=[regex]::Matches($Text,'(?s)<!-- '+$Marker+'_BEGIN -->.*?<!-- '+$Marker+'_END -->')
+    if($blocks.Count -ne 1){throw "Expected one interface index: $Marker"}
+    foreach($item in @(@{Label='CAN';Tool='can-update';Device='can-device'},
+        @{Label='CAN FD';Tool='can-fd';Device='can-fd-device'},@{Label='I2C';Tool='i2c';Device='i2c-device'},
+        @{Label='UART';Tool='uart';Device='uart-device'},@{Label='Xmodem';Tool='xmodem';Device='xmodem-device'})) {
+        $rows=[regex]::Matches($blocks[0].Value,'(?m)^\| '+[regex]::Escape($item.Label)+' \|[^\r\n]*')
+        $page=if($Boot){$item.Device}else{$item.Tool}
+        if($rows.Count -ne 1 -or !$rows[0].Value.Contains($page+'.html')){throw "Missing interface row/destination: $Marker / $($item.Label)"}
     }
 }
-Assert-DeviceModeNavigation $bootText
-Write-Host 'PASS: Bootloader overview groups Classical F13/F24 and CAN FD F24 with engineering/update/Transfer links.'
-function Assert-CanEntryCategories([string]$Text,[string]$Marker,[switch]$Html) {
-    $pattern='(?s)<!-- '+[regex]::Escape($Marker)+'_BEGIN -->.*?<!-- '+[regex]::Escape($Marker)+'_END -->'
-    $blocks=[regex]::Matches($Text,$pattern)
-    if($blocks.Count -ne 1){throw "Expected one entry category block: $Marker"}
-    foreach($category in @(
-        @{Label='Classical CAN';Tokens=@('F13','F24');Target='#f13-device-update'},
-        @{Label='CAN FD';Tokens=@('F24');Target='#can-fd-update'},
-        @{Label='Custom Transfer';Tokens=@('F13','F24','Classical CAN','CAN FD');Target='#custom-transfer'})) {
-        if($Html){$rowPattern='(?s)<tr>\s*<td>'+[regex]::Escape($category.Label)+'.*?</tr>'}
-        else{$rowPattern='(?m)^\| '+[regex]::Escape($category.Label)+'[^\r\n]*\r?$'}
-        $rows=[regex]::Matches($blocks[0].Value,$rowPattern)
-        if($rows.Count -ne 1 -or !$rows[0].Value.Contains($category.Target)){
-            throw "Missing/mismatched entry category: $Marker / $($category.Label)"
-        }
-        foreach($token in $category.Tokens){
-            if(!$rows[0].Value.Contains($token)){throw "Missing entry device/mode: $Marker / $token"}
-        }
+Assert-InterfaceNavigation $bootText 'DEVICE_MODE_NAV' -Boot
+Assert-InterfaceNavigation $ispText 'ISP_MODE_NAV'
+foreach($text in @($navigation,$homeHtml)){
+    foreach($site in @('slide_simple_renesas_isp_tool','slide_boot_loader_for_RL78','slide_boot_loader_for_RH850')){
+        if(!$text.Contains('https://released.github.io/'+$site+'/')){throw "Missing root guide entry: $site"}
     }
 }
-Assert-CanEntryCategories $ispText 'ISP_MODE_NAV'
-Assert-CanEntryCategories $navigation 'RL78_CAN_ENTRY'
-Assert-CanEntryCategories $homeHtml 'RL78_CAN_ENTRY' -Html
+Write-Host 'PASS: five equal interface entries and three purpose-specific guide directories.'
 $homeMarkdownBlock=[regex]::Match($navigation,'(?s)<!-- RL78_CAN_ENTRY_BEGIN -->.*?<!-- RL78_CAN_ENTRY_END -->').Value
 $homeHtmlBlock=[regex]::Match($homeHtml,'(?s)<!-- RL78_CAN_ENTRY_BEGIN -->.*?<!-- RL78_CAN_ENTRY_END -->').Value
 $homeMarkdownLinks=@([regex]::Matches($homeMarkdownBlock,'\]\(([^)]+)\)') | ForEach-Object{$_.Groups[1].Value} | Sort-Object)

@@ -4,6 +4,10 @@
   "runtime": "2.0",
   "pages": [
     {
+      "html": "can-fd.html",
+      "source": "can-fd.md"
+    },
+    {
       "html": "can-protocol.html",
       "source": "can-protocol.md"
     },
@@ -28,6 +32,10 @@
       "source": "host-firmware.md"
     },
     {
+      "html": "i2c.html",
+      "source": "i2c.md"
+    },
+    {
       "html": "index.html",
       "source": "index.md"
     },
@@ -42,6 +50,14 @@
     {
       "html": "status-and-reports.html",
       "source": "status-and-reports.md"
+    },
+    {
+      "html": "uart.html",
+      "source": "uart.md"
+    },
+    {
+      "html": "xmodem.html",
+      "source": "xmodem.md"
     }
   ],
   "runtimeFiles": {},

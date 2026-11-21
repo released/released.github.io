@@ -7,7 +7,8 @@
 平台配置、C header、建置、Metadata、SC 與共用 Frame／命令／INFO／Status。
 
 <!-- BOOTLOADER_TOPICS_BEGIN -->
-## 本頁主題
+<details>
+<summary>章節與另一平台對照</summary>
 
 | 章節／規格 | 本頁 | 另一平台 |
 | --- | --- | --- |
@@ -17,6 +18,8 @@
 | SC設定與重新產生 | [閱讀](#guide-serial-device-4) | [RH850](../slide_boot_loader_for_RH850/serial-device.html#guide-serial-device-4) |
 | Framed control與INFO | [閱讀](#guide-serial-device-5) | [RH850](../slide_boot_loader_for_RH850/serial-device.html#guide-serial-device-5) |
 | 驗證範圍 | [閱讀](#guide-serial-device-9) | [RH850](../slide_boot_loader_for_RH850/serial-device.html#guide-serial-device-9) |
+
+</details>
 <!-- BOOTLOADER_TOPICS_END -->
 
 <!-- SERIAL_DEVICE_GUIDE_BEGIN -->
@@ -344,4 +347,4 @@ G16 I2C 的兩份 App 更新量測與擷取範圍見 [G16 I2C 更新量測](http
 
 ---
 
-[上一主題：App Metadata、IRQ 與更新耗時](app-development.html) · [指南入口](index.html) · [下一主題：UART Bootloader 與協定格式](uart-device.html)
+[上一主題：App Metadata 與 IRQ](app-development.html) · [指南入口](index.html) · [下一主題：Boot／App 移植與 Flash](porting.html)

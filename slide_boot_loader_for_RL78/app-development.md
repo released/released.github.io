@@ -2,12 +2,13 @@
 
 <a id="article_top"></a>
 
-# App Metadata、IRQ 與更新耗時
+# App Metadata 與 IRQ
 
-C header 編輯、產表、App 建置、驗證、CAN 速率與更新耗時。
+映像設定、Metadata 產生、IRQ mapping 與建置驗證。
 
 <!-- BOOTLOADER_TOPICS_BEGIN -->
-## 本頁主題
+<details>
+<summary>章節與另一平台對照</summary>
 
 | 章節／規格 | 本頁 | 另一平台 |
 | --- | --- | --- |
@@ -18,7 +19,8 @@ C header 編輯、產表、App 建置、驗證、CAN 速率與更新耗時。
 | E. BIN 與向量驗證 | [閱讀](#guide-app-development-5) | [RH850](../slide_boot_loader_for_RH850/app-development.html#guide-app-development-5) |
 | F. 常見錯誤與只換 App 的邊界 | [閱讀](#guide-app-development-6) | [RH850](../slide_boot_loader_for_RH850/app-development.html#guide-app-development-6) |
 | G. Device CAN 速率：250K／500K／1M | [閱讀](#guide-app-development-7) | [RH850](../slide_boot_loader_for_RH850/app-development.html#guide-app-development-7) |
-| App BIN 更新耗時參考 | [閱讀](#guide-app-development-8) | [RH850](../slide_boot_loader_for_RH850/app-development.html#guide-app-development-8) |
+
+</details>
 <!-- BOOTLOADER_TOPICS_END -->
 
 <!-- DEVICE_WORKSHOP_BEGIN -->
@@ -901,116 +903,9 @@ flowchart TD
 | App 可探索，Enter Boot 後失聯 | 核對 Boot 與 App 的實際 timing 是否一致；F13 特別核對兩份 `RSCANlite.h` |
 | 完成更新後的 App 驗證 | CRC／App INFO／UART counter 分別確認；以 analyzer 核對實際速率與 error frame |
 | 速率驗證範圍 | 本節列出依現有 clock 計算的 presets；500K 有正常更新紀錄，250K／1M 的連續更新、重啟與故障復原需分別保留實板證據 |
-<a id="device-update-timing"></a>
-
-<a id="guide-app-development-8"></a>
-
-### App BIN 更新耗時參考
-
-以下為單次實板更新的粗略等待時間參考，以 Tool 報告的 `elapsed_ms` 換算為秒，顯示至小數一位。
-總時間包含更新流程的檢查、傳輸與 Flash 擦寫、END CRC、App 啟動確認及收尾，不是純 Flash 寫入速度。
-實際時間也會受 Host Link UART、電腦與通訊狀態影響。
-
-Classical CAN 使用 **500 kbit/s**。
-CAN FD 欄位使用 **nominal 500 kbit/s／data 2 Mbit/s／BRS 開啟**，不是全程以 500 kbit/s 傳輸。
-
-| App BIN | F13 device：Classical CAN 500K | F24 device：Classical CAN 500K | F24 device：CAN FD 500K／2M、BRS |
-| --- | --- | --- | --- |
-| 原始 App（未填充） | 20,320 bytes／約 13.5 秒 | 4,252 bytes／約 5.3 秒 | 4,780 bytes／約 5.5 秒 |
-| 8 KiB（8,192 bytes） | 不適用 | 約 7.2 秒 | 約 7.3 秒 |
-| 24 KiB（24,576 bytes） | 約 15.6 秒 | 約 15.6 秒 | 約 15.6 秒 |
-| 56 KiB（57,344 bytes） | 約 32.3 秒 | 約 32.2 秒 | 約 32.2 秒 |
-| 119 KiB（121,856 bytes） | 約 65.8 秒 | — | — |
-| 120 KiB（122,880 bytes） | 不適用 | 約 65.9 秒 | 約 65.9 秒 |
-| 247 KiB（252,928 bytes） | 不適用 | 約 133.0 秒 | 約 133.1 秒 |
-
-「—」表示沒有該欄對應的量測資料，不代表更新失敗；原始 App 列分別列出 BIN 大小與已有的量測時間。
-「不適用」表示測試映像小於來源 App，或超過目前預設 App 容量。
-各列均指實際 App BIN 長度，包含向量表、metadata、程式／填充與 CRC；1 KiB＝1024 bytes。
-
-##### F13 量測條件與來源
-
-| 項目 | 本表使用的實測條件 |
-| --- | --- |
-| 日期／MCU | 2026-11-02／RL78/F13 R5F10BMG |
-| Host Link UART／CAN | 115200 baud／Classical CAN 500 kbit/s |
-| Detailed trace | 四次更新的對應 Log 均無 `TRACE UART`／`TRACE CAN` 逐幀記錄 |
-| Tool／Host firmware | 0.1.0.0114／Host 1.8.1、build 20261023 |
-| Device Boot／App | Boot 1.7.2、build 20261022／App 1.6.1、build 20261017 |
-| 測試映像內容 | 原始 App，以及由其延伸、以 `0xFF` 填充並更新長度與 CRC32 的測試 BIN |
-| 更新完成條件 | 四次均 PASS，END CRC、APP_READY／live image 比對及 CAN_STOP 確認通過；Device UART 均有 App 啟動與持續遞增的 timer 記錄 |
-| 重試／已記錄的 Host 錯誤 | 四份 `link_retries=0`；UART overflow、CAN lost／warning／passive／bus-off／recovery／TX failure 差值均為 0 |
-
-來源為 Tool 的 JSON／HTML 更新報告，副檔名為 `.json`／`.html`。
-下表識別碼前加 `update_20261102_`，即可對應報告檔名。
-Tool Log 為 `firmware_upgrade_tool_20261102_165702_065_63508_2.log`；Device UART 為 `20261102_165055_1.log`。
-
-| 報告識別 | App BIN | elapsed_ms | Image CRC32 |
-| --- | --- | --- | --- |
-| `085806_769_63508_425770703_1` | 原始 App，20,320 bytes | 13458 | `0xCD08B2B9` |
-| `085928_650_63508_425852578_2` | 24 KiB | 15586 | `0x51F4F5C7` |
-| `090021_234_63508_425905156_3` | 56 KiB | 32332 | `0xED614B1F` |
-| `090148_942_63508_425992843_4` | 119 KiB | 65778 | `0xAC872843` |
-
-##### F24 Classical CAN 量測條件與來源
-
-| 項目 | 本表使用的實測條件 |
-| --- | --- |
-| 日期／MCU | 2026-11-02／RL78/F24 R7F124FPJ5xFB |
-| Host Link UART／CAN | 115200 baud／Classical CAN 500 kbit/s |
-| 逐幀記錄 | 對應 Log 未包含 `TRACE UART`／`TRACE CAN` 記錄 |
-| Tool／Host firmware | 0.1.0.0114／Host 1.8.1、build 20261023 |
-| Device Boot／App | Boot 1.1.1、build 20261022／App 1.0.3、build 20261019 |
-| 測試映像內容 | 原始 App，以及由其延伸、以 `0xFF` 填充並更新長度與 CRC32 的測試 BIN |
-| 更新完成條件 | 六次均 PASS，END CRC、APP_READY／live image 比對及 CAN_STOP 確認通過；Device UART 均有 App 啟動與持續遞增的 timer 記錄 |
-| 重試／已記錄的 Host 錯誤 | 六份 `link_retries=0`；UART overflow、CAN lost／warning／passive／bus-off／recovery／TX failure 差值均為 0 |
-
-來源為 Tool 的 JSON／HTML 更新報告；下表報告識別前加 `update_20261102_`，副檔名為 `.json`／`.html`。
-Tool Log 為 `firmware_upgrade_tool_20261102_175402_275_63508_5.log`；Device UART 為 `20261102_175038_1.log`。
-表格列出整次操作的實際耗時，診斷細節保留於原始報告。
-
-| 報告識別 | App BIN | elapsed_ms | Image CRC32 |
-| --- | --- | --- | --- |
-| `095507_201_63508_429191234_5` | 原始 App，4,252 bytes | 5253 | `0xCB558EB5` |
-| `095544_285_63508_429228312_6` | 8 KiB | 7240 | `0x1C3D3D65` |
-| `095612_784_63508_429256812_7` | 24 KiB | 15551 | `0x53023D7D` |
-| `095658_334_63508_429302359_8` | 56 KiB | 32211 | `0xAC393491` |
-| `095820_776_63508_429384781_9` | 120 KiB | 65912 | `0xBD9980C1` |
-| `100051_164_63508_429535156_10` | 247 KiB | 132962 | `0x2E5DCE5B` |
-
-##### F24 CAN FD 量測條件與來源
-
-2026-11-02，RL78/F24 R7F124FPJ5xFB；Host Link UART 115200 baud，CAN FD nominal 500 kbit/s、data 2 Mbit/s、BRS 開啟。
-Tool 0.1.0.0114，Host firmware 1.8.1／build 20261023，Device Boot 1.2.1／build 20261022、App 1.0.4／build 20261020。
-
-測試映像為原始 App，以及由其延伸、以 `0xFF` 填充並更新長度與 CRC32 的 BIN。
-六次均 PASS，END CRC、APP_READY／live image 比對及 CAN_STOP 確認通過；Device UART 均有 App 啟動與持續遞增的 timer 記錄。
-六份 `link_retries=0`；UART overflow、CAN lost／warning／passive／bus-off／recovery／TX failure 差值均為 0。
-對應 Tool Log 未包含 `TRACE UART`／`TRACE CAN` 逐幀記錄。
-
-來源為 Tool 的 JSON／HTML 更新報告；下表報告識別前加 `update_20261102_`，副檔名為 `.json`／`.html`。
-Tool Log 為 `firmware_upgrade_tool_20261102_180627_598_63508_7.log`；Device UART 為 `20261102_180636_1.log`。
-表格列出整次操作的實際耗時，診斷細節保留於原始報告。
-量測條件以上述 Tool 與 firmware 為準；不同設定需各自量測。
-
-| 報告識別 | App BIN | elapsed_ms | Image CRC32 |
-| --- | --- | --- | --- |
-| `100733_867_63508_429937812_11` | 原始 App，4,780 bytes | 5527 | `0x2089154D` |
-| `100757_675_63508_429961609_12` | 8 KiB | 7266 | `0xD9EE0401` |
-| `100837_509_63508_430001437_13` | 24 KiB | 15590 | `0x5DF8A8EB` |
-| `100926_042_63508_430049968_14` | 56 KiB | 32232 | `0xB96554B0` |
-| `101057_657_63508_430141562_15` | 120 KiB | 65894 | `0x8E554348` |
-| `101328_375_63508_430292265_16` | 247 KiB | 133070 | `0x8AAD47CE` |
-
-##### 相關說明
-
-- [CAN 更新協定與逐 byte 封包格式](https://released.github.io/slide_boot_loader_for_RL78/#flash-metadata-can-reference)
-- [Boot 完整 IRQ table 與 App software dispatch](https://released.github.io/slide_boot_loader_for_RL78/#device-irq-ownership)
-- [Software dispatch 的時間與 stack 成本](https://released.github.io/slide_boot_loader_for_RL78/#device-irq-dispatch-cost)
-- [Boot 燒錄方式與 Flash 尾端保護](https://released.github.io/slide_boot_loader_for_RL78/#device-debug-monitor)：CS+ 安裝 Boot 時，App 上限為 119／247 KiB，最後 1 KiB 保留給 debug monitor 所在的擦除區塊。需要完整 120／248 KiB 時，須調整配對工程，且 **Boot 只能由 RFP 安裝**。
-
+[App update measurements](experiments.html#device-update-timing).
 <!-- DEVICE_WORKSHOP_END -->
 
 ---
 
-[上一主題：Classical CAN／CAN FD device 工程](can-device.html) · [指南入口](index.html) · [下一主題：串列 ISP 共用工程與協定契約](serial-device.html)
+[上一主題：Xmodem Bootloader 與協定格式](xmodem-device.html) · [指南入口](index.html) · [下一主題：串列 ISP 共用工程與協定契約](serial-device.html)

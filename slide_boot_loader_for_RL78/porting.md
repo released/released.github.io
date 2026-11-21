@@ -7,7 +7,8 @@
 分區、Boot 安裝、debug monitor、Flash RAM 執行與 CRC 後端。
 
 <!-- BOOTLOADER_TOPICS_BEGIN -->
-## 本頁主題
+<details>
+<summary>章節與另一平台對照</summary>
 
 | 章節／規格 | 本頁 | 另一平台 |
 | --- | --- | --- |
@@ -24,6 +25,8 @@
 | 6. 初次安裝與後續更新 | [閱讀](#guide-porting-11) | [RH850](../slide_boot_loader_for_RH850/porting.html#guide-porting-11) |
 | 7. 啟動與更新流程 | [閱讀](#guide-porting-12) | [RH850](../slide_boot_loader_for_RH850/porting.html#guide-porting-12) |
 | 8. App 變更與驗證 | [閱讀](#guide-porting-13) | [RH850](../slide_boot_loader_for_RH850/porting.html#guide-porting-13) |
+
+</details>
 <!-- BOOTLOADER_TOPICS_END -->
 
 <!-- RL78_PORTING_BEGIN -->
@@ -451,4 +454,4 @@ App 更新時可保存 Boot 映像雜湊，確認 App-only 作業的範圍。
 
 ---
 
-[上一主題：Xmodem Bootloader 與協定格式](xmodem-device.html) · [指南入口](index.html) · [下一主題：Flash、Metadata 與 CAN 封包參考](reference.html)
+[上一主題：串列 ISP 共用工程與協定契約](serial-device.html) · [指南入口](index.html) · [下一主題：Flash、Metadata 與 CAN 封包參考](reference.html)

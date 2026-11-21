@@ -7,7 +7,8 @@
 位址、全部 Metadata bytes、對應程式與 CAN payload。
 
 <!-- BOOTLOADER_TOPICS_BEGIN -->
-## 本頁主題
+<details>
+<summary>章節與另一平台對照</summary>
 
 | 章節／規格 | 本頁 | 另一平台 |
 | --- | --- | --- |
@@ -23,6 +24,8 @@
 | 4. CAN payload逐byte格式 | [閱讀](#guide-reference-10) | [RH850](../slide_boot_loader_for_RH850/reference.html#guide-reference-10) |
 | 與Custom Transfer／Bridge Self Test的區別 | [閱讀](#guide-reference-11) | [RH850](../slide_boot_loader_for_RH850/reference.html#guide-reference-11) |
 | 5. 改成自己的專案：修改順序與驗證 | [閱讀](#guide-reference-12) | [RH850](../slide_boot_loader_for_RH850/reference.html#guide-reference-12) |
+
+</details>
 <!-- BOOTLOADER_TOPICS_END -->
 
 <!-- FLASH_REFERENCE_BEGIN -->
@@ -671,4 +674,4 @@ Self Test不是更新協定，也沒有Byte7 CRC；需CAN analyzer觀察實際bu
 
 ---
 
-[上一主題：Boot／App 移植與 Flash](porting.html) · [指南入口](index.html) · [下一主題：Tool 操作與通訊驗證入口](tool-guides.html)
+[上一主題：Boot／App 移植與 Flash](porting.html) · [指南入口](index.html) · [下一主題：各介面實驗資料](experiments.html)

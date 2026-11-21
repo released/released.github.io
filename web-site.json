@@ -98,8 +98,20 @@
       "source": "slide_boot_loader_for_RH850/app-development.md"
     },
     {
+      "html": "slide_boot_loader_for_RH850/architecture.html",
+      "source": "slide_boot_loader_for_RH850/architecture.md"
+    },
+    {
       "html": "slide_boot_loader_for_RH850/can-device.html",
       "source": "slide_boot_loader_for_RH850/can-device.md"
+    },
+    {
+      "html": "slide_boot_loader_for_RH850/can-fd-device.html",
+      "source": "slide_boot_loader_for_RH850/can-fd-device.md"
+    },
+    {
+      "html": "slide_boot_loader_for_RH850/experiments.html",
+      "source": "slide_boot_loader_for_RH850/experiments.md"
     },
     {
       "html": "slide_boot_loader_for_RH850/i2c-device.html",
@@ -136,6 +148,10 @@
     {
       "html": "slide_boot_loader_for_RL78/app-development.html",
       "source": "slide_boot_loader_for_RL78/app-development.md"
+    },
+    {
+      "html": "slide_boot_loader_for_RL78/architecture.html",
+      "source": "slide_boot_loader_for_RL78/architecture.md"
     },
     {
       "html": "slide_boot_loader_for_RL78/basic_uart_i2c/app-build.html",
@@ -184,6 +200,14 @@
     {
       "html": "slide_boot_loader_for_RL78/can-device.html",
       "source": "slide_boot_loader_for_RL78/can-device.md"
+    },
+    {
+      "html": "slide_boot_loader_for_RL78/can-fd-device.html",
+      "source": "slide_boot_loader_for_RL78/can-fd-device.md"
+    },
+    {
+      "html": "slide_boot_loader_for_RL78/experiments.html",
+      "source": "slide_boot_loader_for_RL78/experiments.md"
     },
     {
       "html": "slide_boot_loader_for_RL78/i2c-device.html",
@@ -362,6 +386,10 @@
       "source": "slide_secure_boot_fundamentals/index.md"
     },
     {
+      "html": "slide_simple_renesas_isp_tool/can-fd.html",
+      "source": "slide_simple_renesas_isp_tool/can-fd.md"
+    },
+    {
       "html": "slide_simple_renesas_isp_tool/can-protocol.html",
       "source": "slide_simple_renesas_isp_tool/can-protocol.md"
     },
@@ -386,6 +414,10 @@
       "source": "slide_simple_renesas_isp_tool/host-firmware.md"
     },
     {
+      "html": "slide_simple_renesas_isp_tool/i2c.html",
+      "source": "slide_simple_renesas_isp_tool/i2c.md"
+    },
+    {
       "html": "slide_simple_renesas_isp_tool/index.html",
       "source": "slide_simple_renesas_isp_tool/index.md"
     },
@@ -400,6 +432,14 @@
     {
       "html": "slide_simple_renesas_isp_tool/status-and-reports.html",
       "source": "slide_simple_renesas_isp_tool/status-and-reports.md"
+    },
+    {
+      "html": "slide_simple_renesas_isp_tool/uart.html",
+      "source": "slide_simple_renesas_isp_tool/uart.md"
+    },
+    {
+      "html": "slide_simple_renesas_isp_tool/xmodem.html",
+      "source": "slide_simple_renesas_isp_tool/xmodem.md"
     }
   ],
   "runtimeFiles": {

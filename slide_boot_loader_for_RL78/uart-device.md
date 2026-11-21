@@ -7,7 +7,8 @@
 資料 UART、接收中斷、framed ISP 更新、封包範例與診斷。
 
 <!-- BOOTLOADER_TOPICS_BEGIN -->
-## 本頁主題
+<details>
+<summary>章節與另一平台對照</summary>
 
 | 章節／規格 | 本頁 | 另一平台 |
 | --- | --- | --- |
@@ -17,299 +18,21 @@
 | Protocol Format | [閱讀](#guide-uart-device-4) | [RH850](../slide_boot_loader_for_RH850/uart-device.html#guide-uart-device-4) |
 | 異常與完成條件 | [閱讀](#guide-uart-device-5) | [RH850](../slide_boot_loader_for_RH850/uart-device.html#guide-uart-device-5) |
 | 程式對照與診斷 | [閱讀](#guide-uart-device-6) | [RH850](../slide_boot_loader_for_RH850/uart-device.html#guide-uart-device-6) |
+
+</details>
 <!-- BOOTLOADER_TOPICS_END -->
 
 <!-- DEVICE_UPGRADE_PATHS_BEGIN -->
-## 依型號閱讀完整更新流程
+## MCU 工程與實驗索引
 
-| 型號與介面 | 章節 |
-| --- | --- |
-| F13 / UART | [操作、Boot 與 App](#upgrade-f13-uart) |
-| F24 / UART | [操作、Boot 與 App](#upgrade-f24-uart) |
+工程設定與實板紀錄分開列出；每個入口直接到達對應主題。
 
-<a id="upgrade-f13-uart"></a>
+| MCU／料號 | 工程設定 | 實驗資料 |
+| --- | --- | --- |
+| F13／R5F10BMG | [配對工程與配置](#upgrade-f13-uart) | [實板紀錄與限制](experiments.html#f13-uart-update-measurements) |
+| F24／R7F124FPJ5xFB | [配對工程與配置](#upgrade-f24-uart) | [實板紀錄與限制](experiments.html#f24-uart-update-measurements) |
 
-### F13 × UART：App 更新與兩端機制
 
-#### 配對工程、接線與映像
-
-| 項目 | 此組合的設定 |
-| --- | --- |
-| Device／target | R5F10BMG／`0xF13B` |
-| Boot 工程 | `RL78_F13_ISP_Boot_loader_UART` |
-| App 工程 | `RL78_F13_ISP_Boot_loader_UART_app` |
-| 初次安裝 | Boot 工程的 `DefaultBuild/boot0000_1FFF.hex`，由 programmer 安裝；確認 MCU 與擦除範圍 |
-| Tool 更新檔 | App 工程的 `DefaultBuild/RL78_F13_ISP_Boot_loader_UART_app_update.bin`；HEX、boot_app 合併檔與 Transfer HEX 不放入 App 更新欄 |
-| Flash 配置 | App 起點 `0x02000`，容量 `119 KiB`；8 KiB Boot、App 最大 119 KiB；最後 1 KiB 為保留區，App 容量包含 vectors、Metadata、padding 與 CRC。 |
-| 資料介面 | UART framed ISP，115200／8-N-1 為範例值 |
-| RAM 交接 | `0xFF710..0xFF71F`；返回 Boot request：`0xFF71C` |
-
-- Bridge UART1 TX P74 接 device RX P75；Bridge RX P75 接 device TX P74。共地並核對 I/O 電壓，二進位資料不經診斷 UART。
-- 獨立診斷 UART TX P15／RX P16，115200、8-N-1；terminal 與 binary data link 分開。
-- PC 連接 F24 bridge 的 Host Link UART0，預設 115200；Host 必須宣告 UART forwarding 能力，所選 Device baud 須由 Host 接受；Host Baud 與 Device baud 分別設定。
-- 編輯配對工程的 image／IRQ／transport 設定後重新建置 App，Tool 必須重新 Load Update Image 才會取代已快取的舊 bytes。Bridge 只轉送資料，Device Boot 負責 target、Flash 與映像驗證。
-
-#### Simple Renesas ISP Tool 操作步驟
-
-1. 安裝本組合的 Boot HEX；一般換 App 時保留配對 Boot。若需先檢查接線，使用獨立 Transfer 工程並選 Custom Transfer；Transfer 不等於本組合的 Boot／App。
-2. 開啟 Tool，選實接 bridge COM，按 **Open + Probe Host**。核對 Host LIVE 身分與所需能力，不能從 USB-UART 名稱推定 Host 型號。
-3. 設定 **UART / Xmodem TAB：Device baud 115200、8-N-1**，選實接 Bridge port，Workflow 選 **UART ISP**；速率與安裝的 Boot／App 及 BIN 一致。
-4. **Load Update Image** 載入 `RL78_F13_ISP_Boot_loader_UART_app_update.bin`。核對 CRC、Device target、介面、App 起點／容量、版本政策與 IRQ ABI；讀取 **BIN Details／Preflight** 排除 blocker。
-5. 按 **Discover Target**。應得到此型號的 Boot 或 App；若為 App，按 **Enter Boot** 後重新確認 Boot。若已在 Boot，直接進入下一步；有效 App 的 Boot 等待窗口會到期，開始前仍核對 live mode。
-6. 按 **Start Device Update**。Tool staging Metadata，再開始傳輸與驗證；傳輸進度 100% 並非 App 已啟動。
-7. 等待 END 成功與重啟後確認。**APP_READY 與全部 256-byte installed metadata 相符**才代表 App 身分與啟動確認完成。
-8. 核對完成提示、JSON／HTML report、UART App 啟動與持續 counter。更新完成會釋放 device bus，保留 Host COM；Host counter 不可用時仍獨立標示 UNAVAILABLE。
-
-#### Boot 如何接收與驗證 Host raw data
-
-- ISR 只處理接收與周邊狀態，主迴圈才解碼。framed control 為 10-byte header、0..96-byte payload、LE32 CRC32；先檢查 frame extent、CRC、request type、sequence，再交給 `IspDeviceProcess()`。
-- `METADATA 0x03` 依 offset 暫存完整 256 bytes；`START 0x04` 核對 target、介面、App 起點／容量、size、IRQ ABI 與 installed App 的版本政策，建立新的更新 session。
-- `WRITE 0x05` 帶 LE32 offset 與最多 64 image bytes；必須等於 next offset、符合區塊與尾塊長度、App 範圍及 Metadata 重疊內容，通過後才交給 Flash backend。成功 reply 表示該次 session 接受；完整映像仍待 END 驗證。
-- RL78 由所屬 MCU 的 Flash driver 執行 App 區擦寫；Boot 與尾端 1 KiB 保留區不在可更新範圍。
-- `END 0x06` 核對完整 size、CRC32、Metadata、入口與 IRQ table；成功回覆完成後才允許重啟，Tool 再核對 APP_READY 與 installed metadata。
-
-```mermaid
-flowchart LR
-    subgraph AUTHORIZE["接收與更新授權"]
-        direction TB
-        RX["UART 接收<br/>主迴圈解析"] --> FRAME{"header / sequence / CRC32<br/>正確?"}
-        FRAME -->|否| E1["拒絕 / 錯誤"]
-        FRAME -->|是| START{"256-byte Metadata<br/>START 契約通過?"}
-        START -->|否| E1
-    end
-    subgraph WRITE["分段資料與 Flash"]
-        direction TB
-        RAW["WRITE / offset / data"] --> VALID{"offset / 長度 / Metadata<br/>通過?"}
-        VALID -->|否| E2["拒絕本區塊"]
-        VALID -->|是| FLASH["只提交 App backend<br/>回覆接受結果"]
-        FLASH --> MORE{"還有待傳資料?"}
-        MORE -->|是| RAW
-    end
-    subgraph COMPLETE["完成與交接"]
-        direction TB
-        END{"END：size / CRC32<br/>Metadata / IRQ 通過?"} -->|否| E3["錯誤 / 保留 Boot"]
-        END -->|是| ACK["完整成功 reply 完成"]
-        ACK --> RESET["更新標記 / reset<br/>Boot 再驗證與交接"]
-        RESET --> APP["App ready<br/>Tool 核對 installed metadata"]
-    end
-    AUTHORIZE -->|START 通過| WRITE
-    WRITE -->|全部資料接受| COMPLETE
-```
-
-#### App 的命令與返回 Boot
-
-- App 提供 INFO、PING 20、ECHO 21、STATS 22，以及依 capability 開放的診斷；Flash 命令由 Boot 執行。
-- **ENTER `0x02`** 是 Tool 的返回 Boot 命令；只有符合命令與回覆完成條件的 ENTER 才執行返回 Boot；UART0 z/Z 為另一個本機操作。
-- RAM marker 是一次性交接資料；linker 必須保留此區，startup 的 stack／BSS／data／ECC 初始化避開此區。冷上電不可假設 RAM 值有效，仍由 Boot 驗證 Flash 後重建交接。
-- 前景 UART0 **z/Z 是正常 MCU reset**，需要 bus idle／沒有更新；不等同 ENTER 的強制停留 Boot。有效 App 可在 Boot 檢查後重新啟動。
-
-```mermaid
-flowchart LR
-    subgraph STARTUP["App 啟動"]
-        direction TB
-        S["保留交接 RAM"] --> H{"handoff / 板端條件<br/>符合?"}
-        H -->|否| RECOVER["Boot recovery"]
-        H -->|是| INIT["消費標記<br/>初始化周邊 / IRQ"]
-    end
-    subgraph FOREGROUND["App 前景服務"]
-        direction TB
-        LOOP["工作負載 / 診斷 UART"] --> CMD{"收到命令?"}
-        CMD -->|INFO / 唯讀| INFO["身分 / ready / installed 回覆"]
-        INFO --> LOOP
-        CMD -->|其他命令| OTHER["處理或回覆錯誤<br/>App 不擦寫自身"]
-        OTHER --> LOOP
-    end
-    subgraph ENTER["返回 Boot"]
-        direction TB
-        V{"ENTER 02 長度<br/>與狀態符合?"} -->|否| DEFER["保留 App / 取消待執行動作"]
-        V -->|是| ACK{"成功回覆完整送出?"}
-        ACK -->|否| DEFER
-        ACK -->|是| MARK
-        MARK["寫返回 Boot request<br/>0xFF71C"] --> RESET["MCU reset<br/>Boot 等待更新"]
-    end
-    STARTUP -->|初始化完成| FOREGROUND
-    FOREGROUND -->|ENTER 02| ENTER
-    ENTER -->|條件未成立| FOREGROUND
-```
-
-#### 完成條件、錯誤與程式對照
-
-| 現象／階段 | 判讀與處理 |
-| --- | --- |
-| Discover 無回覆 | 核對所選 MCU／周邊、Boot 或 Transfer 身分、供電、共地、pin／port、速率；先保留原始錯誤 |
-| START／Metadata 被拒絕 | 尚未通過該 session 的映像契約；核對 exact BIN、live mode、版本政策與相容 Boot |
-| 傳輸中失敗／取消 | 保留最後確認 stage／offset 與 Flash status；不從百分比猜測續傳，不手動重送 erase／START／END |
-| END／EOT 通過但 App 未確認 | Flash 驗證與 App 啟動分開；保留報告並唯讀 Discover，核對 UART、startup、RAM 交接、clock 與 IRQ，不盲目 RUN／重寫 |
-| App confirmed | installed identity／Metadata 與 BIN 相符，UART 啟動及持續工作另作觀察；不延伸成冷啟動、斷電恢復或全部故障情境的保證 |
-| 程式入口 | Boot／App 各自的 `custom_func.c`：`hardware_init()`／`loop()`；`boot_app_handoff.h`、`image_metadata_config.h` 與各自 `hal/isp/` |
-
-進一步欄位定義：[串列共用封包／INFO／Status](https://released.github.io/slide_boot_loader_for_RL78/serial-device.html#guide-serial-device-5)；[RAM／startup 與 Flash](https://released.github.io/slide_boot_loader_for_RL78/porting.html#guide-porting-5)。
-
-<!-- F13_UART_MEASURED_BEGIN -->
-<a id="f13-uart-update-measurements"></a>
-
-#### F13 UART ISP App 更新量測
-
-- Device：R5F10BMG；F24 bridge；Device UART1 與 Host Link 各為 115200／8-N-1。Tool 0.1.0.139，Host FW 1.8.1 build 20261023。
-- 四份報告與實際 BIN 的大小、CRC32、SHA256 相符。START、END／EOT、完整接受 bytes、APP_READY 及全部 256-byte installed metadata 均已確認。
-- UART0 有四次 boot-validated／update completed、後續 counter 與完整 framed RX／TX；payload 每列 8 bytes。
-
-| 映像 | Bytes | Write 秒 | END CRC 秒 | App 確認秒 | 總秒數 | 報告 |
-| --- | ---: | ---: | ---: | ---: | ---: | --- |
-| 原始 App | 10556 | 15.750 | 0.176 | 1.944 | 18.761 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f13_uart_10556b.html) |
-| 24 KiB | 24576 | 36.784 | 0.303 | 1.960 | 39.940 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f13_uart_24576b.html) |
-| 56 KiB | 57344 | 85.957 | 0.576 | 2.024 | 89.445 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f13_uart_57344b.html) |
-| 119 KiB | 121856 | 182.768 | 1.136 | 3.209 | 188.001 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f13_uart_121856b.html) |
-
-- 更新後 Device UART 快照的 RX errors／drops／TX timeouts 為 0；Bridge UART1 deltas 的 RX errors／drops 為 0，每次記有 backend aborts=1。abort 計數與 Device UART 錯誤為不同觀察項。
-- Host counter assessment 為 **UNAVAILABLE**，Host Link retry 為 0；不能由此推定所有 Host 計數全程零錯誤。
-- 獨立 Transfer 的 PING／ECHO／counters 通過，沒有 Flash 命令。8 組 UART0 RX／TX 的 sequence、command、payload 與八位元組分行相符。[Transfer 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f13_uart_transfer.html)
-- Transfer 成功段前後的累積 Device RX errors 均為 **1159**，drops／TX timeouts 為 0；不能與更新後 App 的 0 跨執行相減。較早曾有 Host command 0x61 INTERNAL_ERROR；其原因未由本批資料確立。
-- 本批涵蓋正常更新後 App 確認；z/Z 人工重置、冷啟動、斷電及其他型號的結果另行驗證。
-<!-- F13_UART_MEASURED_END -->
-
-<a id="upgrade-f24-uart"></a>
-
-### F24 × UART：App 更新與兩端機制
-
-#### 配對工程、接線與映像
-
-| 項目 | 此組合的設定 |
-| --- | --- |
-| Device／target | R7F124FPJ5xFB／`0xF24B` |
-| Boot 工程 | `RL78_F24_ISP_Boot_loader_UART` |
-| App 工程 | `RL78_F24_ISP_Boot_loader_UART_app` |
-| 初次安裝 | Boot 工程的 `DefaultBuild/boot0000_1FFF.hex`，由 programmer 安裝；確認 MCU 與擦除範圍 |
-| Tool 更新檔 | App 工程的 `DefaultBuild/RL78_F24_ISP_Boot_loader_UART_app_update.bin`；HEX、boot_app 合併檔與 Transfer HEX 不放入 App 更新欄 |
-| Flash 配置 | App 起點 `0x02000`，容量 `247 KiB`；8 KiB Boot、App 最大 247 KiB；最後 1 KiB 為保留區，App 容量包含 vectors、Metadata、padding 與 CRC。 |
-| 資料介面 | UART framed ISP，115200／8-N-1 為範例值 |
-| RAM 交接 | `0xFF710..0xFF71F`；返回 Boot request：`0xFF71C` |
-
-- Bridge UART1 TX P74 接 device RX P75；Bridge RX P75 接 device TX P74。共地並核對 I/O 電壓，二進位資料不經診斷 UART。
-- 獨立診斷 UART TX P15／RX P16，115200、8-N-1；terminal 與 binary data link 分開。
-- PC 連接 F24 bridge 的 Host Link UART0，預設 115200；Host 必須宣告 UART forwarding 能力，所選 Device baud 須由 Host 接受；Host Baud 與 Device baud 分別設定。
-- 編輯配對工程的 image／IRQ／transport 設定後重新建置 App，Tool 必須重新 Load Update Image 才會取代已快取的舊 bytes。Bridge 只轉送資料，Device Boot 負責 target、Flash 與映像驗證。
-
-#### Simple Renesas ISP Tool 操作步驟
-
-1. 安裝本組合的 Boot HEX；一般換 App 時保留配對 Boot。若需先檢查接線，使用獨立 Transfer 工程並選 Custom Transfer；Transfer 不等於本組合的 Boot／App。
-2. 開啟 Tool，選實接 bridge COM，按 **Open + Probe Host**。核對 Host LIVE 身分與所需能力，不能從 USB-UART 名稱推定 Host 型號。
-3. 設定 **UART / Xmodem TAB：Device baud 115200、8-N-1**，選實接 Bridge port，Workflow 選 **UART ISP**；速率與安裝的 Boot／App 及 BIN 一致。
-4. **Load Update Image** 載入 `RL78_F24_ISP_Boot_loader_UART_app_update.bin`。核對 CRC、Device target、介面、App 起點／容量、版本政策與 IRQ ABI；讀取 **BIN Details／Preflight** 排除 blocker。
-5. 按 **Discover Target**。應得到此型號的 Boot 或 App；若為 App，按 **Enter Boot** 後重新確認 Boot。若已在 Boot，直接進入下一步；有效 App 的 Boot 等待窗口會到期，開始前仍核對 live mode。
-6. 按 **Start Device Update**。Tool staging Metadata，再開始傳輸與驗證；傳輸進度 100% 並非 App 已啟動。
-7. 等待 END 成功與重啟後確認。**APP_READY 與全部 256-byte installed metadata 相符**才代表 App 身分與啟動確認完成。
-8. 核對完成提示、JSON／HTML report、UART App 啟動與持續 counter。更新完成會釋放 device bus，保留 Host COM；Host counter 不可用時仍獨立標示 UNAVAILABLE。
-
-#### Boot 如何接收與驗證 Host raw data
-
-- ISR 只處理接收與周邊狀態，主迴圈才解碼。framed control 為 10-byte header、0..96-byte payload、LE32 CRC32；先檢查 frame extent、CRC、request type、sequence，再交給 `IspDeviceProcess()`。
-- `METADATA 0x03` 依 offset 暫存完整 256 bytes；`START 0x04` 核對 target、介面、App 起點／容量、size、IRQ ABI 與 installed App 的版本政策，建立新的更新 session。
-- `WRITE 0x05` 帶 LE32 offset 與最多 64 image bytes；必須等於 next offset、符合區塊與尾塊長度、App 範圍及 Metadata 重疊內容，通過後才交給 Flash backend。成功 reply 表示該次 session 接受；完整映像仍待 END 驗證。
-- RL78 由所屬 MCU 的 Flash driver 執行 App 區擦寫；Boot 與尾端 1 KiB 保留區不在可更新範圍。
-- `END 0x06` 核對完整 size、CRC32、Metadata、入口與 IRQ table；成功回覆完成後才允許重啟，Tool 再核對 APP_READY 與 installed metadata。
-
-```mermaid
-flowchart LR
-    subgraph AUTHORIZE["接收與更新授權"]
-        direction TB
-        RX["UART 接收<br/>主迴圈解析"] --> FRAME{"header / sequence / CRC32<br/>正確?"}
-        FRAME -->|否| E1["拒絕 / 錯誤"]
-        FRAME -->|是| START{"256-byte Metadata<br/>START 契約通過?"}
-        START -->|否| E1
-    end
-    subgraph WRITE["分段資料與 Flash"]
-        direction TB
-        RAW["WRITE / offset / data"] --> VALID{"offset / 長度 / Metadata<br/>通過?"}
-        VALID -->|否| E2["拒絕本區塊"]
-        VALID -->|是| FLASH["只提交 App backend<br/>回覆接受結果"]
-        FLASH --> MORE{"還有待傳資料?"}
-        MORE -->|是| RAW
-    end
-    subgraph COMPLETE["完成與交接"]
-        direction TB
-        END{"END：size / CRC32<br/>Metadata / IRQ 通過?"} -->|否| E3["錯誤 / 保留 Boot"]
-        END -->|是| ACK["完整成功 reply 完成"]
-        ACK --> RESET["更新標記 / reset<br/>Boot 再驗證與交接"]
-        RESET --> APP["App ready<br/>Tool 核對 installed metadata"]
-    end
-    AUTHORIZE -->|START 通過| WRITE
-    WRITE -->|全部資料接受| COMPLETE
-```
-
-#### App 的命令與返回 Boot
-
-- App 提供 INFO、PING 20、ECHO 21、STATS 22，以及依 capability 開放的診斷；Flash 命令由 Boot 執行。
-- **ENTER `0x02`** 是 Tool 的返回 Boot 命令；只有符合命令與回覆完成條件的 ENTER 才執行返回 Boot；UART0 z/Z 為另一個本機操作。
-- RAM marker 是一次性交接資料；linker 必須保留此區，startup 的 stack／BSS／data／ECC 初始化避開此區。冷上電不可假設 RAM 值有效，仍由 Boot 驗證 Flash 後重建交接。
-- 前景 UART0 **z/Z 是正常 MCU reset**，需要 bus idle／沒有更新；不等同 ENTER 的強制停留 Boot。有效 App 可在 Boot 檢查後重新啟動。
-
-```mermaid
-flowchart LR
-    subgraph STARTUP["App 啟動"]
-        direction TB
-        S["保留交接 RAM"] --> H{"handoff / 板端條件<br/>符合?"}
-        H -->|否| RECOVER["Boot recovery"]
-        H -->|是| INIT["消費標記<br/>初始化周邊 / IRQ"]
-    end
-    subgraph FOREGROUND["App 前景服務"]
-        direction TB
-        LOOP["工作負載 / 診斷 UART"] --> CMD{"收到命令?"}
-        CMD -->|INFO / 唯讀| INFO["身分 / ready / installed 回覆"]
-        INFO --> LOOP
-        CMD -->|其他命令| OTHER["處理或回覆錯誤<br/>App 不擦寫自身"]
-        OTHER --> LOOP
-    end
-    subgraph ENTER["返回 Boot"]
-        direction TB
-        V{"ENTER 02 長度<br/>與狀態符合?"} -->|否| DEFER["保留 App / 取消待執行動作"]
-        V -->|是| ACK{"成功回覆完整送出?"}
-        ACK -->|否| DEFER
-        ACK -->|是| MARK
-        MARK["寫返回 Boot request<br/>0xFF71C"] --> RESET["MCU reset<br/>Boot 等待更新"]
-    end
-    STARTUP -->|初始化完成| FOREGROUND
-    FOREGROUND -->|ENTER 02| ENTER
-    ENTER -->|條件未成立| FOREGROUND
-```
-
-#### 完成條件、錯誤與程式對照
-
-| 現象／階段 | 判讀與處理 |
-| --- | --- |
-| Discover 無回覆 | 核對所選 MCU／周邊、Boot 或 Transfer 身分、供電、共地、pin／port、速率；先保留原始錯誤 |
-| START／Metadata 被拒絕 | 尚未通過該 session 的映像契約；核對 exact BIN、live mode、版本政策與相容 Boot |
-| 傳輸中失敗／取消 | 保留最後確認 stage／offset 與 Flash status；不從百分比猜測續傳，不手動重送 erase／START／END |
-| END／EOT 通過但 App 未確認 | Flash 驗證與 App 啟動分開；保留報告並唯讀 Discover，核對 UART、startup、RAM 交接、clock 與 IRQ，不盲目 RUN／重寫 |
-| App confirmed | installed identity／Metadata 與 BIN 相符，UART 啟動及持續工作另作觀察；不延伸成冷啟動、斷電恢復或全部故障情境的保證 |
-| 程式入口 | Boot／App 各自的 `custom_func.c`：`hardware_init()`／`loop()`；`boot_app_handoff.h`、`image_metadata_config.h` 與各自 `hal/isp/` |
-
-進一步欄位定義：[串列共用封包／INFO／Status](https://released.github.io/slide_boot_loader_for_RL78/serial-device.html#guide-serial-device-5)；[RAM／startup 與 Flash](https://released.github.io/slide_boot_loader_for_RL78/porting.html#guide-porting-5)。
-
-<!-- F24_UART_MEASURED_BEGIN -->
-<a id="f24-uart-update-measurements"></a>
-
-#### F24 UART App 更新量測
-
-- Device：R7F124FPJ5xFB；F24 bridge；UART1 115200／8-N-1，Host Link 115200。
-- Tool 0.1.0.139；Host FW 1.8.1 build 20261023。六份獨立報告與實際 BIN 的 size／CRC32 相符。
-- 六次 START、END 均已確認，接受 bytes 等於映像大小；APP_READY 與全部 256-byte installed metadata 相符，UART0 有 boot-validated、update completed 及後續 counter。
-
-| 映像 | Bytes | Write 秒 | END CRC 秒 | App 確認秒 | 總秒數 | 報告 |
-| --- | ---: | ---: | ---: | ---: | ---: | --- |
-| 原始 App | 6724 | 10.573 | 0.128 | 1.930 | 13.615 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_uart_6724b.html) |
-| 8 KiB | 8192 | 12.208 | 0.144 | 1.946 | 15.187 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_uart_8192b.html) |
-| 24 KiB | 24576 | 36.835 | 0.256 | 1.961 | 39.942 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_uart_24576b.html) |
-| 56 KiB | 57344 | 86.038 | 0.480 | 1.962 | 89.369 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_uart_57344b.html) |
-| 120 KiB | 122880 | 184.479 | 0.945 | 2.635 | 188.949 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_uart_122880b.html) |
-| 247 KiB | 252928 | 380.445 | 1.842 | 9.557 | 392.734 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_uart_252928b.html) |
-
-- Device UART 的 RX errors、RX drops、TX timeouts 均為 0；這些欄位是 Device 當次執行快照。
-- Host counter assessment 為 **UNAVAILABLE**，不能據此推定 Host 全程零錯誤；Host Link retry 為 0。
-- 247 KiB 的唯讀 App 確認有 37 次 Host BUSY 觀察，最終確認成功；沒有重送 Flash START／END。
-- UART Custom Transfer 及獨立 Xmodem Transfer 均有通過紀錄；Xmodem Boot／App 的更新與 UART0 trace 證據集中於 [F24 Xmodem 更新量測](https://released.github.io/slide_simple_renesas_isp_tool/serial-isp.html#f24-xmodem-update-measurements)。
-- 本表涵蓋一般更新與軟體重啟後 App 確認；冷啟動、斷電及其他故障恢復不由本批資料推定。
-<!-- F24_UART_MEASURED_END -->
 <!-- DEVICE_UPGRADE_PATHS_END -->
 
 <!-- UART_DEVICE_BEGIN -->
@@ -484,6 +207,54 @@ RL78 硬體錯誤／丟棄／TX 計數飽和於 65535，欄位統一序列化為
 Tool保留支援／未提供／讀取失敗的區別；畫面與報告的用途見[Device串列診斷](https://released.github.io/slide_simple_renesas_isp_tool/serial-isp.html#serial-device-diagnostics)。
 <!-- UART_DEVICE_END -->
 
+<!-- MODEL_DETAILS_BEGIN -->
+<a id="upgrade-f13-uart"></a>
+
+### F13 × UART：工程設定
+
+#### 配對工程、接線與映像
+
+| 項目 | 此組合的設定 |
+| --- | --- |
+| Device／target | R5F10BMG／`0xF13B` |
+| Boot 工程 | `RL78_F13_ISP_Boot_loader_UART` |
+| App 工程 | `RL78_F13_ISP_Boot_loader_UART_app` |
+| 初次安裝 | Boot 工程的 `DefaultBuild/boot0000_1FFF.hex`，由 programmer 安裝；確認 MCU 與擦除範圍 |
+| Tool 更新檔 | App 工程的 `DefaultBuild/RL78_F13_ISP_Boot_loader_UART_app_update.bin`；HEX、boot_app 合併檔與 Transfer HEX 不放入 App 更新欄 |
+| Flash 配置 | App 起點 `0x02000`，容量 `119 KiB`；8 KiB Boot、App 最大 119 KiB；最後 1 KiB 為保留區，App 容量包含 vectors、Metadata、padding 與 CRC。 |
+| 資料介面 | UART framed ISP，115200／8-N-1 為範例值 |
+| RAM 交接 | `0xFF710..0xFF71F`；返回 Boot request：`0xFF71C` |
+
+- [Tool UART 操作](https://released.github.io/slide_simple_renesas_isp_tool/uart.html)提供接線、Discover、Enter Boot、更新與結果確認。
+- [Boot 接收與驗證機制](https://released.github.io/slide_boot_loader_for_RL78/uart-device.html#uart-boot-flow)集中描述此介面的接收、CRC、更新命令與完成回覆。
+- [App 返回 Boot 與 RAM 交接](https://released.github.io/slide_boot_loader_for_RL78/architecture.html#boot-app-handoff)說明 ENTER 與 UART0 z/Z 的差異；實際保留位址以本節表格為準。
+- [此組合的實驗資料與限制](https://released.github.io/slide_boot_loader_for_RL78/experiments.html#f13-uart-update-measurements)與工程設定分開呈現，沒有實板紀錄的組合不推定為已驗證。
+- 程式入口為配對工程的 `custom_func.c`：`hardware_init()`／`loop()`；移植修改位置見 [Boot／App 移植](https://released.github.io/slide_boot_loader_for_RL78/porting.html)。
+
+<a id="upgrade-f24-uart"></a>
+
+### F24 × UART：工程設定
+
+#### 配對工程、接線與映像
+
+| 項目 | 此組合的設定 |
+| --- | --- |
+| Device／target | R7F124FPJ5xFB／`0xF24B` |
+| Boot 工程 | `RL78_F24_ISP_Boot_loader_UART` |
+| App 工程 | `RL78_F24_ISP_Boot_loader_UART_app` |
+| 初次安裝 | Boot 工程的 `DefaultBuild/boot0000_1FFF.hex`，由 programmer 安裝；確認 MCU 與擦除範圍 |
+| Tool 更新檔 | App 工程的 `DefaultBuild/RL78_F24_ISP_Boot_loader_UART_app_update.bin`；HEX、boot_app 合併檔與 Transfer HEX 不放入 App 更新欄 |
+| Flash 配置 | App 起點 `0x02000`，容量 `247 KiB`；8 KiB Boot、App 最大 247 KiB；最後 1 KiB 為保留區，App 容量包含 vectors、Metadata、padding 與 CRC。 |
+| 資料介面 | UART framed ISP，115200／8-N-1 為範例值 |
+| RAM 交接 | `0xFF710..0xFF71F`；返回 Boot request：`0xFF71C` |
+
+- [Tool UART 操作](https://released.github.io/slide_simple_renesas_isp_tool/uart.html)提供接線、Discover、Enter Boot、更新與結果確認。
+- [Boot 接收與驗證機制](https://released.github.io/slide_boot_loader_for_RL78/uart-device.html#uart-boot-flow)集中描述此介面的接收、CRC、更新命令與完成回覆。
+- [App 返回 Boot 與 RAM 交接](https://released.github.io/slide_boot_loader_for_RL78/architecture.html#boot-app-handoff)說明 ENTER 與 UART0 z/Z 的差異；實際保留位址以本節表格為準。
+- [此組合的實驗資料與限制](https://released.github.io/slide_boot_loader_for_RL78/experiments.html#f24-uart-update-measurements)與工程設定分開呈現，沒有實板紀錄的組合不推定為已驗證。
+- 程式入口為配對工程的 `custom_func.c`：`hardware_init()`／`loop()`；移植修改位置見 [Boot／App 移植](https://released.github.io/slide_boot_loader_for_RL78/porting.html)。
+<!-- MODEL_DETAILS_END -->
+
 ---
 
-[上一主題：串列 ISP 共用工程與協定契約](serial-device.html) · [指南入口](index.html) · [下一主題：I2C Bootloader 與協定格式](i2c-device.html)
+[上一主題：I2C Bootloader 與協定格式](i2c-device.html) · [指南入口](index.html) · [下一主題：Xmodem Bootloader 與協定格式](xmodem-device.html)

@@ -44,7 +44,6 @@ F24 CAN device 提供 Transfer、Boot 與 App 工程。板端時鐘、Flash 配�
 
 ## Device App：Metadata 與 IRQ 設定
 
-F13 與 F24 CAN device 使用兩份 C header 管理映像資訊與中斷對應，並共同作為後續 MCU 的工程基準。完整範例、產生命令及驗證步驟集中於 Bootloader 頁；不同 BIN 大小的等待時間見 [App 更新耗時參考](https://released.github.io/slide_boot_loader_for_RL78/#device-update-timing)。
 [Device App：Metadata 與 IRQ 設定](https://released.github.io/slide_boot_loader_for_RL78/app-development.html#device-metadata-vector-workshop)
 <!-- DEVICE_WORKSHOP_END -->
 
@@ -53,8 +52,7 @@ F13 與 F24 CAN device 使用兩份 C header 管理映像資訊與中斷對應�
 
 ## MCU CAN FD device 工程設定
 
-CAN FD Boot/App設定來源、timing、metadata、建置與產物集中於Device指南。
-[MCU CAN FD device 工程設定](https://released.github.io/slide_boot_loader_for_RL78/can-device.html#can-fd-device-engineering)
+[MCU CAN FD device 工程設定](https://released.github.io/slide_boot_loader_for_RL78/can-fd-device.html#can-fd-device-engineering)
 <!-- FD_DEVICE_END -->
 
 <!-- SERIAL_DEVICE_GUIDE_BEGIN -->
@@ -62,7 +60,6 @@ CAN FD Boot/App設定來源、timing、metadata、建置與產物集中於Device
 
 ## 串列 ISP 共用工程與協定契約
 
-F13／F24／G16／G22 的平台配置、C header、Metadata、建置與共用封包集中於本章；UART、I2C、Xmodem 各有獨立 Bootloader／Protocol Format 入口。
 [串列 ISP 共用工程與協定契約](https://released.github.io/slide_boot_loader_for_RL78/serial-device.html#serial-device-engineering)
 <!-- SERIAL_DEVICE_GUIDE_END -->
 

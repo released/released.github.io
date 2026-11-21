@@ -7,7 +7,8 @@
 平台配置、C header、建置、Metadata、SC 與共用 Frame／命令／INFO／Status。
 
 <!-- BOOTLOADER_TOPICS_BEGIN -->
-## 本頁主題
+<details>
+<summary>章節與另一平台對照</summary>
 
 | 章節／規格 | 本頁 | 另一平台 |
 | --- | --- | --- |
@@ -17,6 +18,8 @@
 | SC設定與重新產生 | [閱讀](#guide-serial-device-4) | [RL78](../slide_boot_loader_for_RL78/serial-device.html#guide-serial-device-4) |
 | Framed control與INFO | [閱讀](#guide-serial-device-5) | [RL78](../slide_boot_loader_for_RL78/serial-device.html#guide-serial-device-5) |
 | 驗證範圍 | [閱讀](#guide-serial-device-9) | [RL78](../slide_boot_loader_for_RL78/serial-device.html#guide-serial-device-9) |
+
+</details>
 <!-- BOOTLOADER_TOPICS_END -->
 
 <!-- RH850_SERIAL_CHAPTER_BEGIN -->
@@ -167,105 +170,7 @@ CAN與串列工程分別使用其介面契約；此表為串列ISP。
 
 ### Framed control與INFO
 
-| Frame byte | Bytes | 意義 |
-| --- | --- | --- |
-| 0..1 | 2 | 49 53 marker |
-| 2／3 | 各1 | framing version1／request0或response1 |
-| 4..5 | 2 | sequence LE16，1..65535 |
-| 6／7 | 各1 | command／status，request status0 |
-| 8..9 | 2 | payload長度LE16，0..96 |
-| 10.. | 0..96 | payload |
-| payload之後 | 4 | header與payload的CRC32，LE32 |
-
-CRC32/ISO-HDLC：reflected polynomial EDB88320，initial／final XOR FFFFFFFF；123456789=CBF43926。
-Frame最長110bytes；UART partial frame200ms逾時。相同sequence僅允許完全相同request重播。
-
-| Command | 作用 |
-| --- | --- |
-| 01 INFO | 88-byte live contract／mode／MCU／geometry／installed App／capabilities |
-| 02 ENTER | 回覆完成後reset到Boot；Boot直接ACK |
-| 03 METADATA | LE16 offset加4..64bytes，依序stage256，不擦Flash |
-| 04 START／0E FORCE_START | LE32完整size加LE32末端CRC；先驗證metadata與policy |
-| 05 WRITE／06 END | UART／I2C：ordered64-byte write與完整映像驗證；Xmodem Boot拒絕，改由raw block／EOT處理 |
-| 07 ABORT | 清session／staging，不復原已擦寫內容 |
-| 08 READ_METADATA／09 VERIFY | 有效App metadata讀回／Boot唯讀重算完整映像 |
-| 20 PING／21 ECHO | App／Transfer回傳0..96bytes |
-| 22 STATS／23 CLEAR_STATS | App／Transfer四個LE32：requests、replays、errors、written |
-| 24 STREAM_TEST | Xmodem App／Transfer宣告size1..65536與CRC32，轉到RAM診斷sink |
-| 25 DIAGNOSTICS | 宣告能力的UART／Xmodem App／Transfer，回覆唯讀24-byte UART快照 |
-
-以下 offset 以 INFO payload byte 0 為基準，多 byte 整數使用 little-endian。
-
-#### INFO payload：88 bytes
-
-| Offset | Bytes | 欄位與意義 |
-| --- | --- | --- |
-| 00 | 1 | contract：UART＝1、I2C＝2、Xmodem＝3 |
-| 01 | 1 | mode：Boot＝0、App＝1、Transfer＝2 |
-| 02 | 1 | transport：I2C＝02、UART／Xmodem＝04 |
-| 03 | 1 | max-write：UART／I2C＝64、Xmodem＝128 |
-| 04..05 | 2 | MCU target ID |
-| 06／07 | 各1 | installed App valid／更新 active |
-| 08..0B | 4 | App 起點 |
-| 0C..0F | 4 | App 完整 BIN 容量 |
-| 10..13 | 4 | Code Flash bytes |
-| 14..17 | 4 | Boot 保留 bytes |
-| 18..1B | 4 | Flash erase bytes |
-| 1C..1F／20..23 | 各4 | Boot version／build |
-| 24..27 | 4 | 編譯 bus rate：UART baud 或 I2C Hz |
-| 28..2B／2C..2F／30..33 | 各4 | installed App version／build／完整 BIN size |
-| 34／35 | 各1 | installed version-control policy／App ready |
-| 36..37 | 2 | capabilities bitmap |
-| 38..47 | 16 | part ASCII，NUL padding |
-| 48..53 | 12 | family ASCII，NUL padding |
-| 54..57 | 4 | IRQ ABI |
-
-Boot能力0F、App3C、Transfer10；Transfer不回報installed App／Boot分區與IRQ ABI，其對應值為零。
-提供UART診斷callback的App／Transfer另加能力bit6（0x40）；Boot不加此位元。
-
-#### 更新命令 payload
-
-| Command | Payload offset | Bytes | 意義 |
-| --- | --- | --- | --- |
-| 03 METADATA | 00..01 | 2 | Metadata offset，4-byte 對齊 |
-| 03 METADATA | 02.. | 4..64 | Metadata bytes；每段為4的倍數，依序涵蓋256 bytes |
-| 04 START／0E FORCE_START | 00..03 | 4 | 完整 BIN bytes，包含向量、Metadata、padding 與末端 CRC |
-| 04 START／0E FORCE_START | 04..07 | 4 | BIN 末端保存的 CRC32 值 |
-| 05 WRITE | 00..03 | 4 | 從 BIN 起點計算的 offset |
-| 05 WRITE | 04.. | 4..64 | UART／I2C 本次寫入 bytes；非末塊64 bytes，末塊使用實際剩餘長度 |
-| 06 END／07 ABORT／09 VERIFY | 無 | 0 | END 完整驗證、ABORT 清交易、VERIFY 唯讀驗證 |
-| 08 READ_METADATA | 00..01／02 | 2／1 | Metadata offset／要求 bytes；須為有效 installed App |
-| 24 STREAM_TEST | 00..03／04..07 | 各4 | Xmodem App／Transfer 的 useful size／CRC32 |
-
-成功回覆保留 request 的 sequence 與 command，type＝response、status＝00；有資料時依命令附 payload。
-可解碼但被拒絕的命令回覆錯誤 status 與空 payload。
-
-<a id="serial-status-codes"></a>
-
-#### Status 與錯誤處理
-
-| Status | 名稱 | 作用與核對方向 |
-| --- | --- | --- |
-| 00 | OK | 此命令已接受；更新完成仍需 END／EOT 驗證及 App 確認 |
-| 01 | BAD_COMMAND | 命令不屬於目前角色、協定或能力 |
-| 02 | BAD_SIZE | payload、offset 對齊或資料區塊長度不符合條件 |
-| 03 | BAD_STATE | 尚未完成 Metadata staging、未 START 或目前狀態不接受命令 |
-| 04 | BAD_SEQUENCE | 命令 sequence／重播內容或 Metadata／BIN offset 不符合順序 |
-| 05 | BAD_METADATA | MCU、介面、配置、size、IRQ 或映像契約不符合 |
-| 06 | BAD_VERSION | 有效 installed App 啟用版控，且 incoming version 較低 |
-| 07 | FLASH_ERROR | 實際擦除或寫入 API 失敗 |
-| 08 | CRC_ERROR | 完整映像或 VERIFY 檢查未通過 |
-
-無法形成有效 frame 的資料不執行命令，也不保證有 status 回覆。
-Status 名稱與值來自工程內 `hal/isp/isp_protocol.h`，命令條件由 `isp_device.c` 核對。
-
-#### 各介面 Bootloader 與協定格式
-
-| 介面 | Boot 流程 | Protocol Format |
-| --- | --- | --- |
-| UART | [接收、中斷與更新](uart-device.html#uart-boot-flow) | [UART frame 與診斷](uart-device.html#uart-protocol) |
-| I2C | [Slave mailbox 與更新](i2c-device.html#i2c-boot-flow) | [I2C request／reply window](i2c-device.html#i2c-protocol) |
-| Xmodem | [Control／raw block 與完成](xmodem-device.html#xmodem-boot-flow) | [XMODEM-CRC128](xmodem-device.html#xmodem-protocol) |
+[共用 Frame、命令、INFO 與 Status](../slide_boot_loader_for_RL78/serial-device.html#guide-serial-device-5)由 RL78 共用契約章節維護。RH850 的 RLIN31／RIIC1、IRQ、位址與計數上限以本頁平台設定及各介面工程為準。
 <!-- RH850_SERIAL_WIRE_END -->
 
 <a id="rh850-serial-runtime"></a>
@@ -302,4 +207,4 @@ RIIC 暫存器與交易順序依 [RH850/F1KH、F1KM 硬體手冊](https://in.ele
 
 ---
 
-[上一主題：App Metadata、IRQ 與更新耗時](app-development.html) · [指南入口](index.html) · [下一主題：UART Bootloader 與協定格式](uart-device.html)
+[上一主題：App Metadata 與 IRQ](app-development.html) · [指南入口](index.html) · [下一主題：Boot／App 移植與 Flash](porting.html)

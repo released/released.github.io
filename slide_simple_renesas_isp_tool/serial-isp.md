@@ -2,38 +2,26 @@
 
 <a id="article_top"></a>
 
-# UART／Xmodem／I2C 操作
+# 串列共用接線與更新流程
 
 接線、可調通訊設定、App 更新及串列通訊測試。
 
 <!-- UART_TOOL_GUIDE_BEGIN -->
-
-- I2C／UART 的 `Connection Details...` 提供 Host 與各 MCU 範例腳位、共地／電壓條件及 Device 速度／位址要求；可離線查看，操作執行中停用。主畫面保留必要接線提醒。
-- Custom Transfer 使用 Discover／Transfer Test，不需要 BIN，也不寫入 Flash。
 <a id="uart-device-operation"></a>
 <a id="serial-device-operation"></a>
 
-## UART／Xmodem／I2C device 操作
+## 串列介面共用操作
 
-Tool 只開啟 bridge 的 Host Link COM，再由 bridge UART1 或 IICA0 與 MCU device 通訊。
-Device UART0 獨立提供診斷文字，供 terminal 觀察。
+本頁集中說明共用接線、映像條件、更新步驟與診斷；各介面設定由獨立操作頁說明。
 
-RL78 F13／F24／G16／G22 與 RH850 各有獨立的 UART、Xmodem、I2C Boot／App／Transfer 工程。
-各工程具有獨立的介面與映像契約；實板適用範圍以各型號章節及量測條件為準。
+| 介面 | 操作入口 | Bootloader／MCU 工程 |
+| --- | --- | --- |
+| I2C | [I2C 操作](i2c.html) | [RL78](https://released.github.io/slide_boot_loader_for_RL78/i2c-device.html)／[RH850](https://released.github.io/slide_boot_loader_for_RH850/i2c-device.html) |
+| UART | [UART 操作](uart.html) | [RL78](https://released.github.io/slide_boot_loader_for_RL78/uart-device.html)／[RH850](https://released.github.io/slide_boot_loader_for_RH850/uart-device.html) |
+| Xmodem | [Xmodem 操作](xmodem.html) | [RL78](https://released.github.io/slide_boot_loader_for_RL78/xmodem-device.html)／[RH850](https://released.github.io/slide_boot_loader_for_RH850/xmodem-device.html) |
 
-F24 I2C 的原始 App 及 8..247 KiB 容量測試映像已有一般更新與重啟後 App 確認資料；
-條件與耗時見[F24 I2C 更新量測](#f24-i2c-update-measurements)。其他平台、速度及故障恢復分別驗證。
-
-F24 UART 的原始 App 與 8..247 KiB 映像亦有 END／App 確認及 UART0 運作資料；見 [F24 UART 更新量測](#f24-uart-update-measurements)。
-
-F24 Xmodem 的 Transfer、原始 App 與 8..247 KiB 更新結果見 [F24 Xmodem 量測與限制](#f24-xmodem-update-measurements)；累積錯誤快照與成功更新分別呈現。
-
-Boot 流程與協定格式可依介面直接查閱：
-
-| 平台 | UART | I2C | Xmodem | 共用契約 |
-| --- | --- | --- | --- | --- |
-| RL78 | [Boot／Format](https://released.github.io/slide_boot_loader_for_RL78/uart-device.html) | [Boot／Format](https://released.github.io/slide_boot_loader_for_RL78/i2c-device.html) | [Boot／Format](https://released.github.io/slide_boot_loader_for_RL78/xmodem-device.html) | [Frame／INFO／Status](https://released.github.io/slide_boot_loader_for_RL78/serial-device.html#guide-serial-device-5) |
-| RH850 | [Boot／Format](https://released.github.io/slide_boot_loader_for_RH850/uart-device.html) | [Boot／Format](https://released.github.io/slide_boot_loader_for_RH850/i2c-device.html) | [Boot／Format](https://released.github.io/slide_boot_loader_for_RH850/xmodem-device.html) | [Frame／INFO／Status](https://released.github.io/slide_boot_loader_for_RH850/serial-device.html#guide-serial-device-5) |
+Tool 只開啟 bridge 的 Host Link COM；Device 的資料介面與 UART0 診斷文字分開。
+各 MCU 的工程是否存在、是否具有實板紀錄，分別以工程指南與實驗資料章節為準。
 
 ### 選擇介面與 Workflow
 
@@ -49,6 +37,8 @@ Boot 流程與協定格式可依介面直接查閱：
 
 Xmodem 位於 **UART / Xmodem → Workflow**，不是另一個 COM 或獨立 tab。
 Device 每份 Boot 只支援其所屬的介面／協定；UART0 診斷輸出不屬於第二種更新介面。
+
+<a id="serial-wiring"></a>
 
 ### 接線與速度
 
@@ -106,6 +96,8 @@ App 設定由 app_image_config.h、app_irq_handlers.h 編輯，不需要 Python 
 
 分區、容量、metadata 與 ISR 編輯集中於 [串列 device 工程配置](https://released.github.io/slide_boot_loader_for_RL78/#serial-device-engineering)。
 初次 Boot 安裝及 Flash 尾端保留區另見 [Boot 安裝與 App 容量](https://released.github.io/slide_boot_loader_for_RL78/#device-debug-monitor)。
+
+<a id="serial-app-update"></a>
 
 ### App 更新操作
 
@@ -173,124 +165,6 @@ Xmodem Transfer 先以 command0x24 宣告389 useful bytes及 CRC32，再進行12
 最後不足128 bytes以1A padding，完成後回到 framed control，讀取 counters。
 CRC16驗證每個區塊，CRC32驗證 useful bytes；診斷用 RAM sink不啟動 Flash或reset。
 
-<a id="f24-i2c-transfer"></a>
-
-#### F24 I2C Custom Transfer
-
-此流程使用 `RL78_F24_I2C_Slave_Transfer`，驗證 bridge 與 device 的雙向通訊。
-資料使用 I2C，診斷文字使用 device UART0；腳位集中於本章「接線與速度」。
-
-| 步驟 | 操作 | 預期結果 |
-| --- | --- | --- |
-| 1 | 安裝 Transfer HEX，另開 device UART0 terminal | 出現 I2C Custom Transfer 啟動文字；bus idle 時可用 z/Z 一般重置 |
-| 2 | 選 bridge COM，按 Open + Probe Host | Host 身分及 I2C 能力有效 |
-| 3 | 選 I2C／Custom Transfer，核對 port、100 kHz、7-bit 0x20 | 設定與所安裝範例一致；不需要 App BIN |
-| 4 | 按 Discover Test Target | Device LIVE 顯示 F24／Custom Transfer；不提供 Boot／installed App 資料 |
-| 5 | 按 Transfer Test | PING、96-byte ECHO、counters 及最後 INFO 重讀均通過 |
-
-封包文字與測試結果可分別核對：
-
-- `seq` 隨 request 遞增，RX／TX 的 sequence、command、長度須對應。
-- PING 使用前三個測試 bytes；96-byte ECHO 使用 `i XOR 0xA5`。前兩列為 `A5 A4 A7 A6 A1 A0 A3 A2`、`AD AC AF AE A9 A8 AB AA`。
-- Payload 每 8 bytes 換行，最後不足 8 bytes 仍完整顯示，空資料顯示 `data=[]`；每筆 request 使用固定圖樣。
-- STATS 是 device 本次執行的累積值；Discover 或額外查詢會增加 requests。正常測試不增加 errors／written，trace 不取代 Tool 的 CRC 與內容比對。
-- 此流程不發出 Flash 更新命令。Boot／App 更新使用 I2C ISP workflow。
-
-<a id="f24-i2c-update"></a>
-
-#### F24 I2C App 更新
-
-安裝 `RL78_F24_ISP_Boot_loader_I2C` 的 Boot HEX，更新檔使用配對
-`RL78_F24_ISP_Boot_loader_I2C_app` 的 `_update.bin` 或同次建置產生的容量測試 BIN。
-
-1. 選 **I2C → I2C ISP**，核對 port、速度與 7-bit address，再載入 BIN。
-2. **Discover Target** 讀取即時狀態；Device 已在 App 時按 **Enter Boot**，等待 Boot 確認。
-3. **Compare Metadata／Preflight** 通過後，執行 **Start Device Update**。
-4. Worker staging 完整 metadata，START 通過後依序傳送 64-byte WRITE，最後由 END 驗證完整映像。
-5. END 回覆成功後等待重啟；App ready 與全部 256-byte installed metadata 相符，才確認更新完成。
-6. 核對報告及 UART0 App 啟動／counter。若結果未確認，保留原始錯誤並重新讀取狀態，不重複 erase／WRITE／END 來推定成功。
-
-<!-- F24_I2C_MEASURED_BEGIN -->
-<a id="f24-i2c-update-measurements"></a>
-
-#### F24 I2C App 更新量測
-
-量測條件：F24 device R7F124FPJ5xFB，F24 bridge，I2C 100 kHz／7-bit 0x20，Host Link 115200。
-Tool 0.1.0.138；Host FW 1.8.1／build 20261023。表格由六份選定更新報告的實際欄位整理，時間單位為秒。
-
-| App BIN | bytes | WRITE | END CRC | App 確認 | 總耗時 | 結果與資料 |
-| --- | --- | --- | --- | --- | --- | --- |
-| 原始 App | 6960 | 12.566 | 0.203 | 1.990 | 15.666 | [PASS／摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_i2c_6960b.html) |
-| 8 KiB | 8192 | 14.711 | 0.186 | 2.074 | 17.890 | [PASS／摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_i2c_8192b.html) |
-| 24 KiB | 24576 | 44.282 | 0.325 | 1.994 | 47.493 | [PASS／摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_i2c_24576b.html) |
-| 56 KiB | 57344 | 99.547 | 0.541 | 2.039 | 103.055 | [PASS／摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_i2c_57344b.html) |
-| 120 KiB | 122880 | 215.953 | 0.998 | 2.806 | 220.635 | [PASS／摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_i2c_122880b.html) |
-| 247 KiB | 252928 | 439.099 | 1.850 | 4.536 | 446.359 | [PASS／摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_i2c_252928b.html) |
-
-- 六份映像均取得 START／END 成功回覆、APP_READY，並核對全部 256-byte installed metadata；獨立 UART0 Log 有對應的 boot-validated 啟動文字及後續 counter。
-- 總耗時採報告 elapsed_ms，包含 Metadata、START、WRITE、END CRC、App 確認及流程開銷；不採載入 BIN 畫面保留的前次 Result／Elapsed。
-- 120／247 KiB 在重啟後唯讀確認期間分別觀察到 2／7 次 I2C_NACK，之後均確認 App。報告 link_retries 為 0 不代表所有 I2C 查詢一次成功。
-- Host counter assessment 為 UNAVAILABLE，無法據此宣稱 bus 無錯誤；這與映像／App 確認成功分開判斷。
-- 最大測試 App 為 247 KiB，未進入尾端 1 KiB 保留區。結果限此映像與接線條件；冷啟動、斷電恢復、故障注入、其他 MCU 或速度另行驗證。
-<!-- F24_I2C_MEASURED_END -->
-
-<!-- G16_I2C_MEASURED_BEGIN -->
-<a id="g16-i2c-update-measurements"></a>
-
-#### G16 I2C App 更新量測
-
-配對接線、操作步驟與 Boot／App 流程見 [G16 × I2C](https://released.github.io/slide_boot_loader_for_RL78/i2c-device.html#upgrade-g16-i2c)。
-
-- Device：R5F121BCAFP，HOCO／CPU 16 MHz；F24 bridge；I2C 100 kHz／7-bit 0x20；Host Link 115200。Tool 0.1.0.139，Host FW 1.8.1 build 20261023。
-- 兩份報告與對應 BIN 的長度、CRC32 相符，映像及來源報告由 SHA256 識別。START／END 成功、完整接受 bytes、APP_READY 與全部 256-byte installed metadata 均已確認。
-- 獨立 UART0 擷取有兩次 boot-validated／update completed 與後續 counter；唯讀 metadata 回覆與兩份 BIN 的 256 bytes 分別相符。
-
-| 映像 | Bytes | Write 秒 | END CRC 秒 | App 確認秒 | 總秒數 | 報告 |
-| --- | ---: | ---: | ---: | ---: | ---: | --- |
-| 原始 App | 12116 | 20.736 | 0.356 | 1.992 | 23.959 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/g16_i2c_12116b.html) |
-| 23 KiB | 23552 | 40.147 | 0.539 | 2.039 | 43.606 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/g16_i2c_23552b.html) |
-
-- 最大完整 App BIN 為 23 KiB，範圍至 `0x07BFF`；Boot 8 KiB 與尾端 `0x07C00..0x07FFF` 保留區不在 App 更新範圍。
-- 第二次更新從執行中的 App 經 ENTER 返回 Boot。UART0 擷取有 ENTER RX，沒有對應 TX trace；Tool 的 Boot 確認與後續更新成功分開記錄，不以此推定回覆遺失原因。
-- Host counter assessment 為 **UNAVAILABLE**，Host Link retry 為 0；本段未觀察到 App 確認 I2C_NACK，仍不能推定所有 bus 計數全程零錯誤。
-- 獨立 Transfer 的本批擷取涵蓋 Discover／INFO、一組 RX／TX、每列 8 bytes，沒有 Flash 命令；PING／ECHO／counters 尚未由此擷取證實。[Discover 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/g16_i2c_transfer.html)
-- 結果限正常更新後 App 確認。UART0 z/Z 人工重置、冷啟動、斷電恢復、其他介面／型號與故障注入另行驗證。
-<!-- G16_I2C_MEASURED_END -->
-
-<a id="i2c-image-waits"></a>
-
-#### 等待時間與映像大小
-
-| 階段 | 等待依據 | 判讀方式 |
-| --- | --- | --- |
-| ENTER request／reply | 一般 ISP request 的回覆期限 | App 先完整回覆，再 reset；incoming BIN 尚未傳送，不依新 BIN 大小延長 |
-| ENTER 成功回覆後 | Live INFO 的已安裝 App 大小，估計兩次驗證 | 未知大小保留 6000 ms；不是使用目前載入的新 BIN |
-| END request／reply | Device 完整映像驗證及 END 回覆期限 | 保留實際 status、ACK 與耗時；逾時不重送 END |
-| END 成功回覆後 | 新映像大小及實測 END 驗證耗時 | 先保留重啟靜默時間，再查詢 App ready／metadata |
-
-- 重啟靜默排程以每 KiB 8 ms 加 500 ms 餘裕估計，限制於 1000..6000 ms；這是查詢排程，不是硬體時間保證，也不改變 wire timeout。
-- 靜默期間不送 device 查詢；後續確認使用 12 秒預算，完成的 health probes 之間至少間隔 100 ms，等待可取消。
-- 已安裝 8 KiB App、載入 24 KiB BIN 時，Enter Boot 仍依已安裝 8 KiB 排程。新映像通過 END 後，才以 24 KiB 計算重啟等待。
-- I2C reply deadline 表示尚未確認命令回覆，不等同 device 回傳 Flash error；需分開核對 request、reply、reset 與 App 確認階段。
-
-<a id="i2c-test-bin-sequence"></a>
-
-#### 容量測試 BIN
-
-App 工程的 `generate_test_bins.ps1`／建置後步驟依該次 `_update.bin` 產生 `test_bins/auto`。
-測試檔保留程式與向量，以 FF 擴充容量，更新映像長度及末端 CRC。
-
-| 核對項目 | 意義 |
-| --- | --- |
-| `flash032KiB_app024KiB` | 測試預算 32 KiB 減去 8 KiB Boot，App BIN 為 24 KiB；不改寫實際 MCU Flash geometry |
-| F24 最大 App | 256 KiB Flash 減 8 KiB Boot 與尾端 1 KiB 保留區，為 247 KiB |
-| `manifest.csv` | 列出來源 BIN 雜湊、每份測試 BIN 長度／CRC／雜湊與範圍 |
-| 驅動或 runtime 修正後 | 重建 App 及容量測試 BIN；只同步來源或只重建 Boot，不會更新舊 App 執行內容 |
-
-建議順序為原始 App BIN → 較小容量 → 逐級擴大至可用上限，每次核對 END、App ready 與 installed metadata。
-同路徑檔案重新產生後，需在 Tool 再次 **Load Update Image**；已載入的離線快取不會隨磁碟檔案自動更新。
-各容量的實板結果依實際 BIN 分別確認，不能由較小容量或舊映像的成功推定。
-
 <a id="serial-device-diagnostics"></a>
 
 ### Device 串列診斷
@@ -299,16 +173,16 @@ App 工程的 `generate_test_bins.ps1`／建置後步驟依該次 `_update.bin` 
 
 #### UART0 本機操作與封包文字
 
-- F13／F24 I2C App 與 Custom Transfer，以獨立 UART0 提供診斷文字；I2C 傳送二進位協定。
+- F13、F24、G16、G22、RH850 的 UART／I2C App 與 Custom Transfer，以獨立 UART0 提供診斷文字；資料介面維持 UART1 或 I2C。
 - Terminal 使用 115200、8-N-1；傳送 `z` 或 `Z` 可要求一般 MCU 重置。App 重啟仍經過原本的 Boot 驗證流程；進入更新模式使用 Tool 的 Enter Boot。
 - 有效封包顯示 `RX`／`TX`、16-bit `seq`、`cmd`、`len` 與完整 payload。回覆需對應相同 sequence；Tool 另外檢查 CRC 與回傳資料。
 - PING／ECHO 測試資料為 `i XOR 0xA5`，例如 `A5 A4 A7 A6`；sequence 隨 request 遞增，資料本身維持固定測試圖樣。
 - 文字輸出在主迴圈進行；I2C 的 TX trace 等到完整回覆經最後 NACK／STOP 確認。CRC 錯誤或不完整的 frame 不會成為有效封包 trace。
-- `TRACE ISP LOG_DROP` 表示診斷文字被丟棄，不能據此推定資料傳輸遺失。F13／F24 使用獨立有上限的文字佇列。
+- `TRACE ISP LOG_DROP` 表示診斷文字被丟棄，不能據此推定資料傳輸遺失。G16 借用既有封包緩衝區，文字服務最多延後下一筆解析 200ms；其餘 MCU 使用獨立有上限的文字佇列。
 - I2C 回覆未被完整讀取時，mailbox 在最後活動後 2 秒放棄交易。該回覆不算成功傳送，待輸出的相關 trace 以文字丟棄處理，待執行的 ENTER 動作也會取消。
 - 交易已放棄、資料 bus idle 且沒有更新作業時，UART0 `z/Z` 可要求一般重置；不需要先完成另一筆通訊。bus 仍忙碌時持續等待，逾時本身不會自動重置 MCU。
 
-此處本機控制說明適用於 F13／F24 I2C App 與 Transfer。
+此本機控制適用於上述 UART／I2C App 與 Transfer，不改變各 Boot 或 Xmodem 專案的控制功能。
 
 Transfer Test 分開記錄 PING／ECHO／counter（Xmodem 另含 CRC128 streaming）與最後 live INFO 重讀結果。
 子測試通過後若 INFO 重讀失敗，整體作業仍為失敗。操作名稱及錯誤檢查方向依實際 I2C／UART／Xmodem 介面顯示；原始錯誤保留於 Log 與錯誤明細。
@@ -342,104 +216,6 @@ Boot更新與I2C mailbox維持各自能力；不因缺少UART診斷而拒絕更�
 
 成功、失敗、取消都產生 JSON／HTML report；Tool不自動開啟瀏覽器。
 報告欄位與開啟方式見 [Firmware update report](https://released.github.io/slide_simple_renesas_isp_tool/#update-html-report)；
-<!-- F24_UART_MEASURED_BEGIN -->
-<a id="f24-uart-update-measurements"></a>
-
-#### F24 UART App 更新量測
-
-- Device：R7F124FPJ5xFB；F24 bridge；UART1 115200／8-N-1，Host Link 115200。
-- Tool 0.1.0.139；Host FW 1.8.1 build 20261023。六份獨立報告與實際 BIN 的 size／CRC32 相符。
-- 六次 START、END 均已確認，接受 bytes 等於映像大小；APP_READY 與全部 256-byte installed metadata 相符，UART0 有 boot-validated、update completed 及後續 counter。
-
-| 映像 | Bytes | Write 秒 | END CRC 秒 | App 確認秒 | 總秒數 | 報告 |
-| --- | ---: | ---: | ---: | ---: | ---: | --- |
-| 原始 App | 6724 | 10.573 | 0.128 | 1.930 | 13.615 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_uart_6724b.html) |
-| 8 KiB | 8192 | 12.208 | 0.144 | 1.946 | 15.187 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_uart_8192b.html) |
-| 24 KiB | 24576 | 36.835 | 0.256 | 1.961 | 39.942 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_uart_24576b.html) |
-| 56 KiB | 57344 | 86.038 | 0.480 | 1.962 | 89.369 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_uart_57344b.html) |
-| 120 KiB | 122880 | 184.479 | 0.945 | 2.635 | 188.949 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_uart_122880b.html) |
-| 247 KiB | 252928 | 380.445 | 1.842 | 9.557 | 392.734 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_uart_252928b.html) |
-
-- Device UART 的 RX errors、RX drops、TX timeouts 均為 0；這些欄位是 Device 當次執行快照。
-- Host counter assessment 為 **UNAVAILABLE**，不能據此推定 Host 全程零錯誤；Host Link retry 為 0。
-- 247 KiB 的唯讀 App 確認有 37 次 Host BUSY 觀察，最終確認成功；沒有重送 Flash START／END。
-- UART Custom Transfer 及獨立 Xmodem Transfer 均有通過紀錄；Xmodem Boot／App 的更新與 UART0 trace 證據集中於 [F24 Xmodem 更新量測](https://released.github.io/slide_simple_renesas_isp_tool/serial-isp.html#f24-xmodem-update-measurements)。
-- 本表涵蓋一般更新與軟體重啟後 App 確認；冷啟動、斷電及其他故障恢復不由本批資料推定。
-<!-- F24_UART_MEASURED_END -->
-
-<!-- F24_XMODEM_MEASURED_BEGIN -->
-<a id="f24-xmodem-update-measurements"></a>
-
-#### F24 Xmodem App 更新量測
-
-- Device：R7F124FPJ5xFB；F24 bridge；UART1 115200／8-N-1，Host Link 115200。
-- Tool 0.1.0.139；Host FW 1.8.1 build 20261023。六份獨立報告與實際 BIN 的 size／CRC32 相符。
-- 六次 START、END 均已確認，接受 bytes 等於映像大小；APP_READY 與全部 256-byte installed metadata 相符，UART0 有 boot-validated、update completed 及後續 counter。
-
-| 映像 | Bytes | Write 秒 | END CRC 秒 | App 確認秒 | 總秒數 | 報告 |
-| --- | ---: | ---: | ---: | ---: | ---: | --- |
-| 原始 App | 7856 | 6.883 | 0.127 | 1.944 | 10.851 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_xmodem_7856b.html) |
-| 8 KiB | 8192 | 7.155 | 0.127 | 1.956 | 11.138 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_xmodem_8192b.html) |
-| 24 KiB | 24576 | 21.464 | 0.240 | 1.943 | 25.544 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_xmodem_24576b.html) |
-| 56 KiB | 57344 | 50.549 | 0.480 | 1.958 | 54.884 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_xmodem_57344b.html) |
-| 120 KiB | 122880 | 108.125 | 0.928 | 2.648 | 113.598 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_xmodem_122880b.html) |
-| 247 KiB | 252928 | 222.702 | 1.841 | 9.531 | 235.969 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_xmodem_252928b.html) |
-
-- Device UART 的 RX errors、RX drops、TX timeouts 均為 0；這些欄位是 Device 當次執行快照。
-- Host counter assessment 為 **UNAVAILABLE**，不能據此推定 Host 全程零錯誤；Host Link retry 為 0。
-- 247 KiB 的唯讀 App 確認有 37 次 Host BUSY 觀察，最終確認成功；沒有重送 Flash START／END。
-- 獨立 Xmodem Transfer 通過 PING、96-byte ECHO、389-byte CRC32 sink／CRC128 串流與 counters；UART0 的 9 組 framed RX／TX、sequence／command、完整 payload 及每列 8 bytes 可互相核對。[Transfer 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_xmodem_transfer.html)
-- Transfer 成功段前後的 Device UART RX errors 均為 **44**，RX drops／TX timeouts 為 0；這是同一次執行的累積快照，不能解讀成全程零錯誤，也不能與更新後 App 的 0 跨執行相減。
-- 原始連線階段曾有 Host command 0x61 TIMEOUT 及讀取中斷 995；重新 Open + Probe 後才取得上述 Transfer 成功紀錄。錯誤原因沒有由本批資料確立。
-- 六次 App 重啟均有 boot-validated、update completed、UART0 console 與後續 counter；提供的 log 沒有 z/Z 人工重置訊息，故不將功能宣告視為該操作的實板證據。
-- 本表涵蓋一般更新與軟體重啟後 App 確認；冷啟動、斷電及其他故障恢復不由本批資料推定。
-<!-- F24_XMODEM_MEASURED_END -->
-
-<!-- F13_UART_MEASURED_BEGIN -->
-<a id="f13-uart-update-measurements"></a>
-
-#### F13 UART ISP App 更新量測
-
-- Device：R5F10BMG；F24 bridge；Device UART1 與 Host Link 各為 115200／8-N-1。Tool 0.1.0.139，Host FW 1.8.1 build 20261023。
-- 四份報告與實際 BIN 的大小、CRC32、SHA256 相符。START、END／EOT、完整接受 bytes、APP_READY 及全部 256-byte installed metadata 均已確認。
-- UART0 有四次 boot-validated／update completed、後續 counter 與完整 framed RX／TX；payload 每列 8 bytes。
-
-| 映像 | Bytes | Write 秒 | END CRC 秒 | App 確認秒 | 總秒數 | 報告 |
-| --- | ---: | ---: | ---: | ---: | ---: | --- |
-| 原始 App | 10556 | 15.750 | 0.176 | 1.944 | 18.761 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f13_uart_10556b.html) |
-| 24 KiB | 24576 | 36.784 | 0.303 | 1.960 | 39.940 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f13_uart_24576b.html) |
-| 56 KiB | 57344 | 85.957 | 0.576 | 2.024 | 89.445 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f13_uart_57344b.html) |
-| 119 KiB | 121856 | 182.768 | 1.136 | 3.209 | 188.001 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f13_uart_121856b.html) |
-
-- 更新後 Device UART 快照的 RX errors／drops／TX timeouts 為 0；Bridge UART1 deltas 的 RX errors／drops 為 0，每次記有 backend aborts=1。abort 計數與 Device UART 錯誤為不同觀察項。
-- Host counter assessment 為 **UNAVAILABLE**，Host Link retry 為 0；不能由此推定所有 Host 計數全程零錯誤。
-- 獨立 Transfer 的 PING／ECHO／counters 通過，沒有 Flash 命令。8 組 UART0 RX／TX 的 sequence、command、payload 與八位元組分行相符。[Transfer 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f13_uart_transfer.html)
-- Transfer 成功段前後的累積 Device RX errors 均為 **1159**，drops／TX timeouts 為 0；不能與更新後 App 的 0 跨執行相減。較早曾有 Host command 0x61 INTERNAL_ERROR；其原因未由本批資料確立。
-- 本批涵蓋正常更新後 App 確認；z/Z 人工重置、冷啟動、斷電及其他型號的結果另行驗證。
-<!-- F13_UART_MEASURED_END -->
-
-<!-- F13_XMODEM_MEASURED_BEGIN -->
-<a id="f13-xmodem-update-measurements"></a>
-
-#### F13 Xmodem App 更新量測
-
-- Device：R5F10BMG；F24 bridge；Device UART1 與 Host Link 各為 115200／8-N-1。Tool 0.1.0.139，Host FW 1.8.1 build 20261023。
-- 四份報告與實際 BIN 的大小、CRC32、SHA256 相符。START、END／EOT、完整接受 bytes、APP_READY 及全部 256-byte installed metadata 均已確認。
-- UART0 有四次 boot-validated／update completed、後續 counter 與完整 framed RX／TX；payload 每列 8 bytes。
-
-| 映像 | Bytes | Write 秒 | END CRC 秒 | App 確認秒 | 總秒數 | 報告 |
-| --- | ---: | ---: | ---: | ---: | ---: | --- |
-| 原始 App | 12636 | 11.108 | 0.192 | 1.944 | 15.143 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f13_xmodem_12636b.html) |
-| 24 KiB | 24576 | 21.721 | 0.287 | 1.958 | 25.862 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f13_xmodem_24576b.html) |
-| 56 KiB | 57344 | 51.094 | 0.576 | 2.022 | 55.588 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f13_xmodem_57344b.html) |
-| 119 KiB | 121856 | 108.767 | 1.136 | 3.208 | 115.010 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f13_xmodem_121856b.html) |
-
-- 更新後 Device UART 快照的 RX errors／drops／TX timeouts 為 0；Bridge UART1 deltas 的 RX errors／drops 為 0，每次記有 backend aborts=1。abort 計數與 Device UART 錯誤為不同觀察項。
-- Host counter assessment 為 **UNAVAILABLE**，Host Link retry 為 0；不能由此推定所有 Host 計數全程零錯誤。
-- 獨立 Transfer 的 PING／ECHO／counters 及 CRC128 streaming 通過，沒有 Flash 命令。11 組 UART0 RX／TX 的 sequence、command、payload 與八位元組分行相符。[Transfer 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f13_xmodem_transfer.html)
-- Transfer 成功段前後的累積 Device RX errors 均為 **658**，drops／TX timeouts 為 0；不能與更新後 App 的 0 跨執行相減。
-- 本批涵蓋正常更新後 App 確認；z/Z 人工重置、冷啟動、斷電及其他型號的結果另行驗證。
-<!-- F13_XMODEM_MEASURED_END -->
 
 <!-- UART_TOOL_GUIDE_END -->
 

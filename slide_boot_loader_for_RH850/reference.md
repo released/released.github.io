@@ -7,7 +7,8 @@
 RH850 位址、256-byte Metadata 範例、8-byte control 與 raw data。
 
 <!-- BOOTLOADER_TOPICS_BEGIN -->
-## 本頁主題
+<details>
+<summary>章節與另一平台對照</summary>
 
 | 章節／規格 | 本頁 | 另一平台 |
 | --- | --- | --- |
@@ -23,6 +24,8 @@ RH850 位址、256-byte Metadata 範例、8-byte control 與 raw data。
 | 4. CAN payload逐byte格式 | [閱讀](#guide-reference-10) | [RL78](../slide_boot_loader_for_RL78/reference.html#guide-reference-10) |
 | 與Custom Transfer／Bridge Self Test的區別 | [閱讀](#guide-reference-11) | [RL78](../slide_boot_loader_for_RL78/reference.html#guide-reference-11) |
 | 5. 改成自己的專案：修改順序與驗證 | [閱讀](#guide-reference-12) | [RL78](../slide_boot_loader_for_RL78/reference.html#guide-reference-12) |
+
+</details>
 <!-- BOOTLOADER_TOPICS_END -->
 
 <!-- RH850_REFERENCE_CHAPTER_BEGIN -->
@@ -605,4 +608,4 @@ App 初始化完成後的 ready／identity 確認與 Boot END CRC 分開執行�
 
 ---
 
-[上一主題：Boot／App 移植與 Flash](porting.html) · [指南入口](index.html) · [下一主題：Tool 操作與通訊驗證入口](tool-guides.html)
+[上一主題：Boot／App 移植與 Flash](porting.html) · [指南入口](index.html) · [下一主題：各介面實驗資料](experiments.html)

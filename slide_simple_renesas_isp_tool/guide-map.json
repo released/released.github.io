@@ -13,25 +13,41 @@
       "title": "Tool 連線與操作",
       "description": "COM／Host 識別、畫面、接線、更新政策與錯誤資訊。"
     },
+    "can-update": {
+      "title": "CAN 操作",
+      "description": "Classical CAN 的連線設定、App 更新與通訊測試。"
+    },
+    "can-fd": {
+      "title": "CAN FD 操作",
+      "description": "FD+BRS、速率、App 更新與通訊測試。"
+    },
+    "i2c": {
+      "title": "I2C 操作",
+      "description": "I2C port、7-bit 位址、時脈、App 更新與 Custom Transfer。"
+    },
+    "uart": {
+      "title": "UART 操作",
+      "description": "Device baud、UART ISP 更新與 Custom Transfer。"
+    },
+    "xmodem": {
+      "title": "Xmodem 操作",
+      "description": "XMODEM-CRC128 更新與無 Flash 串流測試。"
+    },
+    "serial-isp": {
+      "title": "串列共用接線與更新流程",
+      "description": "I2C／UART／Xmodem 的共用接線、相容條件、操作流程與診斷。"
+    },
     "status-and-reports": {
       "title": "欄位、更新確認與報告",
       "description": "BIN／live 資料、狀態訊息、進度、取消及 HTML 更新報告。"
     },
-    "can-update": {
-      "title": "CAN／CAN FD App 更新",
-      "description": "Classical CAN：F13／F24／RH850；CAN FD：F24／RH850。"
+    "custom-transfer": {
+      "title": "Custom Transfer 通訊驗證",
+      "description": "F13／F24／RH850 Classical CAN，以及F24／RH850 CAN FD的獨立通訊測試。"
     },
     "can-protocol": {
       "title": "CAN 更新逐層導讀",
       "description": "對照 Tool、MCU CAN host 與 MCU CAN device 的資料流。"
-    },
-    "serial-isp": {
-      "title": "UART／Xmodem／I2C 操作",
-      "description": "接線、可調通訊設定、App 更新及串列通訊測試。"
-    },
-    "custom-transfer": {
-      "title": "Custom Transfer 通訊驗證",
-      "description": "F13／F24／RH850 Classical CAN，以及F24／RH850 CAN FD的獨立通訊測試。"
     },
     "host-firmware": {
       "title": "MCU host 韌體與自身更新",
@@ -192,7 +208,7 @@
       "anchor": "tool-com-hints"
     },
     "can-fd-update": {
-      "page": "can-update.html",
+      "page": "can-fd.html",
       "anchor": "can-fd-update"
     },
     "can-fd-device-engineering": {
@@ -284,12 +300,12 @@
       "anchor": "mcu-can-device-健康回覆與唯讀驗證"
     },
     "app-a／b-工程驗證": {
-      "page": "status-and-reports.html",
-      "anchor": "app-a／b-工程驗證"
+      "page": "device-guides.html",
+      "anchor": "device-metadata-vector-workshop"
     },
     "實板驗證紀錄": {
       "page": "status-and-reports.html",
-      "anchor": "實板驗證紀錄"
+      "anchor": "update-validation-scope"
     },
     "3-mcu-can-deviceapp-更新": {
       "page": "can-update.html",
@@ -300,19 +316,19 @@
       "anchor": "device-app-更新操作圖"
     },
     "準備與設定": {
-      "page": "can-update.html",
+      "page": "can-fd.html",
       "anchor": "準備與設定"
     },
     "操作順序與結果": {
-      "page": "can-update.html",
+      "page": "can-fd.html",
       "anchor": "操作順序與結果"
     },
     "三幀區塊與-host-link": {
-      "page": "can-update.html",
+      "page": "can-fd.html",
       "anchor": "三幀區塊與-host-link"
     },
     "更新流程總覽": {
-      "page": "can-update.html",
+      "page": "can-fd.html",
       "anchor": "更新流程總覽"
     },
     "a-三層責任與資訊來源": {
@@ -448,24 +464,25 @@
       "anchor": "tool-image-loading"
     },
     "f24-i2c-transfer": {
-      "page": "serial-isp.html",
-      "anchor": "f24-i2c-transfer"
+      "page": "i2c.html",
+      "anchor": "i2c-operation"
     },
     "f24-i2c-update": {
-      "page": "serial-isp.html",
-      "anchor": "f24-i2c-update"
+      "page": "i2c.html",
+      "anchor": "i2c-operation"
     },
     "f24-i2c-update-measurements": {
-      "page": "serial-isp.html",
+      "guide": "slide_boot_loader_for_RL78",
+      "page": "experiments.html",
       "anchor": "f24-i2c-update-measurements"
     },
     "i2c-image-waits": {
-      "page": "serial-isp.html",
-      "anchor": "i2c-image-waits"
+      "page": "status-and-reports.html",
+      "anchor": "app-restart-confirmation"
     },
     "i2c-test-bin-sequence": {
-      "page": "serial-isp.html",
-      "anchor": "i2c-test-bin-sequence"
+      "page": "status-and-reports.html",
+      "anchor": "app-restart-confirmation"
     },
     "uart0-local-reset": {
       "page": "status-and-reports.html",
@@ -476,24 +493,72 @@
       "anchor": "serial-uart0-console"
     },
     "f24-uart-update-measurements": {
-      "page": "serial-isp.html",
+      "guide": "slide_boot_loader_for_RL78",
+      "page": "experiments.html",
       "anchor": "f24-uart-update-measurements"
     },
     "f24-xmodem-update-measurements": {
-      "page": "serial-isp.html",
+      "guide": "slide_boot_loader_for_RL78",
+      "page": "experiments.html",
       "anchor": "f24-xmodem-update-measurements"
     },
     "f13-uart-update-measurements": {
-      "page": "serial-isp.html",
+      "guide": "slide_boot_loader_for_RL78",
+      "page": "experiments.html",
       "anchor": "f13-uart-update-measurements"
     },
     "f13-xmodem-update-measurements": {
-      "page": "serial-isp.html",
+      "guide": "slide_boot_loader_for_RL78",
+      "page": "experiments.html",
       "anchor": "f13-xmodem-update-measurements"
     },
     "g16-i2c-update-measurements": {
-      "page": "serial-isp.html",
+      "guide": "slide_boot_loader_for_RL78",
+      "page": "experiments.html",
       "anchor": "g16-i2c-update-measurements"
+    },
+    "tool-interfaces": {
+      "page": "index.html",
+      "anchor": "tool-interfaces"
+    },
+    "i2c-operation": {
+      "page": "i2c.html",
+      "anchor": "i2c-operation"
+    },
+    "uart-operation": {
+      "page": "uart.html",
+      "anchor": "uart-operation"
+    },
+    "xmodem-operation": {
+      "page": "xmodem.html",
+      "anchor": "xmodem-operation"
+    },
+    "f13-i2c-update-measurements": {
+      "guide": "slide_boot_loader_for_RL78",
+      "page": "experiments.html",
+      "anchor": "f13-i2c-update-measurements"
+    },
+    "f13-i2c-update-summary": {
+      "guide": "slide_boot_loader_for_RL78",
+      "page": "experiments.html",
+      "anchor": "f13-i2c-update-measurements"
+    },
+    "serial-update-results": {
+      "guide": "slide_boot_loader_for_RL78",
+      "page": "experiments.html",
+      "anchor": "experiment-scope"
+    },
+    "serial-wiring": {
+      "page": "serial-isp.html",
+      "anchor": "serial-wiring"
+    },
+    "serial-app-update": {
+      "page": "serial-isp.html",
+      "anchor": "serial-app-update"
+    },
+    "update-validation-scope": {
+      "page": "status-and-reports.html",
+      "anchor": "update-validation-scope"
     }
   }
 }

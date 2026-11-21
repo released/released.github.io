@@ -8,6 +8,10 @@
       "source": "app-development.md"
     },
     {
+      "html": "architecture.html",
+      "source": "architecture.md"
+    },
+    {
       "html": "basic_uart_i2c/app-build.html",
       "source": "basic_uart_i2c/app-build.md"
     },
@@ -54,6 +58,14 @@
     {
       "html": "can-device.html",
       "source": "can-device.md"
+    },
+    {
+      "html": "can-fd-device.html",
+      "source": "can-fd-device.md"
+    },
+    {
+      "html": "experiments.html",
+      "source": "experiments.md"
     },
     {
       "html": "i2c-device.html",

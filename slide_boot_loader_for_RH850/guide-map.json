@@ -5,29 +5,37 @@
       "title": "RH850 Bootloader 實作指南",
       "description": "RH850 MCU device 的 Boot、App 與通訊驗證入口。"
     },
+    "architecture": {
+      "title": "Bootloader 整體架構",
+      "description": "Boot／App／Host 分工、啟動驗證、更新流程與 RAM 交接。"
+    },
     "can-device": {
-      "title": "Classical CAN／CAN FD device 工程",
+      "title": "CAN Bootloader 與工程",
       "description": "EVM、CAN port、接收資源、更新 owner 與 Boot 啟動流程。"
     },
-    "app-development": {
-      "title": "App Metadata、IRQ 與更新耗時",
-      "description": "C header 編輯、512-entry IRQ table、建置產物及 CAN／CAN FD 實測時間。"
-    },
-    "serial-device": {
-      "title": "串列 ISP 共用工程與協定契約",
-      "description": "平台配置、C header、建置、Metadata、SC 與共用 Frame／命令／INFO／Status。"
-    },
-    "uart-device": {
-      "title": "UART Bootloader 與協定格式",
-      "description": "資料 UART、接收中斷、framed ISP 更新、封包範例與診斷。"
+    "can-fd-device": {
+      "title": "CAN FD Bootloader 與工程",
+      "description": "CAN FD 的設定、接收與更新契約；各 MCU 工程直接入口。"
     },
     "i2c-device": {
       "title": "I2C Bootloader 與協定格式",
       "description": "I2C Slave、STOP mailbox、111-byte reply window 與更新完成條件。"
     },
+    "uart-device": {
+      "title": "UART Bootloader 與協定格式",
+      "description": "資料 UART、接收中斷、framed ISP 更新、封包範例與診斷。"
+    },
     "xmodem-device": {
       "title": "Xmodem Bootloader 與協定格式",
       "description": "Framed control、XMODEM-CRC128、串流寫入、重送與最終 ACK。"
+    },
+    "app-development": {
+      "title": "App Metadata 與 IRQ",
+      "description": "映像設定、Metadata 產生、IRQ mapping 與建置驗證。"
+    },
+    "serial-device": {
+      "title": "串列 ISP 共用工程與協定契約",
+      "description": "平台配置、C header、建置、Metadata、SC 與共用 Frame／命令／INFO／Status。"
     },
     "porting": {
       "title": "Boot／App 移植與 Flash",
@@ -36,6 +44,10 @@
     "reference": {
       "title": "Flash、Metadata 與 CAN 封包參考",
       "description": "RH850 位址、256-byte Metadata 範例、8-byte control 與 raw data。"
+    },
+    "experiments": {
+      "title": "各介面實驗資料",
+      "description": "依介面與 MCU 查閱實板紀錄、量測條件、報告與確認範圍。"
     },
     "tool-guides": {
       "title": "Tool 操作與通訊驗證入口",
@@ -72,7 +84,7 @@
       "anchor": "rh850-build-products"
     },
     "rh850-update-timing": {
-      "page": "app-development.html",
+      "page": "experiments.html",
       "anchor": "rh850-update-timing"
     },
     "rh850-serial-runtime": {
@@ -112,7 +124,7 @@
       "anchor": "rh850-can-frames"
     },
     "rh850-can-page-flow": {
-      "page": "can-device.html",
+      "page": "can-fd-device.html",
       "anchor": "rh850-can-page-flow"
     },
     "guide-can-device-1": {
@@ -148,15 +160,15 @@
       "anchor": "guide-can-device-4"
     },
     "guide-can-device-5": {
-      "page": "can-device.html",
+      "page": "can-fd-device.html",
       "anchor": "guide-can-device-5"
     },
     "guide-can-device-6": {
-      "page": "can-device.html",
+      "page": "can-fd-device.html",
       "anchor": "guide-can-device-6"
     },
     "guide-can-device-8": {
-      "page": "can-device.html",
+      "page": "can-fd-device.html",
       "anchor": "guide-can-device-8"
     },
     "guide-app-development-1": {
@@ -188,7 +200,7 @@
       "anchor": "guide-app-development-7"
     },
     "guide-app-development-8": {
-      "page": "app-development.html",
+      "page": "experiments.html",
       "anchor": "guide-app-development-8"
     },
     "guide-serial-device-1": {
@@ -388,11 +400,11 @@
       "anchor": "guide-can-device-4"
     },
     "mcu-can-fd-device-工程設定": {
-      "page": "can-device.html",
+      "page": "can-fd-device.html",
       "anchor": "guide-can-device-5"
     },
     "設定來源": {
-      "page": "can-device.html",
+      "page": "can-fd-device.html",
       "anchor": "guide-can-device-6"
     },
     "接收與中斷": {
@@ -400,7 +412,7 @@
       "anchor": "guide-can-device-7"
     },
     "更新區塊與-flash-交接": {
-      "page": "can-device.html",
+      "page": "can-fd-device.html",
       "anchor": "guide-can-device-8"
     },
     "工程與建置": {
@@ -440,7 +452,7 @@
       "anchor": "guide-app-development-7"
     },
     "app-bin-更新耗時參考": {
-      "page": "app-development.html",
+      "page": "experiments.html",
       "anchor": "guide-app-development-8"
     },
     "配置與資料來源": {
@@ -616,6 +628,7 @@
       "anchor": "rh850-runtime-log"
     },
     "serial-status-codes": {
+      "guide": "slide_boot_loader_for_RL78",
       "page": "serial-device.html",
       "anchor": "serial-status-codes"
     },
@@ -756,20 +769,64 @@
       "anchor": "guide-xmodem-device-6"
     },
     "rh850-can-block-write": {
-      "page": "can-device.html",
+      "page": "can-fd-device.html",
       "anchor": "rh850-can-block-write"
     },
     "device-upgrade-paths": {
       "page": "index.html",
-      "anchor": "device-upgrade-paths"
+      "anchor": "boot-interfaces"
     },
     "upgrade-rh850-can": {
       "page": "can-device.html",
       "anchor": "upgrade-rh850-can"
     },
     "upgrade-rh850-can-fd": {
-      "page": "can-device.html",
+      "page": "can-fd-device.html",
       "anchor": "upgrade-rh850-can-fd"
+    },
+    "boot-interfaces": {
+      "page": "index.html",
+      "anchor": "boot-interfaces"
+    },
+    "boot-architecture": {
+      "page": "architecture.html",
+      "anchor": "boot-architecture"
+    },
+    "boot-app-handoff": {
+      "page": "architecture.html",
+      "anchor": "boot-app-handoff"
+    },
+    "experiment-scope": {
+      "page": "experiments.html",
+      "anchor": "experiment-scope"
+    },
+    "rh850-can-update-measurements": {
+      "page": "experiments.html",
+      "anchor": "rh850-can-update-measurements"
+    },
+    "rh850-can-fd-update-measurements": {
+      "page": "experiments.html",
+      "anchor": "rh850-can-fd-update-measurements"
+    },
+    "boot、app-與-host-的責任": {
+      "page": "architecture.html",
+      "anchor": "boot-architecture"
+    },
+    "啟動、更新與交接": {
+      "page": "architecture.html",
+      "anchor": "boot-app-handoff"
+    },
+    "實驗資料與確認範圍": {
+      "page": "experiments.html",
+      "anchor": "experiment-scope"
+    },
+    "串列介面共用操作": {
+      "page": "tool-guides.html",
+      "anchor": "uart-device-operation"
+    },
+    "can-fd-device-engineering": {
+      "page": "can-fd-device.html",
+      "anchor": "can-fd-device-engineering"
     }
   }
 }

@@ -7,7 +7,8 @@
 位址、HAL 入口、FCL RAM 執行、startup 與映像交接。
 
 <!-- BOOTLOADER_TOPICS_BEGIN -->
-## 本頁主題
+<details>
+<summary>章節與另一平台對照</summary>
 
 | 章節／規格 | 本頁 | 另一平台 |
 | --- | --- | --- |
@@ -24,6 +25,8 @@
 | 6. 初次安裝與後續更新 | [閱讀](#guide-porting-11) | [RL78](../slide_boot_loader_for_RL78/porting.html#guide-porting-11) |
 | 7. 啟動與更新流程 | [閱讀](#guide-porting-12) | [RL78](../slide_boot_loader_for_RL78/porting.html#guide-porting-12) |
 | 8. App 變更與驗證 | [閱讀](#guide-porting-13) | [RL78](../slide_boot_loader_for_RL78/porting.html#guide-porting-13) |
+
+</details>
 <!-- BOOTLOADER_TOPICS_END -->
 
 <!-- RH850_PORTING_CHAPTER_BEGIN -->
@@ -147,7 +150,7 @@ Boot 建立時脈與 RAM／ECC 狀態；App 接續核對交接時脈，再初始
 
 Boot→App 交接會先遮罩中斷、停止 Boot 周邊、更新 RAM cookie，再透過 assembly 入口設定 App 的 EBASE／INTBP。
 
-CAN／CAN FD 的 RH850 工程各自保有 `boot_app_handoff.h`，使用 `0xFEDFFFF0..0xFEDFFFFF` 的 16-byte retention RAM：
+CAN／CAN FD 與 serial ISP 的 RH850 工程各自保有 `boot_app_handoff.h`，使用 `0xFEDFFFF0..0xFEDFFFFF` 的 16-byte retention RAM：
 
 | 相對位置 | 內容 | 用途 |
 | --- | --- | --- |
@@ -310,7 +313,7 @@ RAM reader 處理可能空白或更新中斷的 Flash 資料，並依現有 API 
 ### 7. 啟動與更新流程
 
 Boot每次啟動檢查映像與向量，更新前另檢查Metadata／policy，完整回覆完成才執行後續交接。
-狀態與分支集中於 [Boot啟動與更新](can-device.html#rh850-boot-flow)，Flash資料累積見 [更新區塊與Flash交接](can-device.html#rh850-can-page-flow)。
+狀態與分支集中於 [Boot啟動與更新](can-device.html#rh850-boot-flow)，Flash資料累積見 [更新區塊與Flash交接](can-fd-device.html#rh850-can-page-flow)。
 
 <a id="guide-porting-13"></a>
 
@@ -334,4 +337,4 @@ App 功能、版本與既定 IRQ mapping 的修改使用 App-only 建置。
 
 ---
 
-[上一主題：Xmodem Bootloader 與協定格式](xmodem-device.html) · [指南入口](index.html) · [下一主題：Flash、Metadata 與 CAN 封包參考](reference.html)
+[上一主題：串列 ISP 共用工程與協定契約](serial-device.html) · [指南入口](index.html) · [下一主題：Flash、Metadata 與 CAN 封包參考](reference.html)

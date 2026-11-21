@@ -5,87 +5,41 @@
 
 # RL78 Bootloader 實作指南
 
-依閱讀目的選擇 MCU device 工程、App 設定、移植或格式參考。
-日常更新與通訊驗證見 [Simple Renesas ISP Tool](../slide_simple_renesas_isp_tool/)。
+本指南說明 Device Boot／App 的架構、通訊機制、映像與移植。使用 Tool 更新 App 見 [ISP Tool 操作](../slide_simple_renesas_isp_tool/)。
 
-<a id="device-upgrade-paths"></a>
+<a id="boot-interfaces"></a>
 
-## 依型號與周邊更新 App
+## 依介面進入主題
 
-各入口包含接線、配對映像、Tool 操作、Boot 接收驗證及 App 返回 Boot 流程。
+各介面頁頂端提供 MCU 工程與實驗索引；可直接前往指定 MCU 的配置及對應紀錄。
 
-| 型號 | Classical CAN | CAN FD | UART ISP | I2C ISP | Xmodem |
-| --- | --- | --- | --- | --- | --- |
-| F13 | [操作與機制](can-device.html#upgrade-f13-can) | — | [操作與機制](uart-device.html#upgrade-f13-uart) | [操作與機制](i2c-device.html#upgrade-f13-i2c) | [操作與機制](xmodem-device.html#upgrade-f13-xmodem) |
-| F24 | [操作與機制](can-device.html#upgrade-f24-can) | [操作與機制](can-device.html#upgrade-f24-can-fd) | [操作與機制](uart-device.html#upgrade-f24-uart) | [操作與機制](i2c-device.html#upgrade-f24-i2c) | [操作與機制](xmodem-device.html#upgrade-f24-xmodem) |
-| G16 | — | — | — | [操作與機制](i2c-device.html#upgrade-g16-i2c) | — |
+<!-- DEVICE_MODE_NAV_BEGIN -->
+| 介面 | Bootloader、MCU 與實驗入口 | Tool 操作 |
+| --- | --- | --- |
+| CAN | [機制與 MCU 索引](can-device.html) | [操作步驟](../slide_simple_renesas_isp_tool/can-update.html) |
+| CAN FD | [機制與 MCU 索引](can-fd-device.html) | [操作步驟](../slide_simple_renesas_isp_tool/can-fd.html) |
+| I2C | [機制與 MCU 索引](i2c-device.html)／[流程](i2c-device.html#i2c-boot-flow)／[格式](i2c-device.html#i2c-protocol) | [操作步驟](../slide_simple_renesas_isp_tool/i2c.html) |
+| UART | [機制與 MCU 索引](uart-device.html)／[流程](uart-device.html#uart-boot-flow)／[格式](uart-device.html#uart-protocol) | [操作步驟](../slide_simple_renesas_isp_tool/uart.html) |
+| Xmodem | [機制與 MCU 索引](xmodem-device.html)／[流程](xmodem-device.html#xmodem-boot-flow)／[格式](xmodem-device.html#xmodem-protocol) | [操作步驟](../slide_simple_renesas_isp_tool/xmodem.html) |
+<!-- DEVICE_MODE_NAV_END -->
 
-「—」表示本指南沒有該型號與介面的配對工程。
-
-## 依閱讀目的查閱
+## 依開發目的查閱
 
 | 目的 | 直接入口 |
 | --- | --- |
-| 使用Tool更新App | [CAN／CAN FD操作](../slide_simple_renesas_isp_tool/can-update.html)／[UART／Xmodem／I2C操作](../slide_simple_renesas_isp_tool/serial-isp.html) |
-| 修改App或增加IRQ | [Metadata設定](app-development.html#guide-app-development-2)／[IRQ範例](app-development.html#guide-app-development-3)／[本地建置](app-development.html#guide-app-development-4) |
-| 移植到其他板子或MCU | [修改範圍與工程配置](porting.html#guide-porting-2) |
-| 查協定與欄位 | [CAN格式](reference.html#guide-reference-10)／[串列共用契約](serial-device.html#guide-serial-device-5) |
+| 理解整體規劃與 Boot／App 交接 | [整體架構與流程圖](architecture.html) |
+| 編輯映像資訊或增加 IRQ | [Metadata 與 IRQ](app-development.html) |
+| 解讀 Metadata bytes／封包欄位 | [逐 byte 格式與範例](reference.html)／[串列共用契約](serial-device.html) |
+| 移植到其他板子、修改 Flash backend | [Boot／App 移植與 Flash](porting.html) |
+| 查看實驗條件、耗時與報告 | [各介面實驗資料](experiments.html) |
+| 使用 Tool、安裝映像或確認結果 | [Tool 操作入口](tool-guides.html) |
 
-## 快速查閱
-
-| 資料 | 適用內容 | 直接連結 |
-| --- | --- | --- |
-| **App BIN 更新耗時比較** | F13／F24 Classical CAN 及 F24 CAN FD 的完整比較表 | [查看更新耗時表](app-development.html#device-update-timing) |
-| Metadata 每個byte與address | 欄位、範例值、來源及修改位置 | [查看格式表](reference.html#flash-metadata-can-reference) |
-| App 新增IRQ與執行路徑 | ISR、mapping、產表、交接與成本 | [查看IRQ教學](app-development.html#device-irq-ownership) |
-| Boot安裝與debug monitor配置 | Flash／RAM、保護範圍及燒錄檔 | [查看安裝條件](porting.html#device-debug-monitor) |
-
-## 主題指南
-
-| 主題 | 內容 |
-| --- | --- |
-| [Classical CAN／CAN FD device 工程](can-device.html) | F13／F24 Classical CAN、F24 CAN FD 的 Boot／App 工程與啟動流程。 |
-| [App Metadata、IRQ 與更新耗時](app-development.html) | C header 編輯、產表、App 建置、驗證、CAN 速率與更新耗時。 |
-| [串列 ISP 共用工程與協定契約](serial-device.html) | 平台配置、C header、建置、Metadata、SC 與共用 Frame／命令／INFO／Status。 |
-| [UART Bootloader 與協定格式](uart-device.html) | 資料 UART、接收中斷、framed ISP 更新、封包範例與診斷。 |
-| [I2C Bootloader 與協定格式](i2c-device.html) | I2C Slave、STOP mailbox、111-byte reply window 與更新完成條件。 |
-| [Xmodem Bootloader 與協定格式](xmodem-device.html) | Framed control、XMODEM-CRC128、串流寫入、重送與最終 ACK。 |
-| [Boot／App 移植與 Flash](porting.html) | 分區、Boot 安裝、debug monitor、Flash RAM 執行與 CRC 後端。 |
-| [Flash、Metadata 與 CAN 封包參考](reference.html) | 位址、全部 Metadata bytes、對應程式與 CAN payload。 |
-| [Tool 操作與通訊驗證入口](tool-guides.html) | 下載、更新、報告、MCU host 與 Custom Transfer 的主題連結。 |
-
-## CAN 範例分類
-
-<!-- DEVICE_MODE_NAV_BEGIN -->
-Classical CAN 的 F13／F24 共用 metadata、IRQ 與更新教學，硬體設定由各自工程章節說明。
-CAN FD 使用 F24 的獨立 Boot／App 與 Transfer 工程。
-
-| 分類 | 工程／範例 | 操作入口 |
-| --- | --- | --- |
-| Classical CAN：F13／F24 | [F13 Boot 啟動與更新](can-device.html#f13-boot-decision)／[F24 工程配置與建置](can-device.html#f24-can-device) | [App 更新](https://released.github.io/slide_simple_renesas_isp_tool/#f13-device-update) |
-| CAN FD：F24 | [Boot／App 設定、timing、metadata、IRQ 與 Flash](can-device.html#can-fd-device-engineering) | [CAN FD App 更新](https://released.github.io/slide_simple_renesas_isp_tool/#can-fd-update) |
-| Custom Transfer | F13／F24 Classical CAN；F24 CAN FD | [範例分類與通訊測試](https://released.github.io/slide_simple_renesas_isp_tool/#custom-transfer) |
-<!-- DEVICE_MODE_NAV_END -->
-
-## 串列 Bootloader 與協定格式
-
-| 介面 | Bootloader | Protocol Format |
-| --- | --- | --- |
-| UART | [初始化與更新流程](uart-device.html#uart-boot-flow) | [封包、範例與完成條件](uart-device.html#uart-protocol) |
-| I2C | [初始化與更新流程](i2c-device.html#i2c-boot-flow) | [封包、範例與完成條件](i2c-device.html#i2c-protocol) |
-| Xmodem | [初始化與更新流程](xmodem-device.html#xmodem-boot-flow) | [封包、範例與完成條件](xmodem-device.html#xmodem-protocol) |
-
-共用工程、Metadata、建置與 Frame／INFO／Status 見[串列 ISP 共用契約](serial-device.html)。
-
-## Basic 參考工程
-
-[Basic UART／I2C 範例](basic_uart_i2c/)提供獨立範例的分區、startup、向量與CRC操作。
+[Basic UART／I2C 獨立參考工程](basic_uart_i2c/)。
 
 <!-- RH850_DEVICE_BEGIN -->
 <a id="rh850-can-device"></a>
 
 ## 其他 MCU 指南
 
-RH850 的 CAN／CAN FD、App Metadata／IRQ、串列介面與 Flash 移植集中於獨立 Bootloader 指南。
-[其他 MCU 指南](https://released.github.io/slide_boot_loader_for_RH850/can-device.html#rh850-can-device)
+[其他 MCU 指南](https://released.github.io/slide_boot_loader_for_RH850/index.html#boot-interfaces)
 <!-- RH850_DEVICE_END -->

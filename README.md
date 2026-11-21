@@ -69,13 +69,15 @@ Renesas 內容涵蓋 CS+、Smart Configurator、Renesas Flash Programmer，以�
 <!-- RL78_CAN_ENTRY_BEGIN -->
 <a id="rl78-can-examples"></a>
 
-### MCU CAN 範例分類
+### ISP 與 Bootloader 指南
 
-| 分類 | 工程／範例 | 操作入口 |
-| --- | --- | --- |
-| Classical CAN | [F13 Boot／App](https://released.github.io/slide_boot_loader_for_RL78/#f13-boot-decision)／[F24 Boot／App](https://released.github.io/slide_boot_loader_for_RL78/#f24-can-device)／[RH850 Boot／App](https://released.github.io/slide_boot_loader_for_RH850/can-device.html#rh850-can-device) | [App 更新](https://released.github.io/slide_simple_renesas_isp_tool/can-update.html#f13-device-update) |
-| CAN FD | [F24 Boot／App](https://released.github.io/slide_boot_loader_for_RL78/#can-fd-device-engineering)／[RH850 Boot／App](https://released.github.io/slide_boot_loader_for_RH850/can-device.html#guide-can-device-5) | [CAN FD App 更新](https://released.github.io/slide_simple_renesas_isp_tool/can-update.html#can-fd-update) |
-| Custom Transfer | F13／F24／RH850 Classical CAN；F24／RH850 CAN FD | [範例分類與通訊測試](https://released.github.io/slide_simple_renesas_isp_tool/custom-transfer.html#custom-transfer) |
+CAN、CAN FD、I2C、UART、Xmodem 均可由下列指南的介面索引進入。
+
+| 閱讀目的 | 指南入口 |
+| --- | --- |
+| 連線、各介面更新、通訊測試及結果判讀 | [ISP Tool 操作](https://released.github.io/slide_simple_renesas_isp_tool/) |
+| 架構、流程、Metadata／IRQ、MCU 配置與實驗資料 | [RL78 Bootloader](https://released.github.io/slide_boot_loader_for_RL78/) |
+| RH850 工程、交接、Flash 移植與實驗資料 | [RH850 Bootloader](https://released.github.io/slide_boot_loader_for_RH850/) |
 <!-- RL78_CAN_ENTRY_END -->
 
 > 本區同時包含工具鏈內容，以及 Bootloader、UART DMA、Memory Map 等獨立專題。

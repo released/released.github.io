@@ -647,6 +647,8 @@ F13 device 支援唯讀 VERIFY；App 健康頁適用於 F13／F24 device 各自�
 | `0E VERSION_DOWNGRADE` | 有效已安裝 App 啟用版控，目標 App 版本較舊；一般 START 拒絕，尚未擦寫 |
 | `09 BAD_IMAGE` | 其餘映像／完整性前置條件不符 |
 
+<a id="update-validation-scope"></a>
+
 ### 實板驗證範圍
 
 F13 與 F24 device 的正常 CAN App 更新已完成實板驗證。
