@@ -16,9 +16,9 @@
 
 | 介面 | 操作入口 | Bootloader／MCU 工程 |
 | --- | --- | --- |
-| I2C | [I2C 操作](i2c.html) | [RL78](https://released.github.io/slide_boot_loader_for_RL78/i2c-device.html)／[RH850](https://released.github.io/slide_boot_loader_for_RH850/i2c-device.html) |
-| UART | [UART 操作](uart.html) | [RL78](https://released.github.io/slide_boot_loader_for_RL78/uart-device.html)／[RH850](https://released.github.io/slide_boot_loader_for_RH850/uart-device.html) |
-| Xmodem | [Xmodem 操作](xmodem.html) | [RL78](https://released.github.io/slide_boot_loader_for_RL78/xmodem-device.html)／[RH850](https://released.github.io/slide_boot_loader_for_RH850/xmodem-device.html) |
+| I2C | [I2C 操作](https://released.github.io/slide_simple_renesas_isp_tool/i2c.html) | [RL78](https://released.github.io/slide_boot_loader_for_RL78/i2c-device.html)／[RH850](https://released.github.io/slide_boot_loader_for_RH850/i2c-device.html) |
+| UART | [UART 操作](https://released.github.io/slide_simple_renesas_isp_tool/uart.html) | [RL78](https://released.github.io/slide_boot_loader_for_RL78/uart-device.html)／[RH850](https://released.github.io/slide_boot_loader_for_RH850/uart-device.html) |
+| Xmodem | [Xmodem 操作](https://released.github.io/slide_simple_renesas_isp_tool/xmodem.html) | [RL78](https://released.github.io/slide_boot_loader_for_RL78/xmodem-device.html)／[RH850](https://released.github.io/slide_boot_loader_for_RH850/xmodem-device.html) |
 
 Tool 只開啟 bridge 的 Host Link COM；Device 的資料介面與 UART0 診斷文字分開。
 各 MCU 的工程是否存在、是否具有實板紀錄，分別以工程指南與實驗資料章節為準。
