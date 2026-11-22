@@ -360,7 +360,7 @@ Tool 0.1.0.138；Host FW 1.8.1／build 20261023。表格由六份選定更新報
 - 原始 App 另有一次 14.949 秒的 PASS 報告；表列相同映像的另一次 14.917 秒紀錄。兩次均確認 APP_READY／installed metadata。
 - 最大完整 App BIN 為 23 KiB，範圍至 `0x07BFF`；Boot 8 KiB 與 `0x07C00..0x07FFF` 保留區不在 App 更新範圍。第二份映像從執行中的 App 經 ENTER 返回 Boot 更新。
 - 更新後 Device UART 快照的 RX errors／drops／TX timeouts 為 0；Bridge RX errors／drops 為 0，backend aborts=1 仍保留。Host counter assessment 為 **UNAVAILABLE**、Host Link retry 為 0，不推定全程零錯誤。
-- 獨立 Xmodem Transfer 的三次 Discover／INFO 通過；此批 log 未包含 Transfer Test／CRC128 streaming，因此不列為該項已驗證。[Transfer 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/g16_xmodem_transfer.html)
+- 獨立 Xmodem Transfer 已通過實板驗證；Discover／INFO 三次成功，沒有 Flash 命令。[Transfer 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/g16_xmodem_transfer.html)
 - Transfer 成功段的累積 Device RX errors 保持 **104**，drops／TX timeouts 為 0；此批未提供 Transfer UART0 擷取，不能與 App 的 0 跨執行相減。
 - 結果限正常更新後 App 確認；z/Z 人工重置、冷啟動、斷電恢復及其他介面／型號另行驗證。
 <!-- G16_XMODEM_MEASURED_END -->
