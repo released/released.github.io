@@ -397,7 +397,7 @@
     },
     "接線與速度": {
       "page": "serial-isp.html",
-      "anchor": "接線與速度"
+      "anchor": "serial-wiring"
     },
     "工程與產物-2": {
       "page": "serial-isp.html",
@@ -405,7 +405,7 @@
     },
     "app-更新操作": {
       "page": "serial-isp.html",
-      "anchor": "app-更新操作"
+      "anchor": "serial-app-update"
     },
     "custom-transfer-與-xmodem": {
       "page": "serial-isp.html",
@@ -463,6 +463,14 @@
       "page": "status-and-reports.html",
       "anchor": "tool-image-loading"
     },
+    "serial-uart0-console": {
+      "page": "serial-isp.html",
+      "anchor": "serial-uart0-console"
+    },
+    "uart0-local-reset": {
+      "page": "status-and-reports.html",
+      "anchor": "uart0-local-reset"
+    },
     "f24-i2c-transfer": {
       "page": "i2c.html",
       "anchor": "i2c-operation"
@@ -470,11 +478,6 @@
     "f24-i2c-update": {
       "page": "i2c.html",
       "anchor": "i2c-operation"
-    },
-    "f24-i2c-update-measurements": {
-      "guide": "slide_boot_loader_for_RL78",
-      "page": "experiments.html",
-      "anchor": "f24-i2c-update-measurements"
     },
     "i2c-image-waits": {
       "page": "status-and-reports.html",
@@ -484,13 +487,10 @@
       "page": "status-and-reports.html",
       "anchor": "app-restart-confirmation"
     },
-    "uart0-local-reset": {
-      "page": "status-and-reports.html",
-      "anchor": "uart0-local-reset"
-    },
-    "serial-uart0-console": {
-      "page": "serial-isp.html",
-      "anchor": "serial-uart0-console"
+    "f24-i2c-update-measurements": {
+      "guide": "slide_boot_loader_for_RL78",
+      "page": "experiments.html",
+      "anchor": "f24-i2c-update-measurements"
     },
     "f24-uart-update-measurements": {
       "guide": "slide_boot_loader_for_RL78",
@@ -517,6 +517,10 @@
       "page": "experiments.html",
       "anchor": "g16-i2c-update-measurements"
     },
+    "update-validation-scope": {
+      "page": "status-and-reports.html",
+      "anchor": "update-validation-scope"
+    },
     "tool-interfaces": {
       "page": "index.html",
       "anchor": "tool-interfaces"
@@ -533,20 +537,15 @@
       "page": "xmodem.html",
       "anchor": "xmodem-operation"
     },
-    "f13-i2c-update-measurements": {
+    "serial-update-results": {
       "guide": "slide_boot_loader_for_RL78",
       "page": "experiments.html",
-      "anchor": "f13-i2c-update-measurements"
+      "anchor": "experiment-scope"
     },
     "f13-i2c-update-summary": {
       "guide": "slide_boot_loader_for_RL78",
       "page": "experiments.html",
       "anchor": "f13-i2c-update-measurements"
-    },
-    "serial-update-results": {
-      "guide": "slide_boot_loader_for_RL78",
-      "page": "experiments.html",
-      "anchor": "experiment-scope"
     },
     "serial-wiring": {
       "page": "serial-isp.html",
@@ -556,9 +555,10 @@
       "page": "serial-isp.html",
       "anchor": "serial-app-update"
     },
-    "update-validation-scope": {
-      "page": "status-and-reports.html",
-      "anchor": "update-validation-scope"
+    "f13-i2c-update-measurements": {
+      "guide": "slide_boot_loader_for_RL78",
+      "page": "experiments.html",
+      "anchor": "f13-i2c-update-measurements"
     }
   }
 }

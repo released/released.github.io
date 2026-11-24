@@ -784,6 +784,18 @@
       "page": "can-fd-device.html",
       "anchor": "upgrade-rh850-can-fd"
     },
+    "upgrade-rh850-uart": {
+      "page": "experiments.html",
+      "anchor": "experiment-scope"
+    },
+    "upgrade-rh850-i2c": {
+      "page": "experiments.html",
+      "anchor": "experiment-scope"
+    },
+    "upgrade-rh850-xmodem": {
+      "page": "experiments.html",
+      "anchor": "experiment-scope"
+    },
     "boot-interfaces": {
       "page": "index.html",
       "anchor": "boot-interfaces"
@@ -800,14 +812,6 @@
       "page": "experiments.html",
       "anchor": "experiment-scope"
     },
-    "rh850-can-update-measurements": {
-      "page": "experiments.html",
-      "anchor": "rh850-can-update-measurements"
-    },
-    "rh850-can-fd-update-measurements": {
-      "page": "experiments.html",
-      "anchor": "rh850-can-fd-update-measurements"
-    },
     "boot、app-與-host-的責任": {
       "page": "architecture.html",
       "anchor": "boot-architecture"
@@ -823,6 +827,14 @@
     "串列介面共用操作": {
       "page": "tool-guides.html",
       "anchor": "uart-device-operation"
+    },
+    "rh850-can-update-measurements": {
+      "page": "experiments.html",
+      "anchor": "rh850-can-update-measurements"
+    },
+    "rh850-can-fd-update-measurements": {
+      "page": "experiments.html",
+      "anchor": "rh850-can-fd-update-measurements"
     },
     "can-fd-device-engineering": {
       "page": "can-fd-device.html",

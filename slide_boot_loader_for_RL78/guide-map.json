@@ -1075,53 +1075,73 @@
       "page": "can-fd-device.html",
       "anchor": "upgrade-f24-can-fd"
     },
-    "upgrade-f13-i2c": {
-      "page": "i2c-device.html",
-      "anchor": "upgrade-f13-i2c"
-    },
-    "f13-i2c-update-measurements": {
-      "page": "experiments.html",
-      "anchor": "f13-i2c-update-measurements"
-    },
-    "upgrade-f24-i2c": {
-      "page": "i2c-device.html",
-      "anchor": "upgrade-f24-i2c"
+    "upgrade-f13-uart": {
+      "page": "uart-device.html",
+      "anchor": "upgrade-f13-uart"
     },
     "upgrade-f24-uart": {
       "page": "uart-device.html",
       "anchor": "upgrade-f24-uart"
     },
-    "f24-uart-update-measurements": {
-      "page": "experiments.html",
-      "anchor": "f24-uart-update-measurements"
-    },
-    "upgrade-f24-xmodem": {
-      "page": "xmodem-device.html",
-      "anchor": "upgrade-f24-xmodem"
-    },
-    "f24-xmodem-update-measurements": {
-      "page": "experiments.html",
-      "anchor": "f24-xmodem-update-measurements"
-    },
-    "upgrade-f13-uart": {
+    "upgrade-g16-uart": {
       "page": "uart-device.html",
-      "anchor": "upgrade-f13-uart"
+      "anchor": "upgrade-g16-uart"
     },
-    "f13-uart-update-measurements": {
+    "upgrade-g22-uart": {
       "page": "experiments.html",
-      "anchor": "f13-uart-update-measurements"
+      "anchor": "experiment-scope"
+    },
+    "upgrade-f13-i2c": {
+      "page": "i2c-device.html",
+      "anchor": "upgrade-f13-i2c"
+    },
+    "upgrade-f24-i2c": {
+      "page": "i2c-device.html",
+      "anchor": "upgrade-f24-i2c"
+    },
+    "upgrade-g16-i2c": {
+      "page": "i2c-device.html",
+      "anchor": "upgrade-g16-i2c"
+    },
+    "upgrade-g22-i2c": {
+      "page": "experiments.html",
+      "anchor": "experiment-scope"
     },
     "upgrade-f13-xmodem": {
       "page": "xmodem-device.html",
       "anchor": "upgrade-f13-xmodem"
     },
+    "upgrade-f24-xmodem": {
+      "page": "xmodem-device.html",
+      "anchor": "upgrade-f24-xmodem"
+    },
+    "upgrade-g16-xmodem": {
+      "page": "xmodem-device.html",
+      "anchor": "upgrade-g16-xmodem"
+    },
+    "upgrade-g22-xmodem": {
+      "page": "experiments.html",
+      "anchor": "experiment-scope"
+    },
+    "f13-i2c-update-measurements": {
+      "page": "experiments.html",
+      "anchor": "f13-i2c-update-measurements"
+    },
+    "f24-uart-update-measurements": {
+      "page": "experiments.html",
+      "anchor": "f24-uart-update-measurements"
+    },
+    "f24-xmodem-update-measurements": {
+      "page": "experiments.html",
+      "anchor": "f24-xmodem-update-measurements"
+    },
+    "f13-uart-update-measurements": {
+      "page": "experiments.html",
+      "anchor": "f13-uart-update-measurements"
+    },
     "f13-xmodem-update-measurements": {
       "page": "experiments.html",
       "anchor": "f13-xmodem-update-measurements"
-    },
-    "upgrade-g16-i2c": {
-      "page": "i2c-device.html",
-      "anchor": "upgrade-g16-i2c"
     },
     "g16-i2c-update-measurements": {
       "page": "experiments.html",
@@ -1143,21 +1163,9 @@
       "page": "experiments.html",
       "anchor": "experiment-scope"
     },
-    "experiment-i2c": {
-      "page": "experiments.html",
-      "anchor": "experiment-i2c"
-    },
     "f24-i2c-update-measurements": {
       "page": "experiments.html",
       "anchor": "f24-i2c-update-measurements"
-    },
-    "experiment-uart": {
-      "page": "experiments.html",
-      "anchor": "experiment-uart"
-    },
-    "experiment-xmodem": {
-      "page": "experiments.html",
-      "anchor": "experiment-xmodem"
     },
     "boot、app-與-host-的責任": {
       "page": "architecture.html",
@@ -1175,13 +1183,17 @@
       "page": "tool-guides.html",
       "anchor": "uart-device-operation"
     },
-    "upgrade-g16-uart": {
-      "page": "uart-device.html",
-      "anchor": "upgrade-g16-uart"
+    "experiment-i2c": {
+      "page": "experiments.html",
+      "anchor": "experiment-i2c"
     },
-    "upgrade-g16-xmodem": {
-      "page": "xmodem-device.html",
-      "anchor": "upgrade-g16-xmodem"
+    "experiment-uart": {
+      "page": "experiments.html",
+      "anchor": "experiment-uart"
+    },
+    "experiment-xmodem": {
+      "page": "experiments.html",
+      "anchor": "experiment-xmodem"
     },
     "g16-boot-console-security": {
       "page": "serial-device.html",

@@ -28,7 +28,7 @@
 | --- | --- | --- |
 | CAN | RH850；按報告條件分列 | [映像大小與報告](#rh850-can-update-measurements) |
 | CAN FD | RH850；FD+BRS | [映像大小與報告](#rh850-can-fd-update-measurements) |
-| I2C／UART／Xmodem | 工程說明可查；本指南尚未列實板更新紀錄 | [各介面工程](index.html#boot-interfaces) |
+| I2C／UART／Xmodem | 共用協定參考；配對工程不在公開範圍 | [協定說明](index.html#boot-interfaces) |
 
 <!-- RH850_TIMING_BEGIN -->
 <a id="rh850-update-timing"></a>

@@ -97,6 +97,15 @@ body[html-show-sidebar-toc] .markdown-preview { left: var(--sidebar-width); widt
 .md-toc a:hover, .md-toc a.active { color: var(--accent-dark); background: #fff9e9; border-left-color: var(--accent); text-decoration: none; }
 .md-toc .toc-h1, .md-toc .toc-h2 { margin-top: 4px; font-weight: 600; }
 .md-toc .toc-h3 { padding-left: 20px; color: #666; font-size: 13px; }
+.md-toc .toc-h4 { padding-left: 28px; font-size: 13px; }
+.md-toc details { margin-block: 4px; }
+.md-toc summary { cursor: pointer; color: var(--muted); }
+.md-toc summary a { display: inline; padding-left: 2px; }
+.md-toc .contains-active > summary { color: var(--accent-dark); background: #fff9e9; }
+.guide-chapters { padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+.guide-chapters a { display: block; padding: 4px 6px; color: #444; }
+.guide-chapters [aria-current="page"] { color: var(--accent-dark); font-weight: 700; background: #fff9e9; }
+.render-error button { margin-left: 1em; font: inherit; cursor: pointer; }
 #sidebar-toc-btn, #back-to-top {
   position: fixed;
   z-index: 99;

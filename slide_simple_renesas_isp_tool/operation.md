@@ -110,8 +110,8 @@ Tool 將這些欄位與目前選定的 port、live device 資訊一併核對。
 
 | UI 資訊 | 來源與作用 |
 | --- | --- |
-| Update Policy | App 目的地及允許 CAN／I2C／UART 更新的清單 |
-| Boot / IRQ ABI | 映像所需的最低 Boot 版本、固定向量介面 |
+| Allowed Updates | App 目的地及允許 CAN／I2C／UART 更新的清單 |
+| Min Boot / IRQ ABI | 映像所需的最低 Boot 版本、固定向量介面 |
 | MCU、版本、分區、CRC | 載入 BIN 的離線資訊 |
 | LIVE INFO | 目前連線裝置回報的資訊 |
 

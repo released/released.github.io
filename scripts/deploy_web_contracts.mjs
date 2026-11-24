@@ -3,6 +3,7 @@ import {readFile,writeFile,readdir} from 'node:fs/promises';
 import {resolve,join,relative,sep} from 'node:path';
 import {createHash} from 'node:crypto';
 import {fileURLToPath} from 'node:url';
+import {prepareGuideShell} from './guide_page_metadata.mjs';
 const root=resolve(fileURLToPath(new URL('../',import.meta.url)));
 const check=process.argv.includes('--check');
 const catalog=JSON.parse(await readFile(join(root,'site-catalog.json'),'utf8'));
@@ -51,7 +52,10 @@ async function walk(folder) {
 await walk(root);
 for(const page of pages) {
  const path=join(root,page.html);
- const html=await readFile(path,'utf8');
+ let html=await readFile(path,'utf8');
+ if(page.source && /^(slide_boot_loader_for_(RH850|RL78)|slide_simple_renesas_isp_tool)\//.test(page.html)) {
+   html=await prepareGuideShell(html,join(root,page.source),root);
+ }
  const marker='<meta name="site-repository" content="released/released.github.io">';
  const updated=html.includes(marker)?html:html.replace('</head>',marker+'\n</head>');
  if(updated===html&&!html.includes(marker))throw Error('Missing HTML head: '+page.html);

@@ -64,11 +64,11 @@
   "dependencies": [
     {
       "path": "notices_can/assets/app.js",
-      "sha256": "f1b857dae5fd6d1a74b7504c7900a354e7703e3e9ea29045170bfd2498fc7fe4"
+      "sha256": "d6160292bb312b00e43a6b4df0fac68b0a29903763e22fa4a829bc06b7590e44"
     },
     {
       "path": "notices_can/assets/style.css",
-      "sha256": "9d926d9e2987c47a8323a91366d304b03ce3b1e776c9002a165796b51b8a78aa"
+      "sha256": "ed318ffaf449c0b6a7551672bbbb24bfe7a3ec83507e1d06345a35d6fc85ccee"
     }
   ]
 }

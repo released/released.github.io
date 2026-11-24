@@ -85,7 +85,7 @@ START 已接受後失聯不會沿用步驟 3 的自動返回原 App 行為；取
 只有 END／CRC 通過、APP_READY 與 live INFO 核對完成後，才顯示 `[COMPLETE]` 與 Device App update complete。
 正常完成會停止 Host CAN、保留 COM（Host UART），讓使用者檢查 App 與板上功能；因此 DEVICE TARGET 回到 N/A 並要求再次 Discover 是完成清理後的狀態。
 App 未確認或 CAN STOP 未確認時，依[完成提示與下一步](https://released.github.io/slide_simple_renesas_isp_tool/#update-completion)處理，不自動重寫。
-Tool 自動保存 Firmware update report；右下 `MESSAGE LOG` 的 `Open Last Report` 可開啟報告，操作見[更新報告](https://released.github.io/slide_simple_renesas_isp_tool/#update-html-report)。
+Tool 自動保存 Firmware update report；右下 `Logs & Reports` 的 `Open Last Report` 可開啟報告，操作見[更新報告](https://released.github.io/slide_simple_renesas_isp_tool/#update-html-report)。
 
 [![Device 更新完成並確認 App 後停止 CAN 保留 COM](images/tool_operation/tool_CAN_update6_after_update.jpg)](images/tool_operation/tool_CAN_update6_after_update.jpg)
 

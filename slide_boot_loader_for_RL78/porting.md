@@ -189,7 +189,7 @@ App BIN 容量包含向量表、metadata、程式／填充與最後 4 bytes CRC3
 Boot 交接前關閉中斷、整理周邊狀態並寫入 App owner。
 App 經自己的 startup 初始化後，再啟用所需周邊與 IRQ。
 
-下列 RAM 交接契約涵蓋 CAN、CAN FD 與 F13／F24 I2C ISP；實際位址由配對工程的 `boot_app_handoff.h`、板端存取與 linker 決定。Flash metadata／CRC 驗證及 RAM 交接各自負責不同階段。
+RAM 交接契約同時適用 CAN、CAN FD 與 serial ISP；實際位址由配對工程的 `boot_app_handoff.h`、板端存取與 linker 決定。Flash metadata／CRC 驗證及 RAM 交接各自負責不同階段。
 
 | 標記 | 用途與生命週期 | RL78 交接區內的位置 |
 | --- | --- | --- |
@@ -203,7 +203,7 @@ App 經自己的 startup 初始化後，再啟用所需周邊與 IRQ。
 | --- | --- | --- |
 | F13 Classical CAN | `0xFF710..0xFF71F` | 獨立的 `0xFF700` |
 | F24 Classical CAN／CAN FD | `0xFF710..0xFF71F` | `0xFF71C` |
-| F13／F24 I2C ISP | `0xFF710..0xFF71F` | `0xFF71C` |
+| F13／F24／G16 UART、I2C、Xmodem ISP | `0xFF710..0xFF71F` | `0xFF71C` |
 
 - No-init 區必須有實際的絕對位址變數或 linker 保留區。固定地址指標描述存取位置，仍需另外完成 RAM 配置。
 - Stack 範圍、stack 初始化、`.bss` 清除、`.data` 複製與 RAM／ECC 初始化均需避開交接區；以實際 map 與所選 startup 核對。

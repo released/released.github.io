@@ -27,7 +27,7 @@
 
 ## MCU 串列 ISP 工程配置
 
-F13、F24、G16、G22 分別提供 UART、Xmodem、I2C 的獨立 Boot／App／Transfer。
+F13、F24、G16 分別提供 UART、Xmodem、I2C 的獨立 Boot／App／Transfer。
 每份 Device Boot 只編入所選的一種更新介面／協定；UART0保留診斷文字。
 Tool操作與接線見 [串列 device 操作](https://released.github.io/slide_simple_renesas_isp_tool/#uart-device-operation)，本節集中於工程編輯與資料契約。
 Tool選取值、Boot／App初始化、live INFO與BIN需對應的項目集中於[通訊設定與更新必要條件](https://released.github.io/slide_simple_renesas_isp_tool/#serial-update-requirements)。
@@ -36,10 +36,12 @@ Tool選取值、Boot／App初始化、live INFO與BIN需對應的項目集中於
 
 ### 配置與資料來源
 
-F13／F24 I2C App 與 Transfer 的 `custom_func.c` 擁有 UART0 console：
+UART／I2C／Xmodem App 與 Transfer 的 `custom_func.c` 擁有 UART0 console：
 
 - `isp_console.inc` 在主迴圈輸出有效封包的 sequence、command、length 與完整 payload；ISR 不解析文字或執行 reset。
-- F13／F24 保存有上限的封包快照，診斷輸出在主迴圈處理。
+- Xmodem 的 trace 對應 framed ISP control request／reply；CRC128 資料串流由獨立 receiver 處理。串流期間持續服務診斷 UART，z/Z 等待串流釋放後才允許一般重置。
+- G16 Xmodem 在完整 framed request 解碼後，借用已閒置的 parser bytes 傳送同步 reply；reply 完成後才切換同一 union 為 Xmodem 接收狀態。保持原有 512-byte stack 與 no-init RAM 分區。
+- F13／F24 保存有上限的封包快照；G16 保留原 stack，借用既有 request／reply，最多200ms後釋放並記錄文字丟棄。
 - UART0 `z`／`Z` 只要求一般重置；資料介面完成目前回覆後才允許重置，I2C 包含最後 NACK／STOP。診斷 TX 停滯不會無限阻擋已可執行的重置。
 - I2C backend 區分完整回覆與已放棄交易。最後活動後 2 秒仍未完成的 mailbox 會清除；App／Transfer 同步取消該回覆的待執行動作及未完成文字，不將放棄視為成功 ACK。
 - 交易放棄後，明確輸入 UART0 `z/Z` 仍須通過 bus idle 與非更新中條件；不會自動重置，也不會沿用已取消的 ENTER 動作。
@@ -50,7 +52,6 @@ F13／F24 I2C App 與 Transfer 的 `custom_func.c` 擁有 UART0 console：
 | F13 | 32MHz／X1 4MHz | 128KiB／8KiB | 119KiB | 0x1FC00..0x1FFFF |
 | F24 | 40MHz／X1 4MHz | 256KiB／24KiB | 247KiB | 0x3FC00..0x3FFFF |
 | G16 | 16MHz／HOCO | 32KiB／2KiB | 23KiB | 0x07C00..0x07FFF |
-| G22 | 32MHz／HOCO | 64KiB／4KiB | 55KiB | 0x0FC00..0x0FFFF |
 
 各工程Boot為0x0000..0x1FFF（8KiB），建置檢查至少512-byte餘裕。
 App表為0x2000..0x20FF，metadata為0x2100..0x21FF，程式從0x2200開始；完整BIN含上述內容、padding及末端4-byte CRC32。
@@ -61,10 +62,9 @@ App表為0x2000..0x20FF，metadata為0x2100..0x21FF，程式從0x2200開始；�
 | F13 | 0x40 | 0x28 | 0x1E | FSL Type01，Flash busy鏈位於RAM |
 | F24 | 0x40 | 0x28 | 0x2E | RFD Type02，Flash busy鏈位於RAM |
 | G16 | 0x20 | 0x2C | 0x1C | RFSP Type01，Code Flash操作期間CPU停止執行 |
-| G22 | 0x26 | 0x2A | 0x2E | RFD Type01，startup複製Flash driver到RAM |
 
 向量值是MCU實體vector的byte address，來源為對應硬體手冊的向量表及工程iodefine.h。
-G16／G22 UART1使用SAU0 channels2／3；實際pin與PIOR值由各board adapter管理。
+G16 UART1使用SAU0 channels2／3；實際pin與PIOR值由各board adapter管理。
 Flash函式的ROM儲存與RAM執行概念見 [Flash執行位置](https://released.github.io/slide_boot_loader_for_RL78/#flash-ram-execution)。
 
 UART速率由 `isp_transport_config.h` 宣告；INFO、metadata及周邊分頻需一致。
@@ -103,7 +103,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\build.ps1
 Pre-build產生完整表與metadata；post-build核對實際linked image、ISR返回方式、CRC、ROM／RAM範圍後產生_update.bin與app_build_report.html。
 HTML列出實際BIN的metadata bytes、IRQ、CRC與雜湊；它是編譯報告，不是板上更新結果。
 
-- F13 I2C App 以 `.boot_info` 保留 `0xFF710..0xFF71F` 的 no-init 交接 RAM；owner、HANDOFF、更新完成與返回 Boot 標記不由 startup 清除。
+- F13 UART／I2C／Xmodem App 以 `.boot_info` 保留 `0xFF710..0xFF71F` 的 no-init 交接 RAM；owner、HANDOFF、更新完成與返回 Boot 標記不由 startup 清除。
 - F13 App post-build 以實際 map 核對交接區、堆疊及一般 RAM 初始化範圍互不重疊，且堆疊至少保留 512 bytes；動態堆疊用量仍需依 App 工作負載驗證。各標記的生命週期與位址差異見 [RAM 交接契約](https://released.github.io/slide_boot_loader_for_RL78/porting.html#guide-porting-5)。
 
 ```mermaid
@@ -158,7 +158,7 @@ App ISR為global、無vect=的interrupt pragma，並列於app_irq_handlers.h。
 
 ### SC設定與重新產生
 
-F24、G16、G22 的 UART／Xmodem／I2C Boot、App、Transfer各自帶有同名 `.scfg`。
+F24、G16 的 UART／Xmodem／I2C Boot、App、Transfer各自帶有同名 `.scfg`。
 F13使用工程內的Code Generator與board設定，沿用相同的metadata與App IRQ編輯方式。
 
 | 配置 | SC元件 | Runtime負責 |
@@ -168,6 +168,20 @@ F13使用工程內的Code Generator與board設定，沿用相同的metadata與Ap
 
 Xmodem與UART使用相同周邊配置；XMODEM-CRC128的資料處理由協定程式負責。
 各MCU的腳位見工程README；G16的16MHz時脈依據[原廠器件規格](https://www.renesas.com/en/products/rl78-g16/part-details/r5f121bcana-40)。
+
+G16 的 UART／I2C／Xmodem Boot、App、Transfer 使用相同的 16 MHz 除錯設定：
+
+- CC-RL 的 User option bytes 為 `EEF7F9`，OCD option byte 為 `85`；對應 Flash `0xC0..0xC3` 的 `EE F7 F9 85`。
+- Security option byte 維持停用、值留空；此欄位與獨立的 10-byte OCD Security ID 不同。
+- CC-RL 明確設定 `C0=EE`，停用 WDT 與待機計數。SC 未配置 WDT 時產生的 IAR 專用預設 `EF` 不適用此設定；保留產生檔，由 linker 選項決定 CC-RL 映像。
+- 其餘 option bytes 與產生的 BSP 設定核對。BSP 中標示供 IAR 使用的巨集，不會取代 CC-RL 的專案設定。
+- Pre-build 核對設定；post-build 直接核對 linked HEX 的四個位元組，再進行封裝。App 更新 BIN 從 `0x2000` 起，不包含 Boot 的 option bytes；App-only 建置不改寫配對 Boot。
+
+G16 的 option bytes 有以下限制，位元定義見 [G16 硬體手冊第 21 章](https://www.renesas.com/en/document/mah/rl78g16-users-manual-hardware)：
+
+- `C0=EF` 的 `WDTON=0、WDSTBYON=1` 為禁止組合；此設定使用 `EE`。
+- `C2=F9` 選擇 16 MHz，`F8` 屬禁止設定。
+- OCD 的低 7 位固定為 `0000101`，啟用除錯時使用 `C3=85`。G16 不支援以 `84` 選擇 ID 認證失敗清除 Flash。
 
 1. 在CS+開啟所選工程，進入Smart Configurator節點，開啟工程同名 `.scfg`。
 2. 修改通訊設定時，同步核對配對Boot的 `isp_transport_config.h`，以及Boot／App／Transfer各自的SC設定。
@@ -305,7 +319,7 @@ Status 名稱與值來自工程內 `hal/isp/isp_protocol.h`，命令條件由 `i
 共用驅動修正須分別檢查 MCU、介面與 Boot／App／Transfer 的適用範圍。
 來源同步、目標建置、更新 BIN 與容量測試 BIN 是不同產物；同步來源後，既有 BIN 仍保有原本的執行內容。
 
-- F13／F24 I2C 工程各自編譯本地 driver；Boot 與 App 都需納入修正評估。
+- F13、F24、G16 的 I2C 工程各自編譯本地 driver；Boot 與 App 都需納入修正評估。
 - App-only 建置保留配對 Boot；Boot 更新另依安裝流程處理。
 - App 重建後重新產生容量測試 BIN，核對來源雜湊、CRC、長度與保護區；Tool 重新載入該檔案。
 - 其他介面及 RH850 依實際 driver／IRQ／timer 判斷，不直接套用 RL78 暫存器對策。
@@ -320,26 +334,11 @@ END 成功、App ready 與全部 installed metadata 相符，UART0 也有重啟�
 離線檢查包含實際App BIN、production PC client、C engine、transport loop／receiver、四系列IICA register模型，以及CS+ linked metadata／vector／ROM／RAM guards。
 App-only建置會比對Boot來源與產物雜湊，確認未被改寫。
 這些檢查不代替實板電氣、Flash timing、中斷、動態stack、重啟與斷電測試。
-F24 UART 的原始 App 及 8..247 KiB 映像完成一般更新、END CRC 與 App 身分確認；各組有 UART0 啟動與持續 counter。條件、獨立報告與未涵蓋情境見 [F24 UART 更新量測](https://released.github.io/slide_simple_renesas_isp_tool/serial-isp.html#f24-uart-update-measurements)。
+F24 Xmodem 的 Transfer 與原始 App／8..247 KiB 更新有獨立實板紀錄；完整映像 CRC、重啟後 APP_READY 與 installed metadata 均相符，UART0 trace 及 counter 可互相核對。Transfer 的累積 RX errors=44 與先前連線錯誤另列限制；其餘型號、z/Z 人工重置、冷啟動與斷電恢復不由本批資料推定。見 [F24 Xmodem 量測與限制](https://released.github.io/slide_simple_renesas_isp_tool/serial-isp.html#f24-xmodem-update-measurements)。
 
 F24 Xmodem 的原始 App 與 8..247 KiB 映像已有 EOT／END CRC、APP_READY、全部 installed metadata 及 UART0 重啟與持續 counter 的對照資料。獨立 Transfer 有 framed trace，但累積 RX errors=44 保留；實測條件與限制見 [F24 Xmodem 量測](https://released.github.io/slide_simple_renesas_isp_tool/serial-isp.html#f24-xmodem-update-measurements)。不延伸為其他 MCU、z/Z 人工重置、冷啟動或斷電恢復的實板證據。
 
 F13 的 UART ISP 與 Xmodem 各有獨立的接線、更新步驟及 Boot／App 流程；[UART ISP 量測](https://released.github.io/slide_simple_renesas_isp_tool/serial-isp.html#f13-uart-update-measurements)與 [Xmodem 量測](https://released.github.io/slide_simple_renesas_isp_tool/serial-isp.html#f13-xmodem-update-measurements)包含原始 App、24／56／119 KiB 的更新結果及 UART0 輸出條件。Transfer 的累積 RX 錯誤與更新後 App 快照分別呈現；冷啟動、斷電恢復與人工 z/Z 操作不由這批更新資料推定。
-
-G16 的 I2C Boot、App、Transfer 使用相同的 16 MHz 除錯設定：
-
-- CC-RL 的 User option bytes 為 `EEF7F9`，OCD option byte 為 `85`；對應 Flash `0xC0..0xC3` 的 `EE F7 F9 85`。
-- Security option byte 維持停用、值留空；此欄位與獨立的 10-byte OCD Security ID 不同。
-- CC-RL 明確設定 `C0=EE`，停用 WDT 與待機計數。SC 未配置 WDT 時產生的 IAR 專用預設 `EF` 不適用此設定；保留產生檔，由 linker 選項決定 CC-RL 映像。
-- 其餘 option bytes 與產生的 BSP 設定核對。BSP 中標示供 IAR 使用的巨集，不會取代 CC-RL 的專案設定。
-- Pre-build 核對設定；post-build 直接核對 linked HEX 的四個位元組，再進行封裝。App 更新 BIN 從 `0x2000` 起，不包含 Boot 的 option bytes；App-only 建置不改寫配對 Boot。
-
-G16 的 option bytes 有以下限制，位元定義見 [G16 硬體手冊第 21 章](https://www.renesas.com/en/document/mah/rl78g16-users-manual-hardware)：
-
-- `C0=EF` 的 `WDTON=0、WDSTBYON=1` 為禁止組合；此設定使用 `EE`。
-- `C2=F9` 選擇 16 MHz，`F8` 屬禁止設定。
-- OCD 的低 7 位固定為 `0000101`，啟用除錯時使用 `C3=85`。G16 不支援以 `84` 選擇 ID 認證失敗清除 Flash。
-
 
 <a id="g16-boot-console-security"></a>
 
