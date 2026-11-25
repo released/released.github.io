@@ -1088,8 +1088,8 @@
       "anchor": "upgrade-g16-uart"
     },
     "upgrade-g22-uart": {
-      "page": "experiments.html",
-      "anchor": "experiment-scope"
+      "page": "uart-device.html",
+      "anchor": "upgrade-g22-uart"
     },
     "upgrade-f13-i2c": {
       "page": "i2c-device.html",
@@ -1120,8 +1120,8 @@
       "anchor": "upgrade-g16-xmodem"
     },
     "upgrade-g22-xmodem": {
-      "page": "experiments.html",
-      "anchor": "experiment-scope"
+      "page": "xmodem-device.html",
+      "anchor": "upgrade-g22-xmodem"
     },
     "f13-i2c-update-measurements": {
       "page": "experiments.html",
@@ -1206,6 +1206,14 @@
     "g16-xmodem-update-measurements": {
       "page": "experiments.html",
       "anchor": "g16-xmodem-update-measurements"
+    },
+    "g22-uart-update-measurements": {
+      "page": "experiments.html",
+      "anchor": "g22-uart-update-measurements"
+    },
+    "g22-xmodem-update-measurements": {
+      "page": "experiments.html",
+      "anchor": "g22-xmodem-update-measurements"
     }
   }
 }

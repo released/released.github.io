@@ -700,7 +700,7 @@ CAN、CAN FD、UART、I2C 與 Xmodem 的更新介面沿用來源 BIN，不因填
 | F13 | 8 KiB | 119 KiB | 最後 1 KiB |
 | F24 | 8 KiB | 247 KiB | 最後 1 KiB |
 | G16 | 8 KiB | 23 KiB | 最後 1 KiB |
-| G22 | 8 KiB | 55 KiB | 最後 1 KiB |
+| G22 | 8 KiB | 54 KiB | 最後 2 KiB |
 
 若需要另外保留一組手動測試批次，可在 App 根目錄雙擊 `generate_test_bins.bat`，或執行：
 

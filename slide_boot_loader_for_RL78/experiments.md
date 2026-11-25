@@ -28,8 +28,8 @@
 | --- | --- | --- |
 | CAN／CAN FD | F13／F24，按模式與 MCU 分列 | [映像大小與報告](#device-update-timing) |
 | I2C | [F13](#f13-i2c-update-measurements)／[F24](#f24-i2c-update-measurements)／[G16](#g16-i2c-update-measurements) | [工程與機制](i2c-device.html) |
-| UART | [F13](#f13-uart-update-measurements)／[F24](#f24-uart-update-measurements)／[G16](#g16-uart-update-measurements) | [工程與機制](uart-device.html) |
-| Xmodem | [F13](#f13-xmodem-update-measurements)／[F24](#f24-xmodem-update-measurements)／[G16](#g16-xmodem-update-measurements) | [工程與機制](xmodem-device.html) |
+| UART | [F13](#f13-uart-update-measurements)／[F24](#f24-uart-update-measurements)／[G16](#g16-uart-update-measurements)／[G22](#g22-uart-update-measurements) | [工程與機制](uart-device.html) |
+| Xmodem | [F13](#f13-xmodem-update-measurements)／[F24](#f24-xmodem-update-measurements)／[G16](#g16-xmodem-update-measurements)／[G22](#g22-xmodem-update-measurements) | [工程與機制](xmodem-device.html) |
 | 其他工程組合 | 本指南未列實板更新紀錄 | [依介面選擇工程](index.html#boot-interfaces) |
 
 <a id="device-update-timing"></a>
@@ -286,6 +286,23 @@ Tool 0.1.0.138；Host FW 1.8.1／build 20261023。表格由六份選定更新報
 - 結果限正常更新後 App 確認；z/Z 人工重置、冷啟動、斷電恢復及其他介面／型號另行驗證。
 <!-- G16_UART_MEASURED_END -->
 
+<!-- G22_UART_MEASURED_BEGIN -->
+<a id="g22-uart-update-measurements"></a>
+
+### G22 UART ISP App 更新量測
+
+R7F102GGE2DFB（`0x022B`），Device UART 與 Host Link 均為 115200、8-N-1。配對工程見 [G22 UART ISP 工程](https://released.github.io/slide_boot_loader_for_RL78/uart-device.html#upgrade-g22-uart)。
+
+| App BIN（bytes） | CRC32 | Write（秒） | END CRC（秒） | App 確認（秒） | 總時間（秒） |
+| ---: | ---: | ---: | ---: | ---: | ---: |
+| 9,956 | `0xD66CF93F` | 14.886 | 0.175 | 1.944 | 17.897 |
+| 24,576 | `0x5174BBF4` | 36.784 | 0.288 | 1.944 | 39.939 |
+| 55,296 | `0xAF4A3CD9` | 82.950 | 0.559 | 1.993 | 86.435 |
+
+- 三次更新的 START 和 END 均確認，`APP_READY` 和 256 bytes 安裝 metadata 相符。後兩次從 App 執行 ENTER 回 Boot。Host Link 重試為 0，Host 比較計數器為 UNAVAILABLE。
+- Custom Transfer 的三次 Discover 均回覆 INFO 與 UART 診斷。Device RX errors 的累計快照均為 182，drops 與 TX timeouts 均為 0。
+<!-- G22_UART_MEASURED_END -->
+
 <a id="experiment-xmodem"></a>
 
 ## Xmodem
@@ -364,6 +381,23 @@ Tool 0.1.0.138；Host FW 1.8.1／build 20261023。表格由六份選定更新報
 - Transfer 成功段的累積 Device RX errors 保持 **104**，drops／TX timeouts 為 0；此批未提供 Transfer UART0 擷取，不能與 App 的 0 跨執行相減。
 - 結果限正常更新後 App 確認；z/Z 人工重置、冷啟動、斷電恢復及其他介面／型號另行驗證。
 <!-- G16_XMODEM_MEASURED_END -->
+
+<!-- G22_XMODEM_MEASURED_BEGIN -->
+<a id="g22-xmodem-update-measurements"></a>
+
+### G22 XMODEM-CRC128 App 更新量測
+
+R7F102GGE2DFB（`0x022B`），Device UART 與 Host Link 均為 115200、8-N-1。配對工程見 [G22 XMODEM-CRC128 工程](https://released.github.io/slide_boot_loader_for_RL78/xmodem-device.html#upgrade-g22-xmodem)。
+
+| App BIN（bytes） | CRC32 | Write（秒） | END CRC（秒） | App 確認（秒） | 總時間（秒） |
+| ---: | ---: | ---: | ---: | ---: | ---: |
+| 12,036 | `0x87B7136E` | 10.644 | 0.176 | 1.944 | 14.660 |
+| 24,576 | `0xA7AEA7F8` | 21.417 | 0.288 | 1.945 | 25.545 |
+| 55,296 | `0xBEBCE5E4` | 48.325 | 0.560 | 2.008 | 52.789 |
+
+- 三次更新的 START 和 END 均確認，`APP_READY` 和 256 bytes 安裝 metadata 相符。後兩次從 App 執行 ENTER 回 Boot。Host Link 重試為 0，Host 比較計數器為 UNAVAILABLE。
+- Xmodem Transfer 的三次測試完成 PING、ECHO、計數器查詢、CRC128 串流及最後一次 INFO 查詢。
+<!-- G22_XMODEM_MEASURED_END -->
 
 ---
 

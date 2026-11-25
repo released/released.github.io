@@ -32,6 +32,7 @@
 | F13／R5F10BMG | [配對工程與配置](#upgrade-f13-uart) | [實板紀錄與限制](experiments.html#f13-uart-update-measurements) |
 | F24／R7F124FPJ5xFB | [配對工程與配置](#upgrade-f24-uart) | [實板紀錄與限制](experiments.html#f24-uart-update-measurements) |
 | G16／R5F121BCAFP | [配對工程與配置](#upgrade-g16-uart) | [實板紀錄與限制](experiments.html#g16-uart-update-measurements) |
+| G22／R7F102GGE2DFB | [配對工程與配置](#upgrade-g22-uart) | [實板紀錄與限制](experiments.html#g22-uart-update-measurements) |
 
 
 <!-- DEVICE_UPGRADE_PATHS_END -->
@@ -280,6 +281,29 @@ Tool保留支援／未提供／讀取失敗的區別；畫面與報告的用途�
 
 
 - [G16 Boot console / Security ID](https://released.github.io/slide_boot_loader_for_RL78/serial-device.html#g16-boot-console-security).
+
+<a id="upgrade-g22-uart"></a>
+
+### G22 × UART：工程設定
+
+#### 配對工程、接線與映像
+
+| 項目 | 此組合的設定 |
+| --- | --- |
+| Device／target | R7F102GGE2DFB／`0x022B` |
+| Boot 工程 | `RL78_G22_ISP_Boot_loader_UART` |
+| App 工程 | `RL78_G22_ISP_Boot_loader_UART_app` |
+| 初次安裝 | Boot 工程的 `DefaultBuild/boot0000_1FFF.hex`，由 programmer 安裝；確認 MCU 與擦除範圍 |
+| Tool 更新檔 | App 工程的 `DefaultBuild/RL78_G22_ISP_Boot_loader_UART_app_update.bin`；HEX、boot_app 合併檔與 Transfer HEX 不放入 App 更新欄 |
+| Flash 配置 | App 區 `0x02000–0x0F7FF`，完整 BIN 上限 54 KiB。Code Flash 擦除單位 2 KiB，`0x0F800–0x0FFFF` 保留。 |
+| 資料介面 | UART framed ISP，115200／8-N-1 為範例值 |
+| RAM 交接 | `0xFEF10..0xFEF1F`，返回 Boot request 位址 `0xFEF1C`，冷啟動先初始化交接簽章 |
+
+- [Tool UART 操作](https://released.github.io/slide_simple_renesas_isp_tool/uart.html)提供接線、Discover、Enter Boot、更新與結果確認。
+- [Boot 接收與驗證機制](https://released.github.io/slide_boot_loader_for_RL78/uart-device.html#uart-boot-flow)集中描述此介面的接收、CRC、更新命令與完成回覆。
+- [App 返回 Boot 與 RAM 交接](https://released.github.io/slide_boot_loader_for_RL78/architecture.html#boot-app-handoff)說明 ENTER 與 UART0 z/Z 的差異；實際保留位址以本節表格為準。
+- [此組合的實板結果](https://released.github.io/slide_boot_loader_for_RL78/experiments.html#g22-uart-update-measurements)集中記錄映像大小與驗證結果。
+- 程式入口為配對工程的 `custom_func.c`：`hardware_init()`／`loop()`；移植修改位置見 [Boot／App 移植](https://released.github.io/slide_boot_loader_for_RL78/porting.html)。
 <!-- MODEL_DETAILS_END -->
 
 ---

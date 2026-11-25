@@ -18,6 +18,7 @@ Device baud、UART ISP 更新與 Custom Transfer。
 | MCU 工程、Boot／App 機制、實驗資料 | [RL78 UART](../slide_boot_loader_for_RL78/uart-device.html)／[RH850 UART](../slide_boot_loader_for_RH850/uart-device.html) |
 | 可選 baud 與映像條件 | [通訊設定與更新必要條件](serial-isp.html#serial-update-requirements) |
 | 獨立 Log、RX／TX 診斷及 z/Z | [Device 串列診斷](serial-isp.html#serial-device-diagnostics) |
+| G22 | [UART ISP 配對工程與實板紀錄](../slide_boot_loader_for_RL78/uart-device.html#upgrade-g22-uart) |
 
 ---
 
