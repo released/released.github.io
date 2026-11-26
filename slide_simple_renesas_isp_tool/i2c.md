@@ -18,6 +18,7 @@ I2C port、7-bit 位址、時脈、App 更新與 Custom Transfer。
 | MCU 工程、Boot／App 機制、實驗資料 | [RL78 I2C](../slide_boot_loader_for_RL78/i2c-device.html)／[RH850 I2C](../slide_boot_loader_for_RH850/i2c-device.html) |
 | 位址／速率與映像要求 | [通訊設定與更新必要條件](serial-isp.html#serial-update-requirements) |
 | NACK、timeout 或 App 未確認 | [錯誤與未知結果](status-and-reports.html#tool-error-guidance) |
+| G22 | [I2C ISP 配對工程與實板紀錄](../slide_boot_loader_for_RL78/i2c-device.html#upgrade-g22-i2c) |
 
 G16 Reference 是另一個唯讀 workflow，不提供 ISP erase／write／jump；見[Reference 探索](serial-isp.html#4-i2c-master)。
 

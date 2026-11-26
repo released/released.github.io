@@ -32,6 +32,7 @@ I2C Slave、STOP mailbox、111-byte reply window 與更新完成條件。
 | F13／R5F10BMG | [配對工程與配置](#upgrade-f13-i2c) | [實板紀錄與限制](experiments.html#f13-i2c-update-measurements) |
 | F24／R7F124FPJ5xFB | [配對工程與配置](#upgrade-f24-i2c) | [實板紀錄與限制](experiments.html#f24-i2c-update-measurements) |
 | G16／R5F121BCAFP | [配對工程與配置](#upgrade-g16-i2c) | [實板紀錄與限制](experiments.html#g16-i2c-update-measurements) |
+| G22／R7F102GGE2DFB | [配對工程與配置](#upgrade-g22-i2c) | [實板紀錄與限制](experiments.html#g22-i2c-update-measurements) |
 
 
 <!-- DEVICE_UPGRADE_PATHS_END -->
@@ -262,6 +263,30 @@ Metadata、IRQ 與 Flash 驗證維持各平台工程的契約。
 - [Boot 接收與驗證機制](https://released.github.io/slide_boot_loader_for_RL78/i2c-device.html#i2c-boot-flow)集中描述此介面的接收、CRC、更新命令與完成回覆。
 - [App 返回 Boot 與 RAM 交接](https://released.github.io/slide_boot_loader_for_RL78/architecture.html#boot-app-handoff)說明 ENTER 與 UART0 z/Z 的差異；實際保留位址以本節表格為準。
 - [此組合的實驗資料與限制](https://released.github.io/slide_boot_loader_for_RL78/experiments.html#g16-i2c-update-measurements)與工程設定分開呈現，沒有實板紀錄的組合不推定為已驗證。
+- 程式入口為配對工程的 `custom_func.c`：`hardware_init()`／`loop()`；移植修改位置見 [Boot／App 移植](https://released.github.io/slide_boot_loader_for_RL78/porting.html)。
+
+<a id="upgrade-g22-i2c"></a>
+
+### G22 × I2C：工程設定
+
+#### 配對工程、接線與映像
+
+| 項目 | 此組合的設定 |
+| --- | --- |
+| Device／target | R7F102GGE2DFB／`0x022B` |
+| Boot 工程 | [`RL78_G22_ISP_Boot_loader_I2C`](https://github.com/released/RL78_G22_ISP_Boot_loader_I2C) |
+| App 工程 | [`RL78_G22_ISP_Boot_loader_I2C_app`](https://github.com/released/RL78_G22_ISP_Boot_loader_I2C_app) |
+| Transfer 工程 | [`RL78_G22_I2C_Slave_Transfer`](https://github.com/released/RL78_G22_I2C_Slave_Transfer)，用於 PING／ECHO／計數器測試 |
+| 初次安裝 | Boot 工程的 `DefaultBuild/boot0000_1FFF.hex`，由 programmer 安裝；確認 MCU 與擦除範圍 |
+| Tool 更新檔 | App 工程的 `DefaultBuild/RL78_G22_ISP_Boot_loader_I2C_app_update.bin`；HEX、boot_app 合併檔與 Transfer HEX 不放入 App 更新欄 |
+| Flash 配置 | 8 KiB Boot；App 區 `0x02000–0x0F7FF`，完整 BIN 上限 54 KiB，含 vectors、Metadata、padding 與 CRC。擦除單位 2 KiB，`0x0F800–0x0FFFF` 保留。 |
+| 資料介面 | IICA0 SCL／SDA 分別為 P60／P61，IRQ vector `0x2A`。範例為 7-bit `0x20`／100 kHz，Boot／App／BIN／Tool 設定須一致。 |
+| RAM 交接 | `0xFEF10..0xFEF1F`；返回 Boot request：`0xFEF1C` |
+
+- [Tool I2C 操作](https://released.github.io/slide_simple_renesas_isp_tool/i2c.html)提供接線、Discover、Enter Boot、更新與結果確認。
+- [Boot 接收與驗證機制](https://released.github.io/slide_boot_loader_for_RL78/i2c-device.html#i2c-boot-flow)集中描述此介面的接收、CRC、更新命令與完成回覆。
+- [App 返回 Boot 與 RAM 交接](https://released.github.io/slide_boot_loader_for_RL78/architecture.html#boot-app-handoff)說明 ENTER 與 UART0 z/Z 的差異；實際保留位址以本節表格為準。
+- [此組合的實板結果](https://released.github.io/slide_boot_loader_for_RL78/experiments.html#g22-i2c-update-measurements)集中記錄映像大小與驗證結果。
 - 程式入口為配對工程的 `custom_func.c`：`hardware_init()`／`loop()`；移植修改位置見 [Boot／App 移植](https://released.github.io/slide_boot_loader_for_RL78/porting.html)。
 <!-- MODEL_DETAILS_END -->
 

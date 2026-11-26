@@ -1104,8 +1104,8 @@
       "anchor": "upgrade-g16-i2c"
     },
     "upgrade-g22-i2c": {
-      "page": "experiments.html",
-      "anchor": "experiment-scope"
+      "page": "i2c-device.html",
+      "anchor": "upgrade-g22-i2c"
     },
     "upgrade-f13-xmodem": {
       "page": "xmodem-device.html",
@@ -1214,6 +1214,10 @@
     "g22-xmodem-update-measurements": {
       "page": "experiments.html",
       "anchor": "g22-xmodem-update-measurements"
+    },
+    "g22-i2c-update-measurements": {
+      "page": "experiments.html",
+      "anchor": "g22-i2c-update-measurements"
     }
   }
 }

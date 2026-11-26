@@ -27,7 +27,7 @@
 | 介面 | MCU／資料 | 直接入口 |
 | --- | --- | --- |
 | CAN／CAN FD | F13／F24，按模式與 MCU 分列 | [映像大小與報告](#device-update-timing) |
-| I2C | [F13](#f13-i2c-update-measurements)／[F24](#f24-i2c-update-measurements)／[G16](#g16-i2c-update-measurements) | [工程與機制](i2c-device.html) |
+| I2C | [F13](#f13-i2c-update-measurements)／[F24](#f24-i2c-update-measurements)／[G16](#g16-i2c-update-measurements)／[G22](#g22-i2c-update-measurements) | [工程與機制](i2c-device.html) |
 | UART | [F13](#f13-uart-update-measurements)／[F24](#f24-uart-update-measurements)／[G16](#g16-uart-update-measurements)／[G22](#g22-uart-update-measurements) | [工程與機制](uart-device.html) |
 | Xmodem | [F13](#f13-xmodem-update-measurements)／[F24](#f24-xmodem-update-measurements)／[G16](#g16-xmodem-update-measurements)／[G22](#g22-xmodem-update-measurements) | [工程與機制](xmodem-device.html) |
 | 其他工程組合 | 本指南未列實板更新紀錄 | [依介面選擇工程](index.html#boot-interfaces) |
@@ -210,6 +210,22 @@ Tool 0.1.0.138；Host FW 1.8.1／build 20261023。表格由六份選定更新報
 - 獨立 Transfer 的本批擷取涵蓋 Discover／INFO、一組 RX／TX、每列 8 bytes，沒有 Flash 命令；PING／ECHO／counters 尚未由此擷取證實。[Discover 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/g16_i2c_transfer.html)
 - 結果限正常更新後 App 確認。UART0 z/Z 人工重置、冷啟動、斷電恢復、其他介面／型號與故障注入另行驗證。
 <!-- G16_I2C_MEASURED_END -->
+
+<a id="g22-i2c-update-measurements"></a>
+
+### G22 I2C ISP App 更新量測
+
+R7F102GGE2DFB（`0x022B`），I2C 100 kHz／7-bit `0x20`，Host Link 115200。配對工程見 [G22 I2C ISP 工程](https://released.github.io/slide_boot_loader_for_RL78/i2c-device.html#upgrade-g22-i2c)。
+
+| App BIN（bytes） | CRC32 | WRITE（秒） | END CRC（秒） | App 確認（秒） | 總耗時（秒） |
+| --- | --- | --- | --- | --- | --- |
+| 11,848 | `0x0A733A2D` | 20.218 | 0.230 | 1.990 | 23.314 |
+| 24,576 | `0x9AB171EA` | 43.562 | 0.354 | 1.992 | 46.786 |
+| 55,296 | `0xD1D2F9F3` | 94.673 | 0.600 | 2.086 | 98.235 |
+
+- 三次更新均收到 START／END 確認，取得 APP_READY，並核對全部 256 bytes 的 installed metadata。UART0 記錄三次 Boot 交接後的 App 啟動。後兩次由執行中的 App 透過 ENTER 返回 Boot。
+- 獨立 I2C Transfer 三次通過 PING／ECHO／計數器與最終 INFO 查詢。UART0 配對的 96-byte ECHO 收送內容一致。測試未執行 Flash 命令。
+- 三份更新報告的 Host Link 重試為 0，Host 比較計數為 UNAVAILABLE。冷上電與斷電恢復需另行驗證。
 
 <a id="experiment-uart"></a>
 
