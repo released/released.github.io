@@ -25,7 +25,9 @@
 <!-- RH850_SERIAL_CHAPTER_BEGIN -->
 ## 公開範圍與串列協定參考
 
-RH850 的公開配對工程與實板資料為 Classical CAN／CAN FD。UART／I2C／Xmodem 的型號配置、建置操作與更新映像不在公開範圍；共用協定由 RL78 章節維護。
+RH850 串列的共用協定由 RL78 章節維護。已公開的配對工程見 [介面索引](index.html#boot-interfaces)。
+
+- [I2C 配對工程與接線](i2c-device.html#upgrade-rh850-i2c)
 
 <a id="guide-serial-device-1"></a>
 
@@ -65,7 +67,7 @@ RH850 的公開配對工程與實板資料為 Classical CAN／CAN FD。UART／I2
 
 <a id="rh850-serial-runtime"></a>
 
-[公開工程與實板紀錄](experiments.html#experiment-scope)。共用協定說明不代表 RH850 串列工程已完成實板驗證。
+[公開工程與實板紀錄](experiments.html#experiment-scope)。
 
 <!-- RH850_SERIAL_CHAPTER_END -->
 

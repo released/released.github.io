@@ -63,12 +63,12 @@ F13／F24 UART1 使用 PIOR42=1；G16 使用 SAU0 channels2／3 與對應 PIOR�
 接線依據：F13 target board R20UT2272XJ0200 第2頁、F24 target board R12UZ0100XJ0101 第2頁、
 G16 FPB schematic R12TU0180EJ、G22 FPB schematic R20UT5122EJ。
 接頭方向與焊橋依各板原理圖核對；表內腳位與韌體 adapter 對照，不表示已量測實體波形。
-RH850 串列主題僅列共用協定參考，不提供配對工程；[公開範圍](https://released.github.io/slide_boot_loader_for_RH850/serial-device.html#guide-serial-device-1)。
+RH850 I2C 與獨立 Log 接線見 [RH850 I2C 工程設定](https://released.github.io/slide_boot_loader_for_RH850/i2c-device.html#upgrade-rh850-i2c)。
 
 ### 工程與產物
 
 下表為 RL78 工程命名，MCU 取 F13、F24、G16 或 G22；每格代表各 MCU 的獨立工程。
-RH850 串列配對工程與安裝檔不在公開範圍；[共用協定參考](https://released.github.io/slide_boot_loader_for_RH850/serial-device.html#guide-serial-device-2)。
+RH850 I2C 的配對工程、安裝 HEX 和更新 BIN 見 [RH850 I2C 映像](https://released.github.io/slide_boot_loader_for_RH850/i2c-device.html#upgrade-rh850-i2c)。
 
 | 協定 | Boot | App | Custom Transfer |
 | --- | --- | --- | --- |

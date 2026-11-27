@@ -789,8 +789,8 @@
       "anchor": "experiment-scope"
     },
     "upgrade-rh850-i2c": {
-      "page": "experiments.html",
-      "anchor": "experiment-scope"
+      "page": "i2c-device.html",
+      "anchor": "upgrade-rh850-i2c"
     },
     "upgrade-rh850-xmodem": {
       "page": "experiments.html",
@@ -839,6 +839,10 @@
     "can-fd-device-engineering": {
       "page": "can-fd-device.html",
       "anchor": "can-fd-device-engineering"
+    },
+    "rh850-i2c-update-measurements": {
+      "page": "experiments.html",
+      "anchor": "rh850-i2c-update-measurements"
     }
   }
 }

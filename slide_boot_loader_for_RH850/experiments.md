@@ -28,7 +28,8 @@
 | --- | --- | --- |
 | CAN | RH850；按報告條件分列 | [映像大小與報告](#rh850-can-update-measurements) |
 | CAN FD | RH850；FD+BRS | [映像大小與報告](#rh850-can-fd-update-measurements) |
-| I2C／UART／Xmodem | 共用協定參考；配對工程不在公開範圍 | [協定說明](index.html#boot-interfaces) |
+| I2C | RH850；Transfer 與 App 更新 | [實板量測](#rh850-i2c-update-measurements) |
+| UART／Xmodem | 共用協定參考 | [介面索引](index.html#boot-interfaces) |
 
 <!-- RH850_TIMING_BEGIN -->
 <a id="rh850-update-timing"></a>
@@ -136,6 +137,26 @@ PC 到 MCU host 的 Host Baud 與 CAN bus 速率分別記錄，不將 data rate 
 容量與 Boot 分區見 [Flash mapping](porting.html#rh850-flash-layout)，封包與 page 累積見 [格式參考](reference.html#rh850-can-frames)，App IRQ／交接見 [App 開發](app-development.html#rh850-app-editing)。
 操作後的實際結果以 [Firmware update report](https://released.github.io/slide_simple_renesas_isp_tool/status-and-reports.html#update-confirmation) 為準。
 <!-- RH850_TIMING_END -->
+
+<!-- RH850_I2C_MEASURED_BEGIN -->
+<a id="rh850-i2c-update-measurements"></a>
+
+### I2C ISP 實板量測
+
+R7F701684、F24 Bridge、I2C 100 kHz、7-bit 位址 `0x20`，Host Link 115200。接線、配對映像及流程見 [RH850 × I2C 工程設定](i2c-device.html#upgrade-rh850-i2c)。
+
+| App BIN | Bytes | CRC32 | Write（s） | END CRC（s） | App 確認（s） | 總耗時（s） |
+| --- | ---: | --- | ---: | ---: | ---: | ---: |
+| 正式 App | 26,380 | `0x1E2D1D94` | 45.242 | 0.109 | 1.996 | 48.401 |
+| 64 KiB | 65,536 | `0x052022B6` | 112.564 | 0.170 | 2.007 | 115.796 |
+| 192 KiB | 196,608 | `0xD7C171E5` | 337.683 | 0.234 | 3.033 | 342.004 |
+| 448 KiB | 458,752 | `0xD14E042C` | 790.122 | 0.417 | 5.069 | 796.665 |
+| 960 KiB | 983,040 | `0x153845EB` | 1695.078 | 0.788 | 6.993 | 1703.928 |
+
+- 五筆更新均確認 START、END、APP_READY 和全部 256 bytes 的已安裝 Metadata。每筆都觀察到 App 進入 Boot，更新後 UART0 印出 App 啟動標記及完成訊息。
+- 獨立 Transfer 完成三輪 PING、ECHO、計數器及最終 INFO。UART0 紀錄中的三對 96-byte ECHO 內容相符，全程無 Flash 指令。
+- Host Link retry 為 0，Host 錯誤計數差值無法比較。測試範圍為正常更新與 warm ENTER。獨立冷啟動、UART0 z/Z 和更新中斷復原另需驗證。
+<!-- RH850_I2C_MEASURED_END -->
 
 ---
 
