@@ -18,7 +18,6 @@ XMODEM-CRC128 更新與無 Flash 串流測試。
 | MCU 工程、Boot／App 機制、實驗資料 | [RL78 Xmodem](../slide_boot_loader_for_RL78/xmodem-device.html)／[RH850 Xmodem](../slide_boot_loader_for_RH850/xmodem-device.html) |
 | CRC16、block、EOT 與 ACK | [Xmodem 協定格式](../slide_boot_loader_for_RL78/xmodem-device.html#xmodem-protocol) |
 | 完成、取消與未知結果 | [共用報告與結果判讀](status-and-reports.html) |
-| G22 | [XMODEM-CRC128 配對工程與實板紀錄](../slide_boot_loader_for_RL78/xmodem-device.html#upgrade-g22-xmodem) |
 
 ---
 
