@@ -1,0 +1,11 @@
+{
+  "model": "F13",
+  "interface": "Classical CAN",
+  "input_bytes": 24576,
+  "image_crc32": "0x51F4F5C7",
+  "elapsed_ms": 15586,
+  "result": "PASS",
+  "phases_ms": {},
+  "source_report": "update_20261102_085928_650_63508_425852578_2.json",
+  "source_basis": "已確認的歷史實板量測表保留報告識別碼、映像與總耗時。原始報告檔及個別分階段數值未留存於公開紀錄。"
+}

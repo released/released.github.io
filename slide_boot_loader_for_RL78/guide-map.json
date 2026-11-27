@@ -1218,6 +1218,18 @@
     "g22-i2c-update-measurements": {
       "page": "experiments.html",
       "anchor": "g22-i2c-update-measurements"
+    },
+    "rl78-f13-can-update-measurements": {
+      "page": "experiments.html",
+      "anchor": "rl78-f13-can-update-measurements"
+    },
+    "rl78-f24-can-update-measurements": {
+      "page": "experiments.html",
+      "anchor": "rl78-f24-can-update-measurements"
+    },
+    "rl78-f24-can-fd-update-measurements": {
+      "page": "experiments.html",
+      "anchor": "rl78-f24-can-fd-update-measurements"
     }
   }
 }

@@ -1,0 +1,14 @@
+{
+  "model": "G22",
+  "interface": "UART",
+  "input_bytes": 55296,
+  "image_crc32": "0xAF4A3CD9",
+  "elapsed_ms": 86435,
+  "result": "PASS",
+  "phases_ms": {
+    "transfer": 82950,
+    "end_crc": 559,
+    "app_confirmation": 1993
+  },
+  "source_basis": "已確認的 G22 實板量測表。原始報告檔、識別碼與雜湊未留存於公開紀錄。"
+}

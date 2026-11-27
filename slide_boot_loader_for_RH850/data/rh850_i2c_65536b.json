@@ -1,0 +1,24 @@
+{
+  "model": "RH850/F1KM",
+  "interface": "I2C",
+  "rate_hz": 100000,
+  "address_7bit": "0x20",
+  "host_baud": 115200,
+  "tool": "0.1.0.146",
+  "recorded_at_utc": "2026-11-27T06:23:18.942Z",
+  "result": "PASS",
+  "input_bytes": 65536,
+  "image_crc32": "0x052022B6",
+  "elapsed_ms": 115796,
+  "phases_ms": {
+    "metadata": 437,
+    "start": 392,
+    "transfer": 112564,
+    "end_crc": 170,
+    "app_confirmation": 2007
+  },
+  "installed_metadata_bytes_match": 256,
+  "source_report": "update_20261127_062318_943_44808_780134484_3.json",
+  "source_report_sha256": "A536E95480D1E1FC3D1F1EC77C2E27D834F4FAFBF49A3DBA7DC9E3ABA5AB7501",
+  "source_basis": "Firmware Upgrade Tool update report"
+}

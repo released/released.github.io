@@ -1,0 +1,14 @@
+{
+  "model": "G22",
+  "interface": "XMODEM",
+  "input_bytes": 55296,
+  "image_crc32": "0xBEBCE5E4",
+  "elapsed_ms": 52789,
+  "result": "PASS",
+  "phases_ms": {
+    "transfer": 48325,
+    "end_crc": 560,
+    "app_confirmation": 2008
+  },
+  "source_basis": "已確認的 G22 實板量測表。原始報告檔、識別碼與雜湊未留存於公開紀錄。"
+}

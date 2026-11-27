@@ -26,11 +26,14 @@
 
 | 介面 | MCU／資料 | 直接入口 |
 | --- | --- | --- |
-| CAN／CAN FD | F13／F24，按模式與 MCU 分列 | [映像大小與報告](#device-update-timing) |
+| CAN | [F13](#rl78-f13-can-update-measurements)、[F24](#rl78-f24-can-update-measurements) | [量測條件](#device-update-timing) |
+| CAN FD | [F24](#rl78-f24-can-fd-update-measurements) | [工程與條件](can-fd-device.html) |
 | I2C | [F13](#f13-i2c-update-measurements)／[F24](#f24-i2c-update-measurements)／[G16](#g16-i2c-update-measurements)／[G22](#g22-i2c-update-measurements) | [工程與機制](i2c-device.html) |
 | UART | [F13](#f13-uart-update-measurements)／[F24](#f24-uart-update-measurements)／[G16](#g16-uart-update-measurements)／[G22](#g22-uart-update-measurements) | [工程與機制](uart-device.html) |
 | Xmodem | [F13](#f13-xmodem-update-measurements)／[F24](#f24-xmodem-update-measurements)／[G16](#g16-xmodem-update-measurements)／[G22](#g22-xmodem-update-measurements) | [工程與機制](xmodem-device.html) |
 | 其他工程組合 | 本指南未列實板更新紀錄 | [依介面選擇工程](index.html#boot-interfaces) |
+
+各表以毫秒顯示 Tool 寫入階段、App 確認及總耗時。「—」表示原有記錄缺少該欄數值。量測摘要列出有據可查的分階段資料，來源報告連至可公開的 JSON 欄位摘錄。
 
 <a id="device-update-timing"></a>
 
@@ -38,25 +41,13 @@
 
 ### App BIN 更新耗時參考
 
-以下為單次實板更新的粗略等待時間參考，以 Tool 報告的 `elapsed_ms` 換算為秒，顯示至小數一位。
+各筆量測以 Tool 報告的 `elapsed_ms` 為總耗時，單位為毫秒。
 總時間包含更新流程的檢查、傳輸與 Flash 擦寫、END CRC、App 啟動確認及收尾，不是純 Flash 寫入速度。
 實際時間也會受 Host Link UART、電腦與通訊狀態影響。
 
 Classical CAN 使用 **500 kbit/s**。
 CAN FD 欄位使用 **nominal 500 kbit/s／data 2 Mbit/s／BRS 開啟**，不是全程以 500 kbit/s 傳輸。
 
-| App BIN | F13 device：Classical CAN 500K | F24 device：Classical CAN 500K | F24 device：CAN FD 500K／2M、BRS |
-| --- | --- | --- | --- |
-| 原始 App（未填充） | 20,320 bytes／約 13.5 秒 | 4,252 bytes／約 5.3 秒 | 4,780 bytes／約 5.5 秒 |
-| 8 KiB（8,192 bytes） | 不適用 | 約 7.2 秒 | 約 7.3 秒 |
-| 24 KiB（24,576 bytes） | 約 15.6 秒 | 約 15.6 秒 | 約 15.6 秒 |
-| 56 KiB（57,344 bytes） | 約 32.3 秒 | 約 32.2 秒 | 約 32.2 秒 |
-| 119 KiB（121,856 bytes） | 約 65.8 秒 | — | — |
-| 120 KiB（122,880 bytes） | 不適用 | 約 65.9 秒 | 約 65.9 秒 |
-| 247 KiB（252,928 bytes） | 不適用 | 約 133.0 秒 | 約 133.1 秒 |
-
-「—」表示沒有該欄對應的量測資料，不代表更新失敗；原始 App 列分別列出 BIN 大小與已有的量測時間。
-「不適用」表示測試映像小於來源 App，或超過目前預設 App 容量。
 各列均指實際 App BIN 長度，包含向量表、metadata、程式／填充與 CRC；1 KiB＝1024 bytes。
 
 ##### F13 量測條件與來源
@@ -72,16 +63,17 @@ CAN FD 欄位使用 **nominal 500 kbit/s／data 2 Mbit/s／BRS 開啟**，不是
 | 更新完成條件 | 四次均 PASS，END CRC、APP_READY／live image 比對及 CAN_STOP 確認通過；Device UART 均有 App 啟動與持續遞增的 timer 記錄 |
 | 重試／已記錄的 Host 錯誤 | 四份 `link_retries=0`；UART overflow、CAN lost／warning／passive／bus-off／recovery／TX failure 差值均為 0 |
 
-來源為 Tool 的 JSON／HTML 更新報告，副檔名為 `.json`／`.html`。
-下表識別碼前加 `update_20261102_`，即可對應報告檔名。
+原更新報告的檔名保留在逐筆摘要與 JSON 摘錄。
 Tool Log 為 `firmware_upgrade_tool_20261102_165702_065_63508_2.log`；Device UART 為 `20261102_165055_1.log`。
 
-| 報告識別 | App BIN | elapsed_ms | Image CRC32 |
-| --- | --- | --- | --- |
-| `085806_769_63508_425770703_1` | 原始 App，20,320 bytes | 13458 | `0xCD08B2B9` |
-| `085928_650_63508_425852578_2` | 24 KiB | 15586 | `0x51F4F5C7` |
-| `090021_234_63508_425905156_3` | 56 KiB | 32332 | `0xED614B1F` |
-| `090148_942_63508_425992843_4` | 119 KiB | 65778 | `0xAC872843` |
+<a id="rl78-f13-can-update-measurements"></a>
+
+| App BIN | Bytes | CRC32 | 寫入（ms） | App 確認（ms） | 總耗時（ms） | 量測摘要 | 來源報告 |
+| --- | ---: | --- | ---: | ---: | ---: | --- | --- |
+| 正式 App | 20,320 | 0xCD08B2B9 | — | — | 13,458 | [摘要](https://released.github.io/slide_boot_loader_for_RL78/data/rl78_f13_can_20320b.html) | [JSON](https://released.github.io/slide_boot_loader_for_RL78/data/rl78_f13_can_20320b.json) |
+| 24 KiB | 24,576 | 0x51F4F5C7 | — | — | 15,586 | [摘要](https://released.github.io/slide_boot_loader_for_RL78/data/rl78_f13_can_24576b.html) | [JSON](https://released.github.io/slide_boot_loader_for_RL78/data/rl78_f13_can_24576b.json) |
+| 56 KiB | 57,344 | 0xED614B1F | — | — | 32,332 | [摘要](https://released.github.io/slide_boot_loader_for_RL78/data/rl78_f13_can_57344b.html) | [JSON](https://released.github.io/slide_boot_loader_for_RL78/data/rl78_f13_can_57344b.json) |
+| 119 KiB | 121,856 | 0xAC872843 | — | — | 65,778 | [摘要](https://released.github.io/slide_boot_loader_for_RL78/data/rl78_f13_can_121856b.html) | [JSON](https://released.github.io/slide_boot_loader_for_RL78/data/rl78_f13_can_121856b.json) |
 
 ##### F24 Classical CAN 量測條件與來源
 
@@ -96,18 +88,20 @@ Tool Log 為 `firmware_upgrade_tool_20261102_165702_065_63508_2.log`；Device UA
 | 更新完成條件 | 六次均 PASS，END CRC、APP_READY／live image 比對及 CAN_STOP 確認通過；Device UART 均有 App 啟動與持續遞增的 timer 記錄 |
 | 重試／已記錄的 Host 錯誤 | 六份 `link_retries=0`；UART overflow、CAN lost／warning／passive／bus-off／recovery／TX failure 差值均為 0 |
 
-來源為 Tool 的 JSON／HTML 更新報告；下表報告識別前加 `update_20261102_`，副檔名為 `.json`／`.html`。
+原更新報告的檔名保留在逐筆摘要與 JSON 摘錄。
 Tool Log 為 `firmware_upgrade_tool_20261102_175402_275_63508_5.log`；Device UART 為 `20261102_175038_1.log`。
 表格列出整次操作的實際耗時，診斷細節保留於原始報告。
 
-| 報告識別 | App BIN | elapsed_ms | Image CRC32 |
-| --- | --- | --- | --- |
-| `095507_201_63508_429191234_5` | 原始 App，4,252 bytes | 5253 | `0xCB558EB5` |
-| `095544_285_63508_429228312_6` | 8 KiB | 7240 | `0x1C3D3D65` |
-| `095612_784_63508_429256812_7` | 24 KiB | 15551 | `0x53023D7D` |
-| `095658_334_63508_429302359_8` | 56 KiB | 32211 | `0xAC393491` |
-| `095820_776_63508_429384781_9` | 120 KiB | 65912 | `0xBD9980C1` |
-| `100051_164_63508_429535156_10` | 247 KiB | 132962 | `0x2E5DCE5B` |
+<a id="rl78-f24-can-update-measurements"></a>
+
+| App BIN | Bytes | CRC32 | 寫入（ms） | App 確認（ms） | 總耗時（ms） | 量測摘要 | 來源報告 |
+| --- | ---: | --- | ---: | ---: | ---: | --- | --- |
+| 正式 App | 4,252 | 0xCB558EB5 | — | — | 5,253 | [摘要](https://released.github.io/slide_boot_loader_for_RL78/data/rl78_f24_can_4252b.html) | [JSON](https://released.github.io/slide_boot_loader_for_RL78/data/rl78_f24_can_4252b.json) |
+| 8 KiB | 8,192 | 0x1C3D3D65 | — | — | 7,240 | [摘要](https://released.github.io/slide_boot_loader_for_RL78/data/rl78_f24_can_8192b.html) | [JSON](https://released.github.io/slide_boot_loader_for_RL78/data/rl78_f24_can_8192b.json) |
+| 24 KiB | 24,576 | 0x53023D7D | — | — | 15,551 | [摘要](https://released.github.io/slide_boot_loader_for_RL78/data/rl78_f24_can_24576b.html) | [JSON](https://released.github.io/slide_boot_loader_for_RL78/data/rl78_f24_can_24576b.json) |
+| 56 KiB | 57,344 | 0xAC393491 | — | — | 32,211 | [摘要](https://released.github.io/slide_boot_loader_for_RL78/data/rl78_f24_can_57344b.html) | [JSON](https://released.github.io/slide_boot_loader_for_RL78/data/rl78_f24_can_57344b.json) |
+| 120 KiB | 122,880 | 0xBD9980C1 | — | — | 65,912 | [摘要](https://released.github.io/slide_boot_loader_for_RL78/data/rl78_f24_can_122880b.html) | [JSON](https://released.github.io/slide_boot_loader_for_RL78/data/rl78_f24_can_122880b.json) |
+| 247 KiB | 252,928 | 0x2E5DCE5B | — | — | 132,962 | [摘要](https://released.github.io/slide_boot_loader_for_RL78/data/rl78_f24_can_252928b.html) | [JSON](https://released.github.io/slide_boot_loader_for_RL78/data/rl78_f24_can_252928b.json) |
 
 ##### F24 CAN FD 量測條件與來源
 
@@ -119,19 +113,21 @@ Tool 0.1.0.0114，Host firmware 1.8.1／build 20261023，Device Boot 1.2.1／bui
 六份 `link_retries=0`；UART overflow、CAN lost／warning／passive／bus-off／recovery／TX failure 差值均為 0。
 對應 Tool Log 未包含 `TRACE UART`／`TRACE CAN` 逐幀記錄。
 
-來源為 Tool 的 JSON／HTML 更新報告；下表報告識別前加 `update_20261102_`，副檔名為 `.json`／`.html`。
+原更新報告的檔名保留在逐筆摘要與 JSON 摘錄。
 Tool Log 為 `firmware_upgrade_tool_20261102_180627_598_63508_7.log`；Device UART 為 `20261102_180636_1.log`。
 表格列出整次操作的實際耗時，診斷細節保留於原始報告。
 量測條件以上述 Tool 與 firmware 為準；不同設定需各自量測。
 
-| 報告識別 | App BIN | elapsed_ms | Image CRC32 |
-| --- | --- | --- | --- |
-| `100733_867_63508_429937812_11` | 原始 App，4,780 bytes | 5527 | `0x2089154D` |
-| `100757_675_63508_429961609_12` | 8 KiB | 7266 | `0xD9EE0401` |
-| `100837_509_63508_430001437_13` | 24 KiB | 15590 | `0x5DF8A8EB` |
-| `100926_042_63508_430049968_14` | 56 KiB | 32232 | `0xB96554B0` |
-| `101057_657_63508_430141562_15` | 120 KiB | 65894 | `0x8E554348` |
-| `101328_375_63508_430292265_16` | 247 KiB | 133070 | `0x8AAD47CE` |
+<a id="rl78-f24-can-fd-update-measurements"></a>
+
+| App BIN | Bytes | CRC32 | 寫入（ms） | App 確認（ms） | 總耗時（ms） | 量測摘要 | 來源報告 |
+| --- | ---: | --- | ---: | ---: | ---: | --- | --- |
+| 正式 App | 4,780 | 0x2089154D | — | — | 5,527 | [摘要](https://released.github.io/slide_boot_loader_for_RL78/data/rl78_f24_can_fd_4780b.html) | [JSON](https://released.github.io/slide_boot_loader_for_RL78/data/rl78_f24_can_fd_4780b.json) |
+| 8 KiB | 8,192 | 0xD9EE0401 | — | — | 7,266 | [摘要](https://released.github.io/slide_boot_loader_for_RL78/data/rl78_f24_can_fd_8192b.html) | [JSON](https://released.github.io/slide_boot_loader_for_RL78/data/rl78_f24_can_fd_8192b.json) |
+| 24 KiB | 24,576 | 0x5DF8A8EB | — | — | 15,590 | [摘要](https://released.github.io/slide_boot_loader_for_RL78/data/rl78_f24_can_fd_24576b.html) | [JSON](https://released.github.io/slide_boot_loader_for_RL78/data/rl78_f24_can_fd_24576b.json) |
+| 56 KiB | 57,344 | 0xB96554B0 | — | — | 32,232 | [摘要](https://released.github.io/slide_boot_loader_for_RL78/data/rl78_f24_can_fd_57344b.html) | [JSON](https://released.github.io/slide_boot_loader_for_RL78/data/rl78_f24_can_fd_57344b.json) |
+| 120 KiB | 122,880 | 0x8E554348 | — | — | 65,894 | [摘要](https://released.github.io/slide_boot_loader_for_RL78/data/rl78_f24_can_fd_122880b.html) | [JSON](https://released.github.io/slide_boot_loader_for_RL78/data/rl78_f24_can_fd_122880b.json) |
+| 247 KiB | 252,928 | 0x8AAD47CE | — | — | 133,070 | [摘要](https://released.github.io/slide_boot_loader_for_RL78/data/rl78_f24_can_fd_252928b.html) | [JSON](https://released.github.io/slide_boot_loader_for_RL78/data/rl78_f24_can_fd_252928b.json) |
 
 ##### 相關說明
 
@@ -149,14 +145,14 @@ Tool Log 為 `firmware_upgrade_tool_20261102_180627_598_63508_7.log`；Device UA
 
 ### F13 I2C 更新量測與範圍
 
-條件為 R5F10BMG、F24 bridge、I2C 100 kHz／7-bit 0x20、Host Link 115200；Tool 0.1.0.138、Host FW 1.8.1／build 20261023。時間單位為秒。
+條件為 R5F10BMG、F24 bridge、I2C 100 kHz／7-bit 0x20、Host Link 115200；Tool 0.1.0.138、Host FW 1.8.1／build 20261023。時間單位為毫秒。
 
-| App BIN | bytes | WRITE | END CRC | App 確認 | 總耗時 | 結果與資料 |
-| --- | --- | --- | --- | --- | --- | --- |
-| 原始 App | 12316 | 21.071 | 0.188 | 1.990 | 24.127 | [PASS／摘要](https://released.github.io/slide_boot_loader_for_RL78/data/f13_i2c_12316b.html) |
-| 24 KiB | 24576 | 42.026 | 0.324 | 2.007 | 45.238 | [PASS／摘要](https://released.github.io/slide_boot_loader_for_RL78/data/f13_i2c_24576b.html) |
-| 56 KiB | 57344 | 98.240 | 0.650 | 2.150 | 101.918 | [PASS／摘要](https://released.github.io/slide_boot_loader_for_RL78/data/f13_i2c_57344b.html) |
-| 119 KiB | 121856 | 208.912 | 1.183 | 3.385 | 214.357 | [PASS／摘要](https://released.github.io/slide_boot_loader_for_RL78/data/f13_i2c_121856b.html) |
+| App BIN | Bytes | CRC32 | 寫入（ms） | App 確認（ms） | 總耗時（ms） | 量測摘要 | 來源報告 |
+| --- | ---: | --- | ---: | ---: | ---: | --- | --- |
+| 原始 App | 12,316 | 0x242F24AE | 21,071 | 1,990 | 24,127 | [摘要](https://released.github.io/slide_boot_loader_for_RL78/data/f13_i2c_12316b.html) | [JSON](https://released.github.io/slide_boot_loader_for_RL78/data/f13_i2c_12316b.json) |
+| 24 KiB | 24,576 | 0xBC9F37C2 | 42,026 | 2,007 | 45,238 | [摘要](https://released.github.io/slide_boot_loader_for_RL78/data/f13_i2c_24576b.html) | [JSON](https://released.github.io/slide_boot_loader_for_RL78/data/f13_i2c_24576b.json) |
+| 56 KiB | 57,344 | 0x20681ABC | 98,240 | 2,150 | 101,918 | [摘要](https://released.github.io/slide_boot_loader_for_RL78/data/f13_i2c_57344b.html) | [JSON](https://released.github.io/slide_boot_loader_for_RL78/data/f13_i2c_57344b.json) |
+| 119 KiB | 121,856 | 0x5CA665EA | 208,912 | 3,385 | 214,357 | [摘要](https://released.github.io/slide_boot_loader_for_RL78/data/f13_i2c_121856b.html) | [JSON](https://released.github.io/slide_boot_loader_for_RL78/data/f13_i2c_121856b.json) |
 
 - 四份映像均取得 START／END 成功回覆、APP_READY，並核對全部 256-byte installed metadata；UART0 有對應的 boot-validated 啟動與後續 counter。
 - 119 KiB 在重啟後唯讀 App 確認期間有四次 I2C_NACK，之後確認成功；Host Link retries=0 不能解讀成每次 I2C 查詢都一次成功。
@@ -170,16 +166,16 @@ Tool Log 為 `firmware_upgrade_tool_20261102_180627_598_63508_7.log`；Device UA
 ### F24 I2C App 更新量測
 
 量測條件：F24 device R7F124FPJ5xFB，F24 bridge，I2C 100 kHz／7-bit 0x20，Host Link 115200。
-Tool 0.1.0.138；Host FW 1.8.1／build 20261023。表格由六份選定更新報告的實際欄位整理，時間單位為秒。
+Tool 0.1.0.138；Host FW 1.8.1／build 20261023。表格由六份選定更新報告的實際欄位整理，時間單位為毫秒。
 
-| App BIN | bytes | WRITE | END CRC | App 確認 | 總耗時 | 結果與資料 |
-| --- | --- | --- | --- | --- | --- | --- |
-| 原始 App | 6960 | 12.566 | 0.203 | 1.990 | 15.666 | [PASS／摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_i2c_6960b.html) |
-| 8 KiB | 8192 | 14.711 | 0.186 | 2.074 | 17.890 | [PASS／摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_i2c_8192b.html) |
-| 24 KiB | 24576 | 44.282 | 0.325 | 1.994 | 47.493 | [PASS／摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_i2c_24576b.html) |
-| 56 KiB | 57344 | 99.547 | 0.541 | 2.039 | 103.055 | [PASS／摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_i2c_57344b.html) |
-| 120 KiB | 122880 | 215.953 | 0.998 | 2.806 | 220.635 | [PASS／摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_i2c_122880b.html) |
-| 247 KiB | 252928 | 439.099 | 1.850 | 4.536 | 446.359 | [PASS／摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_i2c_252928b.html) |
+| App BIN | Bytes | CRC32 | 寫入（ms） | App 確認（ms） | 總耗時（ms） | 量測摘要 | 來源報告 |
+| --- | ---: | --- | ---: | ---: | ---: | --- | --- |
+| 原始 App | 6,960 | 0xF371CA90 | 12,566 | 1,990 | 15,666 | [摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_i2c_6960b.html) | [JSON](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_i2c_6960b.json) |
+| 8 KiB | 8,192 | 0xB4659C80 | 14,711 | 2,074 | 17,890 | [摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_i2c_8192b.html) | [JSON](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_i2c_8192b.json) |
+| 24 KiB | 24,576 | 0xC53DC866 | 44,282 | 1,994 | 47,493 | [摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_i2c_24576b.html) | [JSON](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_i2c_24576b.json) |
+| 56 KiB | 57,344 | 0xAD51426F | 99,547 | 2,039 | 103,055 | [摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_i2c_57344b.html) | [JSON](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_i2c_57344b.json) |
+| 120 KiB | 122,880 | 0x430CAE5A | 215,953 | 2,806 | 220,635 | [摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_i2c_122880b.html) | [JSON](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_i2c_122880b.json) |
+| 247 KiB | 252,928 | 0x28C0D304 | 439,099 | 4,536 | 446,359 | [摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_i2c_252928b.html) | [JSON](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_i2c_252928b.json) |
 
 - 六份映像均取得 START／END 成功回覆、APP_READY，並核對全部 256-byte installed metadata；獨立 UART0 Log 有對應的 boot-validated 啟動文字及後續 counter。
 - 總耗時採報告 elapsed_ms，包含 Metadata、START、WRITE、END CRC、App 確認及流程開銷；不採載入 BIN 畫面保留的前次 Result／Elapsed。
@@ -199,10 +195,10 @@ Tool 0.1.0.138；Host FW 1.8.1／build 20261023。表格由六份選定更新報
 - 兩份報告與對應 BIN 的長度、CRC32 相符，映像及來源報告由 SHA256 識別。START／END 成功、完整接受 bytes、APP_READY 與全部 256-byte installed metadata 均已確認。
 - 獨立 UART0 擷取有兩次 boot-validated／update completed 與後續 counter；唯讀 metadata 回覆與兩份 BIN 的 256 bytes 分別相符。
 
-| 映像 | Bytes | Write 秒 | END CRC 秒 | App 確認秒 | 總秒數 | 報告 |
-| --- | ---: | ---: | ---: | ---: | ---: | --- |
-| 原始 App | 12116 | 20.736 | 0.356 | 1.992 | 23.959 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/g16_i2c_12116b.html) |
-| 23 KiB | 23552 | 40.147 | 0.539 | 2.039 | 43.606 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/g16_i2c_23552b.html) |
+| App BIN | Bytes | CRC32 | 寫入（ms） | App 確認（ms） | 總耗時（ms） | 量測摘要 | 來源報告 |
+| --- | ---: | --- | ---: | ---: | ---: | --- | --- |
+| 原始 App | 12,116 | 0x275F9435 | 20,736 | 1,992 | 23,959 | [摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/g16_i2c_12116b.html) | [JSON](https://released.github.io/slide_simple_renesas_isp_tool/data/g16_i2c_12116b.json) |
+| 23 KiB | 23,552 | 0xA8948137 | 40,147 | 2,039 | 43,606 | [摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/g16_i2c_23552b.html) | [JSON](https://released.github.io/slide_simple_renesas_isp_tool/data/g16_i2c_23552b.json) |
 
 - 最大完整 App BIN 為 23 KiB，範圍至 `0x07BFF`；Boot 8 KiB 與尾端 `0x07C00..0x07FFF` 保留區不在 App 更新範圍。
 - 第二次更新從執行中的 App 經 ENTER 返回 Boot。UART0 擷取有 ENTER RX，沒有對應 TX trace；Tool 的 Boot 確認與後續更新成功分開記錄，不以此推定回覆遺失原因。
@@ -217,11 +213,11 @@ Tool 0.1.0.138；Host FW 1.8.1／build 20261023。表格由六份選定更新報
 
 R7F102GGE2DFB（`0x022B`），I2C 100 kHz／7-bit `0x20`，Host Link 115200。配對工程見 [G22 I2C ISP 工程](https://released.github.io/slide_boot_loader_for_RL78/i2c-device.html#upgrade-g22-i2c)。
 
-| App BIN（bytes） | CRC32 | WRITE（秒） | END CRC（秒） | App 確認（秒） | 總耗時（秒） |
-| --- | --- | --- | --- | --- | --- |
-| 11,848 | `0x0A733A2D` | 20.218 | 0.230 | 1.990 | 23.314 |
-| 24,576 | `0x9AB171EA` | 43.562 | 0.354 | 1.992 | 46.786 |
-| 55,296 | `0xD1D2F9F3` | 94.673 | 0.600 | 2.086 | 98.235 |
+| App BIN | Bytes | CRC32 | 寫入（ms） | App 確認（ms） | 總耗時（ms） | 量測摘要 | 來源報告 |
+| --- | ---: | --- | ---: | ---: | ---: | --- | --- |
+| 正式 App | 11,848 | 0x0A733A2D | 20,218 | 1,990 | 23,314 | [摘要](https://released.github.io/slide_boot_loader_for_RL78/data/g22_i2c_11848b.html) | [JSON](https://released.github.io/slide_boot_loader_for_RL78/data/g22_i2c_11848b.json) |
+| 24 KiB | 24,576 | 0x9AB171EA | 43,562 | 1,992 | 46,786 | [摘要](https://released.github.io/slide_boot_loader_for_RL78/data/g22_i2c_24576b.html) | [JSON](https://released.github.io/slide_boot_loader_for_RL78/data/g22_i2c_24576b.json) |
+| 54 KiB | 55,296 | 0xD1D2F9F3 | 94,673 | 2,086 | 98,235 | [摘要](https://released.github.io/slide_boot_loader_for_RL78/data/g22_i2c_55296b.html) | [JSON](https://released.github.io/slide_boot_loader_for_RL78/data/g22_i2c_55296b.json) |
 
 - 三次更新均收到 START／END 確認，取得 APP_READY，並核對全部 256 bytes 的 installed metadata。UART0 記錄三次 Boot 交接後的 App 啟動。後兩次由執行中的 App 透過 ENTER 返回 Boot。
 - 獨立 I2C Transfer 三次通過 PING／ECHO／計數器與最終 INFO 查詢。UART0 配對的 96-byte ECHO 收送內容一致。測試未執行 Flash 命令。
@@ -240,12 +236,12 @@ R7F102GGE2DFB（`0x022B`），I2C 100 kHz／7-bit `0x20`，Host Link 115200。�
 - 四份報告與實際 BIN 的大小、CRC32、SHA256 相符。START、END／EOT、完整接受 bytes、APP_READY 及全部 256-byte installed metadata 均已確認。
 - UART0 有四次 boot-validated／update completed、後續 counter 與完整 framed RX／TX；payload 每列 8 bytes。
 
-| 映像 | Bytes | Write 秒 | END CRC 秒 | App 確認秒 | 總秒數 | 報告 |
-| --- | ---: | ---: | ---: | ---: | ---: | --- |
-| 原始 App | 10556 | 15.750 | 0.176 | 1.944 | 18.761 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f13_uart_10556b.html) |
-| 24 KiB | 24576 | 36.784 | 0.303 | 1.960 | 39.940 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f13_uart_24576b.html) |
-| 56 KiB | 57344 | 85.957 | 0.576 | 2.024 | 89.445 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f13_uart_57344b.html) |
-| 119 KiB | 121856 | 182.768 | 1.136 | 3.209 | 188.001 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f13_uart_121856b.html) |
+| App BIN | Bytes | CRC32 | 寫入（ms） | App 確認（ms） | 總耗時（ms） | 量測摘要 | 來源報告 |
+| --- | ---: | --- | ---: | ---: | ---: | --- | --- |
+| 原始 App | 10,556 | 0x3B0DE7F8 | 15,750 | 1,944 | 18,761 | [摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f13_uart_10556b.html) | [JSON](https://released.github.io/slide_simple_renesas_isp_tool/data/f13_uart_10556b.json) |
+| 24 KiB | 24,576 | 0xB83A5B58 | 36,784 | 1,960 | 39,940 | [摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f13_uart_24576b.html) | [JSON](https://released.github.io/slide_simple_renesas_isp_tool/data/f13_uart_24576b.json) |
+| 56 KiB | 57,344 | 0xECDEFE67 | 85,957 | 2,024 | 89,445 | [摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f13_uart_57344b.html) | [JSON](https://released.github.io/slide_simple_renesas_isp_tool/data/f13_uart_57344b.json) |
+| 119 KiB | 121,856 | 0xF6C3BBE1 | 182,768 | 3,209 | 188,001 | [摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f13_uart_121856b.html) | [JSON](https://released.github.io/slide_simple_renesas_isp_tool/data/f13_uart_121856b.json) |
 
 - 更新後 Device UART 快照的 RX errors／drops／TX timeouts 為 0；Bridge UART1 deltas 的 RX errors／drops 為 0，每次記有 backend aborts=1。abort 計數與 Device UART 錯誤為不同觀察項。
 - Host counter assessment 為 **UNAVAILABLE**，Host Link retry 為 0；不能由此推定所有 Host 計數全程零錯誤。
@@ -263,14 +259,14 @@ R7F102GGE2DFB（`0x022B`），I2C 100 kHz／7-bit `0x20`，Host Link 115200。�
 - Tool 0.1.0.139；Host FW 1.8.1 build 20261023。六份獨立報告與實際 BIN 的 size／CRC32 相符。
 - 六次 START、END 均已確認，接受 bytes 等於映像大小；APP_READY 與全部 256-byte installed metadata 相符，UART0 有 boot-validated、update completed 及後續 counter。
 
-| 映像 | Bytes | Write 秒 | END CRC 秒 | App 確認秒 | 總秒數 | 報告 |
-| --- | ---: | ---: | ---: | ---: | ---: | --- |
-| 原始 App | 6724 | 10.573 | 0.128 | 1.930 | 13.615 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_uart_6724b.html) |
-| 8 KiB | 8192 | 12.208 | 0.144 | 1.946 | 15.187 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_uart_8192b.html) |
-| 24 KiB | 24576 | 36.835 | 0.256 | 1.961 | 39.942 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_uart_24576b.html) |
-| 56 KiB | 57344 | 86.038 | 0.480 | 1.962 | 89.369 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_uart_57344b.html) |
-| 120 KiB | 122880 | 184.479 | 0.945 | 2.635 | 188.949 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_uart_122880b.html) |
-| 247 KiB | 252928 | 380.445 | 1.842 | 9.557 | 392.734 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_uart_252928b.html) |
+| App BIN | Bytes | CRC32 | 寫入（ms） | App 確認（ms） | 總耗時（ms） | 量測摘要 | 來源報告 |
+| --- | ---: | --- | ---: | ---: | ---: | --- | --- |
+| 原始 App | 6,724 | 0x4ACC44A0 | 10,573 | 1,930 | 13,615 | [摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_uart_6724b.html) | [JSON](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_uart_6724b.json) |
+| 8 KiB | 8,192 | 0xD010D86C | 12,208 | 1,946 | 15,187 | [摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_uart_8192b.html) | [JSON](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_uart_8192b.json) |
+| 24 KiB | 24,576 | 0xC314EE41 | 36,835 | 1,961 | 39,942 | [摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_uart_24576b.html) | [JSON](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_uart_24576b.json) |
+| 56 KiB | 57,344 | 0x0E39C491 | 86,038 | 1,962 | 89,369 | [摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_uart_57344b.html) | [JSON](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_uart_57344b.json) |
+| 120 KiB | 122,880 | 0x380AF100 | 184,479 | 2,635 | 188,949 | [摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_uart_122880b.html) | [JSON](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_uart_122880b.json) |
+| 247 KiB | 252,928 | 0x7FBF91B0 | 380,445 | 9,557 | 392,734 | [摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_uart_252928b.html) | [JSON](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_uart_252928b.json) |
 
 - Device UART 的 RX errors、RX drops、TX timeouts 均為 0；這些欄位是 Device 當次執行快照。
 - Host counter assessment 為 **UNAVAILABLE**，不能據此推定 Host 全程零錯誤；Host Link retry 為 0。
@@ -290,10 +286,10 @@ R7F102GGE2DFB（`0x022B`），I2C 100 kHz／7-bit `0x20`，Host Link 115200。�
 - 兩份報告與實際 BIN 的長度、CRC32 相符，來源報告及映像由 SHA256 識別。START、END／EOT、完整接受 bytes、APP_READY 與全部 256-byte installed metadata 均已確認。
 - UART0 擷取各有兩次 boot-validated／update completed、後續 counter 與完整 RX／TX。payload 每列最多 8 bytes；四頁 metadata 組合分別與兩份 BIN 的 256 bytes 相同。
 
-| 映像 | Bytes | Write 秒 | END CRC 秒 | App 確認秒 | 總秒數 | 報告 |
-| --- | ---: | ---: | ---: | ---: | ---: | --- |
-| 原始 App | 10240 | 15.271 | 0.256 | 1.944 | 18.359 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/g16_uart_10240b.html) |
-| 23 KiB | 23552 | 35.247 | 0.496 | 1.945 | 38.577 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/g16_uart_23552b.html) |
+| App BIN | Bytes | CRC32 | 寫入（ms） | App 確認（ms） | 總耗時（ms） | 量測摘要 | 來源報告 |
+| --- | ---: | --- | ---: | ---: | ---: | --- | --- |
+| 原始 App | 10,240 | 0x2DCD9F43 | 15,271 | 1,944 | 18,359 | [摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/g16_uart_10240b.html) | [JSON](https://released.github.io/slide_simple_renesas_isp_tool/data/g16_uart_10240b.json) |
+| 23 KiB | 23,552 | 0x690C64C4 | 35,247 | 1,945 | 38,577 | [摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/g16_uart_23552b.html) | [JSON](https://released.github.io/slide_simple_renesas_isp_tool/data/g16_uart_23552b.json) |
 
 - 最大完整 App BIN 為 23 KiB，範圍至 `0x07BFF`；Boot 8 KiB 與 `0x07C00..0x07FFF` 保留區不在 App 更新範圍。第二份映像從執行中的 App 經 ENTER 返回 Boot 更新。
 - 更新後 Device UART 快照的 RX errors／drops／TX timeouts 為 0；Bridge RX errors／drops 為 0，backend aborts=1 仍保留。Host counter assessment 為 **UNAVAILABLE**、Host Link retry 為 0，不推定全程零錯誤。
@@ -309,11 +305,11 @@ R7F102GGE2DFB（`0x022B`），I2C 100 kHz／7-bit `0x20`，Host Link 115200。�
 
 R7F102GGE2DFB（`0x022B`），Device UART 與 Host Link 均為 115200、8-N-1。配對工程見 [G22 UART ISP 工程](https://released.github.io/slide_boot_loader_for_RL78/uart-device.html#upgrade-g22-uart)。
 
-| App BIN（bytes） | CRC32 | Write（秒） | END CRC（秒） | App 確認（秒） | 總時間（秒） |
-| ---: | ---: | ---: | ---: | ---: | ---: |
-| 9,956 | `0xD66CF93F` | 14.886 | 0.175 | 1.944 | 17.897 |
-| 24,576 | `0x5174BBF4` | 36.784 | 0.288 | 1.944 | 39.939 |
-| 55,296 | `0xAF4A3CD9` | 82.950 | 0.559 | 1.993 | 86.435 |
+| App BIN | Bytes | CRC32 | 寫入（ms） | App 確認（ms） | 總耗時（ms） | 量測摘要 | 來源報告 |
+| --- | ---: | --- | ---: | ---: | ---: | --- | --- |
+| 正式 App | 9,956 | 0xD66CF93F | 14,886 | 1,944 | 17,897 | [摘要](https://released.github.io/slide_boot_loader_for_RL78/data/g22_uart_9956b.html) | [JSON](https://released.github.io/slide_boot_loader_for_RL78/data/g22_uart_9956b.json) |
+| 24 KiB | 24,576 | 0x5174BBF4 | 36,784 | 1,944 | 39,939 | [摘要](https://released.github.io/slide_boot_loader_for_RL78/data/g22_uart_24576b.html) | [JSON](https://released.github.io/slide_boot_loader_for_RL78/data/g22_uart_24576b.json) |
+| 54 KiB | 55,296 | 0xAF4A3CD9 | 82,950 | 1,993 | 86,435 | [摘要](https://released.github.io/slide_boot_loader_for_RL78/data/g22_uart_55296b.html) | [JSON](https://released.github.io/slide_boot_loader_for_RL78/data/g22_uart_55296b.json) |
 
 - 三次更新的 START 和 END 均確認，`APP_READY` 和 256 bytes 安裝 metadata 相符。後兩次從 App 執行 ENTER 回 Boot。Host Link 重試為 0，Host 比較計數器為 UNAVAILABLE。
 - Custom Transfer 的三次 Discover 均回覆 INFO 與 UART 診斷。Device RX errors 的累計快照均為 182，drops 與 TX timeouts 均為 0。
@@ -332,12 +328,12 @@ R7F102GGE2DFB（`0x022B`），Device UART 與 Host Link 均為 115200、8-N-1。
 - 四份報告與實際 BIN 的大小、CRC32、SHA256 相符。START、END／EOT、完整接受 bytes、APP_READY 及全部 256-byte installed metadata 均已確認。
 - UART0 有四次 boot-validated／update completed、後續 counter 與完整 framed RX／TX；payload 每列 8 bytes。
 
-| 映像 | Bytes | Write 秒 | END CRC 秒 | App 確認秒 | 總秒數 | 報告 |
-| --- | ---: | ---: | ---: | ---: | ---: | --- |
-| 原始 App | 12636 | 11.108 | 0.192 | 1.944 | 15.143 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f13_xmodem_12636b.html) |
-| 24 KiB | 24576 | 21.721 | 0.287 | 1.958 | 25.862 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f13_xmodem_24576b.html) |
-| 56 KiB | 57344 | 51.094 | 0.576 | 2.022 | 55.588 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f13_xmodem_57344b.html) |
-| 119 KiB | 121856 | 108.767 | 1.136 | 3.208 | 115.010 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f13_xmodem_121856b.html) |
+| App BIN | Bytes | CRC32 | 寫入（ms） | App 確認（ms） | 總耗時（ms） | 量測摘要 | 來源報告 |
+| --- | ---: | --- | ---: | ---: | ---: | --- | --- |
+| 原始 App | 12,636 | 0xAA86D072 | 11,108 | 1,944 | 15,143 | [摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f13_xmodem_12636b.html) | [JSON](https://released.github.io/slide_simple_renesas_isp_tool/data/f13_xmodem_12636b.json) |
+| 24 KiB | 24,576 | 0xE9D0D471 | 21,721 | 1,958 | 25,862 | [摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f13_xmodem_24576b.html) | [JSON](https://released.github.io/slide_simple_renesas_isp_tool/data/f13_xmodem_24576b.json) |
+| 56 KiB | 57,344 | 0x7CE73F18 | 51,094 | 2,022 | 55,588 | [摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f13_xmodem_57344b.html) | [JSON](https://released.github.io/slide_simple_renesas_isp_tool/data/f13_xmodem_57344b.json) |
+| 119 KiB | 121,856 | 0x99707C5E | 108,767 | 3,208 | 115,010 | [摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f13_xmodem_121856b.html) | [JSON](https://released.github.io/slide_simple_renesas_isp_tool/data/f13_xmodem_121856b.json) |
 
 - 更新後 Device UART 快照的 RX errors／drops／TX timeouts 為 0；Bridge UART1 deltas 的 RX errors／drops 為 0，每次記有 backend aborts=1。abort 計數與 Device UART 錯誤為不同觀察項。
 - Host counter assessment 為 **UNAVAILABLE**，Host Link retry 為 0；不能由此推定所有 Host 計數全程零錯誤。
@@ -355,14 +351,14 @@ R7F102GGE2DFB（`0x022B`），Device UART 與 Host Link 均為 115200、8-N-1。
 - Tool 0.1.0.139；Host FW 1.8.1 build 20261023。六份獨立報告與實際 BIN 的 size／CRC32 相符。
 - 六次 START、END 均已確認，接受 bytes 等於映像大小；APP_READY 與全部 256-byte installed metadata 相符，UART0 有 boot-validated、update completed 及後續 counter。
 
-| 映像 | Bytes | Write 秒 | END CRC 秒 | App 確認秒 | 總秒數 | 報告 |
-| --- | ---: | ---: | ---: | ---: | ---: | --- |
-| 原始 App | 7856 | 6.883 | 0.127 | 1.944 | 10.851 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_xmodem_7856b.html) |
-| 8 KiB | 8192 | 7.155 | 0.127 | 1.956 | 11.138 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_xmodem_8192b.html) |
-| 24 KiB | 24576 | 21.464 | 0.240 | 1.943 | 25.544 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_xmodem_24576b.html) |
-| 56 KiB | 57344 | 50.549 | 0.480 | 1.958 | 54.884 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_xmodem_57344b.html) |
-| 120 KiB | 122880 | 108.125 | 0.928 | 2.648 | 113.598 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_xmodem_122880b.html) |
-| 247 KiB | 252928 | 222.702 | 1.841 | 9.531 | 235.969 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_xmodem_252928b.html) |
+| App BIN | Bytes | CRC32 | 寫入（ms） | App 確認（ms） | 總耗時（ms） | 量測摘要 | 來源報告 |
+| --- | ---: | --- | ---: | ---: | ---: | --- | --- |
+| 原始 App | 7,856 | 0xEF1D2B2A | 6,883 | 1,944 | 10,851 | [摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_xmodem_7856b.html) | [JSON](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_xmodem_7856b.json) |
+| 8 KiB | 8,192 | 0x95861932 | 7,155 | 1,956 | 11,138 | [摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_xmodem_8192b.html) | [JSON](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_xmodem_8192b.json) |
+| 24 KiB | 24,576 | 0x69911C74 | 21,464 | 1,943 | 25,544 | [摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_xmodem_24576b.html) | [JSON](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_xmodem_24576b.json) |
+| 56 KiB | 57,344 | 0x58E90533 | 50,549 | 1,958 | 54,884 | [摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_xmodem_57344b.html) | [JSON](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_xmodem_57344b.json) |
+| 120 KiB | 122,880 | 0x5C936D4C | 108,125 | 2,648 | 113,598 | [摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_xmodem_122880b.html) | [JSON](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_xmodem_122880b.json) |
+| 247 KiB | 252,928 | 0x819F52E5 | 222,702 | 9,531 | 235,969 | [摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_xmodem_252928b.html) | [JSON](https://released.github.io/slide_simple_renesas_isp_tool/data/f24_xmodem_252928b.json) |
 
 - Device UART 的 RX errors、RX drops、TX timeouts 均為 0；這些欄位是 Device 當次執行快照。
 - Host counter assessment 為 **UNAVAILABLE**，不能據此推定 Host 全程零錯誤；Host Link retry 為 0。
@@ -385,10 +381,10 @@ R7F102GGE2DFB（`0x022B`），Device UART 與 Host Link 均為 115200、8-N-1。
 - 三份報告與實際 BIN 的長度、CRC32 相符，來源報告及映像由 SHA256 識別。START、END／EOT、完整接受 bytes、APP_READY 與全部 256-byte installed metadata 均已確認。
 - UART0 擷取各有兩次 boot-validated／update completed、後續 counter 與完整 RX／TX。payload 每列最多 8 bytes；四頁 metadata 組合分別與兩份 BIN 的 256 bytes 相同。
 
-| 映像 | Bytes | Write 秒 | END CRC 秒 | App 確認秒 | 總秒數 | 報告 |
-| --- | ---: | ---: | ---: | ---: | ---: | --- |
-| 原始 App | 12304 | 10.773 | 0.287 | 1.945 | 14.917 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/g16_xmodem_12304b.html) |
-| 23 KiB | 23552 | 20.616 | 0.480 | 1.944 | 24.952 | [PASS 摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/g16_xmodem_23552b.html) |
+| App BIN | Bytes | CRC32 | 寫入（ms） | App 確認（ms） | 總耗時（ms） | 量測摘要 | 來源報告 |
+| --- | ---: | --- | ---: | ---: | ---: | --- | --- |
+| 原始 App | 12,304 | 0x07C9213C | 10,773 | 1,945 | 14,917 | [摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/g16_xmodem_12304b.html) | [JSON](https://released.github.io/slide_simple_renesas_isp_tool/data/g16_xmodem_12304b.json) |
+| 23 KiB | 23,552 | 0x1BD99DE5 | 20,616 | 1,944 | 24,952 | [摘要](https://released.github.io/slide_simple_renesas_isp_tool/data/g16_xmodem_23552b.html) | [JSON](https://released.github.io/slide_simple_renesas_isp_tool/data/g16_xmodem_23552b.json) |
 
 - 原始 App 另有一次 14.949 秒的 PASS 報告；表列相同映像的另一次 14.917 秒紀錄。兩次均確認 APP_READY／installed metadata。
 - 最大完整 App BIN 為 23 KiB，範圍至 `0x07BFF`；Boot 8 KiB 與 `0x07C00..0x07FFF` 保留區不在 App 更新範圍。第二份映像從執行中的 App 經 ENTER 返回 Boot 更新。
@@ -405,11 +401,11 @@ R7F102GGE2DFB（`0x022B`），Device UART 與 Host Link 均為 115200、8-N-1。
 
 R7F102GGE2DFB（`0x022B`），Device UART 與 Host Link 均為 115200、8-N-1。配對工程見 [G22 XMODEM-CRC128 工程](https://released.github.io/slide_boot_loader_for_RL78/xmodem-device.html#upgrade-g22-xmodem)。
 
-| App BIN（bytes） | CRC32 | Write（秒） | END CRC（秒） | App 確認（秒） | 總時間（秒） |
-| ---: | ---: | ---: | ---: | ---: | ---: |
-| 12,036 | `0x87B7136E` | 10.644 | 0.176 | 1.944 | 14.660 |
-| 24,576 | `0xA7AEA7F8` | 21.417 | 0.288 | 1.945 | 25.545 |
-| 55,296 | `0xBEBCE5E4` | 48.325 | 0.560 | 2.008 | 52.789 |
+| App BIN | Bytes | CRC32 | 寫入（ms） | App 確認（ms） | 總耗時（ms） | 量測摘要 | 來源報告 |
+| --- | ---: | --- | ---: | ---: | ---: | --- | --- |
+| 正式 App | 12,036 | 0x87B7136E | 10,644 | 1,944 | 14,660 | [摘要](https://released.github.io/slide_boot_loader_for_RL78/data/g22_xmodem_12036b.html) | [JSON](https://released.github.io/slide_boot_loader_for_RL78/data/g22_xmodem_12036b.json) |
+| 24 KiB | 24,576 | 0xA7AEA7F8 | 21,417 | 1,945 | 25,545 | [摘要](https://released.github.io/slide_boot_loader_for_RL78/data/g22_xmodem_24576b.html) | [JSON](https://released.github.io/slide_boot_loader_for_RL78/data/g22_xmodem_24576b.json) |
+| 54 KiB | 55,296 | 0xBEBCE5E4 | 48,325 | 2,008 | 52,789 | [摘要](https://released.github.io/slide_boot_loader_for_RL78/data/g22_xmodem_55296b.html) | [JSON](https://released.github.io/slide_boot_loader_for_RL78/data/g22_xmodem_55296b.json) |
 
 - 三次更新的 START 和 END 均確認，`APP_READY` 和 256 bytes 安裝 metadata 相符。後兩次從 App 執行 ENTER 回 Boot。Host Link 重試為 0，Host 比較計數器為 UNAVAILABLE。
 - Xmodem Transfer 的三次測試完成 PING、ECHO、計數器查詢、CRC128 串流及最後一次 INFO 查詢。

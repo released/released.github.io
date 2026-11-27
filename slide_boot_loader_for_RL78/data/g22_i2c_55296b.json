@@ -1,0 +1,14 @@
+{
+  "model": "G22",
+  "interface": "I2C",
+  "input_bytes": 55296,
+  "image_crc32": "0xD1D2F9F3",
+  "elapsed_ms": 98235,
+  "result": "PASS",
+  "phases_ms": {
+    "transfer": 94673,
+    "end_crc": 600,
+    "app_confirmation": 2086
+  },
+  "source_basis": "已確認的 G22 實板量測表。原始報告檔、識別碼與雜湊未留存於公開紀錄。"
+}
