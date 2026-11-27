@@ -55,18 +55,19 @@ Device 每份 Boot 只支援其所屬的介面／協定；UART0 診斷輸出不�
 | F13，R5F10BMG | P74／P75 | P15／P16 | P62／P63 |
 | F24，R7F124FPJ5xFB | P74／P75 | P15／P16 | P62／P63 |
 | G16，R5F121BCAFP | P11／P10 | P03／P04 | P60／P61 |
+| G22，R7F102GGE2DFB | P00／P01 | P12／P11 | P60／P61 |
 
 F13 UART1：CN1 pin35／34；F24 UART1：CN1 pin42／41。兩者 UART0 TX P15 為 CN2 pin5，地可接 TP2／VSS。
-F13／F24 UART1 使用 PIOR42=1；G16 使用 SAU0 channels2／3 與對應 PIOR。
+F13／F24 UART1 使用 PIOR42=1；G16 使用 SAU0 channels2／3 與對應 PIOR，G22 使用其工程的 SAU0 路由。
 
 接線依據：F13 target board R20UT2272XJ0200 第2頁、F24 target board R12UZ0100XJ0101 第2頁、
-G16 FPB schematic R12TU0180EJ。
+G16 FPB schematic R12TU0180EJ、G22 FPB schematic R20UT5122EJ。
 接頭方向與焊橋依各板原理圖核對；表內腳位與韌體 adapter 對照，不表示已量測實體波形。
 RH850 串列主題僅列共用協定參考，不提供配對工程；[公開範圍](https://released.github.io/slide_boot_loader_for_RH850/serial-device.html#guide-serial-device-1)。
 
 ### 工程與產物
 
-下表為 RL78 工程命名，MCU 取 F13、F24 或 G16；每格代表各 MCU 的獨立工程。
+下表為 RL78 工程命名，MCU 取 F13、F24、G16 或 G22；每格代表各 MCU 的獨立工程。
 RH850 串列配對工程與安裝檔不在公開範圍；[共用協定參考](https://released.github.io/slide_boot_loader_for_RH850/serial-device.html#guide-serial-device-2)。
 
 | 協定 | Boot | App | Custom Transfer |
@@ -172,7 +173,7 @@ CRC16驗證每個區塊，CRC32驗證 useful bytes；診斷用 RAM sink不啟動
 
 #### UART0 本機操作與封包文字
 
-- F13、F24、G16 的 UART／I2C App 與 Custom Transfer，以獨立 UART0 提供診斷文字；資料介面維持 UART1 或 I2C。
+- F13、F24、G16、G22 的 UART／I2C App 與 Custom Transfer，以獨立 UART0 提供診斷文字；資料介面維持 UART1 或 I2C。
 - Terminal 使用 115200、8-N-1；傳送 `z` 或 `Z` 可要求一般 MCU 重置。App 重啟仍經過原本的 Boot 驗證流程；進入更新模式使用 Tool 的 Enter Boot。
 - 有效封包顯示 `RX`／`TX`、16-bit `seq`、`cmd`、`len` 與完整 payload。回覆需對應相同 sequence；Tool 另外檢查 CRC 與回傳資料。
 - PING／ECHO 測試資料為 `i XOR 0xA5`，例如 `A5 A4 A7 A6`；sequence 隨 request 遞增，資料本身維持固定測試圖樣。
